@@ -179,12 +179,12 @@ async def on_message(message):
     # Bỏ qua nếu tin nhắn là bot hoặc không phải user được chỉ định
     #if message.author == bot.user:
     #    return
-    if not message.author.bot and message.author.id not in user_id:
+    if not message.author.bot and message.author.id != user_id:
         user_name = message.author.name
         result = "{}: {}".format(user_name, message.content)
         user_answer_channel(result)
     # Phản hồi lại chat trong channel chung
-    if not message.content.startswith('.') and (message.author.id in bot_id or message.author.id in user_id) and public_chat_num != 0:
+    if not message.content.startswith('.') and (message.author.id in bot_id or message.author.id == user_id) and public_chat_num != 0:
         if not isinstance(message.channel, discord.DMChannel):
             user_name = message.author.name
             if message.content:
@@ -221,7 +221,7 @@ async def on_message(message):
             task_busy_with_another = False
         
     # Phản hồi lại user sau khi nhận được chat
-    if not message.content.startswith('!') and message.author.id in user_id:
+    if not message.content.startswith('!') and message.author.id == user_id:
         # Chỉ phản hồi khi là DM channel
         if isinstance(message.channel, discord.DMChannel):
             # Nếu đang reply thì bỏ qua

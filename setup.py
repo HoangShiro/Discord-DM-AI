@@ -8,8 +8,7 @@ config_updates = {
     "openai_key_2": "",
     "discord_bot_key": "",
     "vv_key": "",
-    "user_id": [],
-    "bot_id": [],
+    "user_id": "",
     "server_id": "",
     "ai_name": "",
     "ai_first_name": "",
@@ -45,12 +44,7 @@ def save_config_info():
     config_updates["openai_key_2"] = openai_key2
     config_updates["discord_bot_key"] = discord_bot_key
     config_updates["vv_key"] = vv_key
-    # Kiểm tra kiểu dữ liệu và cập nhật user_id dưới dạng danh sách hoặc danh sách trống
-    if user_id:
-        config_updates["user_id"] = f"[{user_id}]"
-    else:
-        config_updates["user_id"] = []
-
+    config_updates["user_id"] = int(user_id)
     config_updates["server_id"] = int(server_id)
     config_updates["ai_name"] = ai_name
     config_updates["ai_first_name"] = ai_first_name
@@ -139,7 +133,7 @@ def load_config_values():
     vv_key_entry.insert(0, config_values.get("vv_key", ""))
 
     user_id_entry.delete(0, "end")
-    user_id_entry.insert(0, ", ".join(config_values.get("user_id", [])))
+    user_id_entry.insert(0, config_values.get("user_id", ""))
 
     server_id_entry.delete(0, "end")
     server_id_entry.insert(0, config_values.get("server_id", ""))

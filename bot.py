@@ -144,7 +144,7 @@ async def on_ready():
     alarms = load_alarms_from_json()
     
 
-    user = await bot.fetch_user(int(user_id[0]))
+    user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
         await user.create_dm()
     dm_channel_id = user.dm_channel.id
@@ -287,7 +287,7 @@ async def on_message(message):
 # Bot restart
 @bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")
 async def renew(interaction: discord.Interaction):
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         await interaction.response.send_message(f"`{ai_name} sẽ quay lại ngay sau 3s...`", ephemeral=True)
         await bot.close()
     else:
@@ -298,7 +298,7 @@ async def renew(interaction: discord.Interaction):
 @bot.tree.command(name="newchat", description="Cuộc trò chuyện mới.")
 async def newchat(interaction: discord.Interaction):
     global bot_mood
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         clear_conversation_history()
         bot_mood = 50
         vals_save('vals.json', 'bot_mood', bot_mood)
@@ -311,7 +311,7 @@ async def newchat(interaction: discord.Interaction):
 # Cuộc trò chuyện mới trong server
 @bot.tree.command(name="clearchat", description="Cuộc trò chuyện public mới.")
 async def new_pchat(interaction: discord.Interaction):
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         clear_conversation_history_public()
         await interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện public.`", ephemeral=True)
     else:
@@ -322,7 +322,7 @@ async def new_pchat(interaction: discord.Interaction):
 # Tạo lại câu trả lời
 @bot.tree.command(name="delchat", description=f"Xoá chat của {ai_name}.")
 async def answer_regen(interaction: discord.Interaction):
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         await interaction.response.send_message(f"_{ai_name} đang xoá chat..._", delete_after = 1)
         if console_log:
             print(f"Đang xoá các tin nhắn của {ai_name}...")
@@ -337,7 +337,7 @@ async def answer_regen(interaction: discord.Interaction):
             await delete_messages(interaction, limit)
             # Xoá câu trả lời trước đó
         remove_bot_answer()
-        user = await bot.fetch_user(int(user_id[0]))
+        user = await bot.fetch_user(user_id)
         if user.dm_channel is None:
             await user.create_dm()
         dm_channel_id = user.dm_channel.id
@@ -362,7 +362,7 @@ async def answer_regen(interaction: discord.Interaction):
 # Check user status
 @bot.tree.command(name="status", description=f"Trạng thái hoạt động của {user_nick}.")
 async def us_status(interaction: discord.Interaction):
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         user_stt = "offline"
         # Check user_stt status
         user_stt = user_stt_check()
@@ -375,7 +375,7 @@ async def us_status(interaction: discord.Interaction):
 @bot.tree.command(name="chatlog", description=f"Hiển thị log chat ra console. Total chat: {total_msg}")
 async def chatlog(interaction: discord.Interaction):
     global console_log
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         if console_log:
             case = "tắt"
             console_log = False
@@ -392,7 +392,7 @@ async def chatlog(interaction: discord.Interaction):
 @bot.tree.command(name="erate", description=f"Tỷ lệ tương tác emoji của {ai_name}: {emoji_rate_percent}%")
 async def emo_rate(interaction: discord.Interaction, rate: int):
     global emoji_rate
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         if rate == 0:
             case = "sẽ không tương tác emoji nữa."
         elif rate < 40:
@@ -416,7 +416,7 @@ async def emo_rate(interaction: discord.Interaction, rate: int):
 # Lưu lời nhắc
 @bot.tree.command(name="remind", description=f"Nhắc {user_nick} khi tới giờ.")
 async def reminder(interaction: discord.Interaction, note: str, time: str, date: str = None):
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         try:
             current_date = datetime.datetime.now()
             if date is not None:
@@ -441,7 +441,7 @@ async def reminder(interaction: discord.Interaction, note: str, time: str, date:
 # Danh sách lời nhắc
 @bot.tree.command(name="remindlist", description=f"Danh sách lời nhắc.")
 async def reminder_list(interaction: discord.Interaction):
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         if not alarms:
             await interaction.response.send_message('`Hiện không có lời nhắc nào.`', ephemeral=True)
         else:
@@ -454,7 +454,7 @@ async def reminder_list(interaction: discord.Interaction):
 # Xoá lời nhắc
 @bot.tree.command(name="remindremove", description=f"Xóa lời nhắc cho {user_nick}.")
 async def reminder_remover(interaction: discord.Interaction, index: int):
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         if index < 0 or index >= len(alarms):
             await interaction.response.send_message('`Lời nhắc không tồn tại.`', ephemeral=True)
             return
@@ -472,7 +472,7 @@ async def reminder_remover(interaction: discord.Interaction, index: int):
 @bot.tree.command(name="vchat", description=f"{ai_name} voice chat.")
 async def voice_chat(interaction: discord.Interaction):
     global tts_toggle
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         text = f"{ai_name} sẽ không"
         if tts_toggle:
             tts_toggle = False
@@ -492,7 +492,7 @@ async def voice_chat(interaction: discord.Interaction):
 @bot.tree.command(name="nsfw", description=f"{ai_name} nsfw chat.")
 async def nsfw_chat(interaction: discord.Interaction):
     global nsfw
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         text = f"tắt"
         if nsfw:
             nsfw = False
@@ -509,7 +509,7 @@ async def nsfw_chat(interaction: discord.Interaction):
 @bot.tree.command(name="pchat", description=f"Cho phép {ai_name} chat public. limit: {public_chat_num}")
 async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
     global nsfw, public_chat_num, public_chat
-    if interaction.user.id == (user_id[0] or user_id[1]):
+    if interaction.user.id == (user_id or user_id[1]):
         text = f"tắt"
         if limit == None or limit == 0:
             public_chat = False
@@ -536,7 +536,7 @@ async def rmv_bt_atv(interaction):
     remove_near_answer()
     remove_nearest_user_answer()
 
-    user = await bot.fetch_user(int(user_id[0]))
+    user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
         await user.create_dm()
     channel_id = user.dm_channel.id
@@ -894,7 +894,7 @@ async def bot_tasks(message):
     threshold = 0.1 + (emoji_rate * probability)
     if random.uniform(0, 1) < threshold:
         async for prev_message in message.channel.history(limit=10):
-            if prev_message.author.id == (user_id[0] or user_id[1]):
+            if prev_message.author.id == (user_id or user_id[1]):
                 await prev_message.add_reaction(emoji)
                 if console_log:
                     print("Emoji reaction:", emoji)
@@ -981,7 +981,7 @@ async def member_info():
         guild = bot.get_guild(server_id)
         emojis = guild.emojis
         emoji_split(emojis)
-        member = guild.get_member(user_id[0])
+        member = guild.get_member(user_id)
         user_name = member.name
         user_nick = member.nick
         if user_nick == None:
@@ -995,7 +995,7 @@ async def member_info():
 def user_stt_check():
     guild = bot.get_guild(server_id)  # Lấy đối tượng máy chủ
     if guild is not None:
-        member = guild.get_member(user_id[0])  # Lấy thông tin member từ ID
+        member = guild.get_member(user_id)  # Lấy thông tin member từ ID
         if member is not None:
             user_stt = member.status  # Lấy trạng thái hiện tại của member
             user_stt = str(user_stt)
@@ -1045,7 +1045,7 @@ async def time_check():
     my_timezone = pytz.timezone('Asia/Bangkok')
     vn_time = datetime.datetime.now(my_timezone)
 
-    user = await bot.fetch_user(int(user_id[0]))
+    user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
         await user.create_dm()
     channel_id = user.dm_channel.id

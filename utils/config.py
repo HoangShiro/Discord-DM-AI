@@ -6,19 +6,23 @@ openai_key_2 = ''
 discord_bot_key = ''
 
 # VoiceVox Web API(Để trống nếu không có): https://voicevox.su-shiki.com/su-shikiapis
-vv_key = ""
+vv_key = ''
 
 # Discord user ID and mutual server: Đảm bảo server ID là server mà user với bot cùng tham gia
 user_id = []
-bot_id = [] # Tương tự như user_id, là các id của bot khác mà bot sẽ reply.
-server_id = 300006516444470000
+bot_id = []
+server_id = []
 
 # Bot name
-ai_name = ""
-ai_first_name = ""
+ai_name = ''
+ai_first_name = ''
 
 # TTS config(Có thể bỏ qua): Xem danh sách speaker tại speaker.json và đối chiếu tên tại https://voicevox.hiroshiba.jp/
-speaker = 46 # Loại voice
-pitch = 0 # Tone
-intonation_scale = 0 # Diễn cảm
-speed = 0 # Tốc độ nói
+# Loại voice
+speaker = 46
+# Tone
+pitch = 0
+# Diễn cảm
+intonation_scale = 1
+# Tốc độ nói
+speed = 1

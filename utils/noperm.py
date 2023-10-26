@@ -1,0 +1,16 @@
+noperm = ("{ai_name} only obeys {user_nick}.",
+    "Hey there, you're not {user_nick}, are you?",
+    "I'm sorry, but {user_nick} is the only one I obey!",
+    "Nice try, but {user_nick} is the boss around here.",
+    "{user_nick} is the chosen one, not you. Sorry!",
+    "If you were {user_nick}, you'd know the secret! ♥️",
+    "{user_nick}! Some weirdo trying to call me!!",
+    "You won't force me to do that, right? right!?",
+    "{ai_name} didn't hear anything.",
+    "Why do you try that?",
+    "No!",
+    "Noo!",
+    "Never gonna give you up, Never gonna let you down!",
+    "POG!",
+    "Currently busy chatting with {user_nick}"
+)

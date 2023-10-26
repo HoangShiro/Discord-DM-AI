@@ -1,0 +1,7 @@
+discord
+openai
+pytz
+translate
+langdetect
+jaconv
+timeout-decorator

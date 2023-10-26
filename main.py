@@ -8,7 +8,7 @@ github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"
 def update_bot():
     try:  
         # Sử dụng Git để cập nhật mã nguồn
-        subprocess.run(["git", "pull"])
+        subprocess.run(["git", "pull", "--no-edit", "--no-rebase"])
         
         print("Bot đã cập nhật thành công từ GitHub.")
     except Exception as e:

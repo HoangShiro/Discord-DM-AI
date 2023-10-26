@@ -995,7 +995,7 @@ async def member_info():
 def user_stt_check():
     guild = bot.get_guild(server_id)  # Lấy đối tượng máy chủ
     if guild is not None:
-        member = guild.get_member(int(user_id[0]))  # Lấy thông tin member từ ID
+        member = guild.get_member((user_id[0]))  # Lấy thông tin member từ ID
         if member is not None:
             user_stt = member.status  # Lấy trạng thái hiện tại của member
             user_stt = str(user_stt)

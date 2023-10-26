@@ -10,7 +10,7 @@ config_updates = {
     "vv_key": "",
     "user_id": [],
     "bot_id": [],
-    "server_id": [],
+    "server_id": "",
     "ai_name": "",
     "ai_first_name": "",
     "speaker": ""
@@ -35,6 +35,7 @@ def save_config_info():
     discord_bot_key = discord_bot_key_entry.get()
     vv_key = vv_key_entry.get()
     user_id = user_id_entry.get()
+    server_id = server_id_entry.get()
     ai_name = ai_name_entry.get()
     ai_first_name = ai_first_name_entry.get()
     speaker = speaker_entry.get()
@@ -50,6 +51,7 @@ def save_config_info():
     else:
         config_updates["user_id"] = []
 
+    config_updates["server_id"] = int(server_id)
     config_updates["ai_name"] = ai_name
     config_updates["ai_first_name"] = ai_first_name
 
@@ -139,6 +141,9 @@ def load_config_values():
     user_id_entry.delete(0, "end")
     user_id_entry.insert(0, ", ".join(config_values.get("user_id", [])))
 
+    server_id_entry.delete(0, "end")
+    server_id_entry.insert(0, config_values.get("server_id", ""))
+
     ai_name_entry.delete(0, "end")
     ai_name_entry.insert(0, config_values.get("ai_name", ""))
 
@@ -188,6 +193,11 @@ user_id_label = tk.Label(app, text="User id:")
 user_id_label.pack()
 user_id_entry = tk.Entry(app)
 user_id_entry.pack()
+
+server_id_label = tk.Label(app, text="Server id:")
+server_id_label.pack()
+server_id_entry = tk.Entry(app)
+server_id_entry.pack()
 
 ai_name_label = tk.Label(app, text="Bot Name")
 ai_name_label.pack()

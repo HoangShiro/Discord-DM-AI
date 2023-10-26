@@ -11,8 +11,7 @@ vv_key = ''
 # Discord user ID and mutual server: Đảm bảo server ID là server mà user với bot cùng tham gia
 user_id = []
 bot_id = []
-server_id = []
-
+server_id = 0
 # Bot name
 ai_name = ''
 ai_first_name = ''

@@ -2,7 +2,7 @@
 
 :start_ai
 cls
-py bot.py
+py main.py
 
 echo ----------------------
 echo.

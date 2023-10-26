@@ -1,0 +1,1 @@
+Based on the conversation below, answer only the action name of the character the assistant is role-play according to the form: "doing homework"

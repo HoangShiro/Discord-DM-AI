@@ -981,7 +981,7 @@ async def member_info():
         guild = bot.get_guild(server_id)
         emojis = guild.emojis
         emoji_split(emojis)
-        member = guild.get_member(int(user_id[0]))
+        member = guild.get_member((user_id[0]))
         user_name = member.name
         user_nick = member.nick
         if user_nick == None:

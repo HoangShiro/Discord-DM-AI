@@ -1135,7 +1135,8 @@ async def time_check():
                 save_alarms_to_json(alarms)
     alarm_check = True
 
-
+def bot_run():
+    bot.run(discord_bot_key)
 
 if __name__ == '__main__':
-    bot.run(discord_bot_key)
+    bot_run()

@@ -3,11 +3,12 @@ from utils.config import *
 from utils.katakana import *
 import re
 import requests
-import torch
 import os
-from pydub import AudioSegment
+
 
 def tts_get_en(tts, speaker):
+    import torch
+    from pydub import AudioSegment
     lang = "en"
     model = "v3_en"
     if not speaker:

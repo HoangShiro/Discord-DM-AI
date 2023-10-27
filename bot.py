@@ -941,8 +941,10 @@ def mood_name_change(bot_mood):
         mood_name = "so happy"
     elif bot_mood < 99:
         mood_name = "feeling loved"
-    elif bot_mood == 100:
+    elif bot_mood > 100:
         mood_name = f"love {user_nick} so much! ♥️"
+    elif bot_mood > 200:
+        mood_name = f"Obsessive love with {user_nick} ♥️"
 
     # Lưu lại mood vào prompt
     with open("prompt/current_mood.txt", "w", encoding="utf-8") as f:
@@ -959,8 +961,14 @@ async def bot_status(mood_name):
 # Mood tự tụt khi không chat
 async def mood_drop():
     global bot_mood
-    if bot_mood > 50:
+    if bot_mood > 100:
+        bot_mood -= 0.5
+    if bot_mood > 90:
+        bot_mood -= 2
+    if bot_mood > 80:
         bot_mood -= 1
+    if bot_mood > 70:
+        bot_mood -= 0.4
     if bot_mood > 30:
         bot_mood -= 0.3
     if bot_mood > 10:

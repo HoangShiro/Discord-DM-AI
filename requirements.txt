@@ -6,3 +6,4 @@ langdetect
 jaconv
 customtkinter
 torch
+pydub

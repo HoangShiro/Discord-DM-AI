@@ -127,7 +127,7 @@ def getPrompt_task(case):
         for message in recent_history:
             prompt.append(message)
 
-    elif case == 2:
+    else:
         if nsfw_toggle:
             nsfw_text = getIdentity("prompt/nsfw.txt")
         sys_prompt = getIdentity("prompt/sys_prompt.txt")

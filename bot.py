@@ -591,10 +591,10 @@ async def rmv_bt_atv(interaction):
         await interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
-    await interaction.message.delete()
     if not interaction.message.content.startswith('`Error'):
         remove_near_answer()
         remove_nearest_user_answer()
+    await interaction.message.delete()
 
     user = await bot.fetch_user(user_id)
     if user.dm_channel is None:

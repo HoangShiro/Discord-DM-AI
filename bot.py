@@ -520,25 +520,25 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
             if vspeaker > 72:
                 await interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 72.`", ephemeral=True)
                 return
-            if -0.15 > pitch > 0.15:
-                await interaction.response.send_message("`Pitch(cao độ) không hợp lệ, chọn pitch từ -0.15 -> 0.15.`", ephemeral=True)
-                return
-            if 0 > vintonation > 2:
-                await interaction.response.send_message("`Intonation(diễn cảm) không hợp lệ, chọn intonation từ 0 -> 2.`", ephemeral=True)
-                return
-            if 0.5 > vspeed > 2:
-                await interaction.response.send_message("`Speed(tốc độ) không hợp lệ, chọn speed từ 0.5 -> 2.`", ephemeral=True)
-                return
             
             speaker = vspeaker
             vals_save('vals.json', 'speaker', speaker)
             if vpitch is not None:
+                if -0.15 > vpitch > 0.15:
+                    await interaction.response.send_message("`Pitch(cao độ) không hợp lệ, chọn pitch từ -0.15 -> 0.15.`", ephemeral=True)
+                    return
                 pitch = vpitch
                 vals_save('vals.json', 'pitch', pitch)
             if vintonation is not None:
+                if 0 > vintonation > 2:
+                    await interaction.response.send_message("`Intonation(diễn cảm) không hợp lệ, chọn intonation từ 0 -> 2.`", ephemeral=True)
+                    return
                 intonation_scale = vintonation
                 vals_save('vals.json', 'intonation_scale', intonation_scale)
             if vspeed is not None:
+                if 0.5 > vspeed > 2:
+                    await interaction.response.send_message("`Speed(tốc độ) không hợp lệ, chọn speed từ 0.5 -> 2.`", ephemeral=True)
+                    return
                 speed = vspeed
                 vals_save('vals.json', 'speed', speed)
 

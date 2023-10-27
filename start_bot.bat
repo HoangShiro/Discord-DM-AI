@@ -3,6 +3,8 @@
 :seterrorcount
 set /a errorcount=0
 
+pip install -r requirements.txt
+
 :start_ai
 cls
 py main.py

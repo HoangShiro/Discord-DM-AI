@@ -112,9 +112,14 @@ def getPrompt_channel():
 
 def getPrompt_task(case):
     prompt = []
-
+    total_len = 0
     hist = vals_open('conversation.json')
     history = hist["history"]
+    timezone = pytz.timezone('Asia/Bangkok')
+    time = datetime.datetime.now(timezone)
+    vals = vals_open('vals.json')
+    nsfw_toggle = vals['nsfw']
+    nsfw_text = ""
 
     if case == 1:
         prompt.append(getprompt_normal("prompt/mood.txt"))
@@ -123,14 +128,6 @@ def getPrompt_task(case):
             prompt.append(message)
 
     elif case == 2:
-        timezone = pytz.timezone('Asia/Bangkok')
-        time = datetime.datetime.now(timezone)
-        total_len = 0
-        prompt = []
-        vals = vals_open('vals.json')
-        nsfw_toggle = vals['nsfw']
-
-        nsfw_text = ""
         if nsfw_toggle:
             nsfw_text = getIdentity("prompt/nsfw.txt")
         sys_prompt = getIdentity("prompt/sys_prompt.txt")
@@ -154,22 +151,12 @@ def getPrompt_task(case):
         
         while total_len > 3900:
             try:
-                # print(total_len)
-                # print(len(prompt))
                 prompt.pop(2)
                 total_len = sum(len(d['content']) for d in prompt)
             except:
                 print("Error: Prompt too long!")
 
-        msg = "Continue the conversation or action where you left off proactively and creatively without asking."
-        prompt.append({"role": "system", "content": msg})
-
-    elif case == 3:
-        prompt.append(getprompt_normal("prompt/schedule.txt"))
-        recent_history = history[-1:]
-
-        for message in recent_history:
-            prompt.append(message)
+        prompt.append({"role": "system", "content": case})
 
     return prompt
 

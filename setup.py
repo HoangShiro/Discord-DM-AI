@@ -12,7 +12,10 @@ config_updates = {
     "server_id": "",
     "ai_name": "",
     "ai_first_name": "",
-    "speaker": ""
+    "speaker": "",
+    "pitch": "",
+    "intonation_scale": "",
+    "speed": ""
 }
 
 def save_character_info():
@@ -27,6 +30,12 @@ def save_user_info():
         with open(".\\prompt\\user.txt", "w", encoding="utf-8") as user_file:
             user_file.write(user_info)
 
+def save_character_behavior():
+    char_bv = charbv_text.get(1.0, "end-1c")
+    if char_bv.strip():
+        with open(".\\prompt\\behavior.txt", "w", encoding="utf-8") as user_file:
+            user_file.write(char_bv)
+
 def save_config_info():
     # Lấy giá trị từ các trường nhập liệu
     openai_key1 = openai_key1_entry.get()
@@ -38,6 +47,9 @@ def save_config_info():
     ai_name = ai_name_entry.get()
     ai_first_name = ai_first_name_entry.get()
     speaker = speaker_entry.get()
+    pitch = pitch_entry.get()
+    intonation_scale = intonation_scale_entry.get()
+    speed = speed_entry.get()
 
     # Cập nhật giá trị trong danh sách config_updates
     config_updates["openai_key_1"] = openai_key1
@@ -51,7 +63,10 @@ def save_config_info():
 
     if not speaker:
         speaker = 46
-    config_updates["speaker"] = int(speaker)  # Chuyển giá trị về kiểu int
+    config_updates["speaker"] = int(speaker)
+    config_updates["pitch"] = int(pitch)
+    config_updates["intonation_scale"] = int(intonation_scale)
+    config_updates["speed"] = int(speed)
 
     # Đọc nội dung của tệp cấu hình
     with open(".\\utils\\config.py", "r", encoding="utf-8") as config_file:
@@ -92,6 +107,12 @@ def load_config_values():
             user_info = user_file.read()
             user_text.delete(1.0, "end")
             user_text.insert("insert", user_info)
+        
+        # Đọc giá trị từ tệp behavior.txt và điền vào trường nhập liệu
+        with open(".\\prompt\\behavior.txt", "r", encoding="utf-8") as charbv_file:
+            char_bv = charbv_file.read()
+            charbv_text.delete(1.0, "end")
+            charbv_text.insert("insert", char_bv)
     except FileNotFoundError:
         pass
 
@@ -147,70 +168,107 @@ def load_config_values():
     speaker_entry.delete(0, "end")
     speaker_entry.insert(0, config_values.get("speaker", ""))
 
+    pitch_entry.delete(0, "end")
+    pitch_entry.insert(0, config_values.get("pitch", ""))
+
+    intonation_scale_entry.delete(0, "end")
+    intonation_scale_entry.insert(0, config_values.get("intonation_scale", ""))
+
+    speed_entry.delete(0, "end")
+    speed_entry.insert(0, config_values.get("speed", ""))
+
 app = tk.Tk()
-app.title("Thiết lập cho bot")
+app.attributes('-alpha', 0.9)
+app.iconbitmap('images/Yuueh.ico')
+app.title("Your character's setting")
 
 # Character Info
-character_label = tk.Label(app, text="Bot Info:")
-character_label.pack()
-character_text = tk.Text(app, height=5, width=40)
-character_text.pack()
+character_label = tk.Label(app, text="\nCharacter info:\nDescribe your character's personality, appearance, and other information.", font=("Helvetica", 10))
+character_label.grid(row=0, column=0, columnspan=2)
+character_text = tk.Text(app, height=5, width=80)
+character_text.grid(row=1, column=0, columnspan=2)
 
 # User Info
-user_label = tk.Label(app, text="User Info:")
-user_label.pack()
-user_text = tk.Text(app, height=5, width=40)
-user_text.pack()
+user_label = tk.Label(app, text="\nUser info:\nDescribe your name and any other information you want your character to know.", font=("Helvetica", 10))
+user_label.grid(row=2, column=0, columnspan=2)
+user_text = tk.Text(app, height=5, width=80)
+user_text.grid(row=3, column=0, columnspan=2)
 
-# Entry fields for specific configuration values
-openai_key1_label = tk.Label(app, text="Openai key 1:")
-openai_key1_label.pack()
+# Character behavior
+charbv_label = tk.Label(app, text="\nCharacter behavior:\nThe way/context in which your character will chat.", font=("Helvetica", 10))
+charbv_label.grid(row=4, column=0, columnspan=2)
+charbv_text = tk.Text(app, height=5, width=80)
+charbv_text.grid(row=5, column=0, columnspan=2)
+
+# key1
+openai_key1_label = tk.Label(app, text="\nOpenai key 1:")
+openai_key1_label.grid(row=6, column=0)
 openai_key1_entry = tk.Entry(app)
-openai_key1_entry.pack()
+openai_key1_entry.grid(row=7, column=0)
 
-openai_key2_label = tk.Label(app, text="Openai key 2:")
-openai_key2_label.pack()
+# key2
+openai_key2_label = tk.Label(app, text="\nOpenai key 2:")
+openai_key2_label.grid(row=6, column=1)
 openai_key2_entry = tk.Entry(app)
-openai_key2_entry.pack()
+openai_key2_entry.grid(row=7, column=1)
 
-discord_bot_key_label = tk.Label(app, text="Discord bot token:")
-discord_bot_key_label.pack()
+discord_bot_key_label = tk.Label(app, text="\nDiscord bot token:")
+discord_bot_key_label.grid(row=8, column=0)
 discord_bot_key_entry = tk.Entry(app)
-discord_bot_key_entry.pack()
+discord_bot_key_entry.grid(row=9, column=0)
 
-vv_key_label = tk.Label(app, text="VoiceVox API key:")
-vv_key_label.pack()
+vv_key_label = tk.Label(app, text="\nVoiceVox API key:")
+vv_key_label.grid(row=8, column=1)
 vv_key_entry = tk.Entry(app)
-vv_key_entry.pack()
+vv_key_entry.grid(row=9, column=1)
 
-user_id_label = tk.Label(app, text="User id:")
-user_id_label.pack()
-user_id_entry = tk.Entry(app)
-user_id_entry.pack()
-
-server_id_label = tk.Label(app, text="Server id:")
-server_id_label.pack()
-server_id_entry = tk.Entry(app)
-server_id_entry.pack()
-
-ai_name_label = tk.Label(app, text="Bot Name")
-ai_name_label.pack()
+ai_name_label = tk.Label(app, text="\nCharacter last name")
+ai_name_label.grid(row=10, column=0)
 ai_name_entry = tk.Entry(app)
-ai_name_entry.pack()
+ai_name_entry.grid(row=11, column=0)
 
-ai_first_name_label = tk.Label(app, text="Bot first name:")
-ai_first_name_label.pack()
+ai_first_name_label = tk.Label(app, text="\nCharacter first name:")
+ai_first_name_label.grid(row=10, column=1)
 ai_first_name_entry = tk.Entry(app)
-ai_first_name_entry.pack()
+ai_first_name_entry.grid(row=11, column=1)
 
-speaker_label = tk.Label(app, text="Bot VoiceVox voice id")
-speaker_label.pack()
+user_id_label = tk.Label(app, text="\nDiscord user id:")
+user_id_label.grid(row=12, column=0)
+user_id_entry = tk.Entry(app)
+user_id_entry.grid(row=13, column=0)
+
+server_id_label = tk.Label(app, text="\nDiscord server id:")
+server_id_label.grid(row=12, column=1)
+server_id_entry = tk.Entry(app)
+server_id_entry.grid(row=13, column=1)
+
+speaker_label = tk.Label(app, text="\nCharacter's voice setting (optional)", font=("Helvetica", 10))
+speaker_label.grid(row=14, column=0, columnspan=2)
+
+speaker_label = tk.Label(app, text="\nCharacter speaker id:")
+speaker_label.grid(row=15, column=0)
 speaker_entry = tk.Entry(app)
-speaker_entry.pack()
+speaker_entry.grid(row=16, column=0)
+
+pitch_label = tk.Label(app, text="\nVoice pitch:")
+pitch_label.grid(row=15, column=1)
+pitch_entry = tk.Entry(app)
+pitch_entry.grid(row=16, column=1)
+
+intonation_scale_label = tk.Label(app, text="\nVoice intonation:")
+intonation_scale_label.grid(row=17, column=0)
+intonation_scale_entry = tk.Entry(app)
+intonation_scale_entry.grid(row=18, column=0)
+
+speed_label = tk.Label(app, text="\nVoice speed:")
+speed_label.grid(row=17, column=1)
+speed_entry = tk.Entry(app)
+speed_entry.grid(row=18, column=1)
+
 
 load_config_values()  # Tải giá trị từ tệp khi khởi động chương trình
 
 save_and_close_button = tk.Button(app, text="Save and Close", command=lambda: [save_character_info(), save_user_info(), save_config_info(), app.quit()])
-save_and_close_button.pack()
+save_and_close_button.grid(row=20, column=0, columnspan=2)
 
 app.mainloop()

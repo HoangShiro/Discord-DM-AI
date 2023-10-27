@@ -583,7 +583,8 @@ async def ctn_bt_atv(interaction):
         await interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
-    ai_text = await bot_answer_2(2)
+    case = "Continue the conversation or action where you left off proactively and creatively without asking."
+    ai_text = await bot_answer_2(case)
     if tts_toggle:
         await ai_voice_create(ai_text)
         await voice_message(channel_id, console_log)
@@ -722,8 +723,8 @@ async def bot_answer_channel(message):
     return answer
 
 # Tạo câu trả lời với lời nhắc
-async def bot_remind_answer(user, channel_id):
-    ai_text = await bot_answer()
+async def bot_remind_answer(user, channel_id, case):
+    ai_text = await bot_answer_2(case)
     await ai_voice_create(ai_text)
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
@@ -818,7 +819,7 @@ def emoji_split(emojis):
             emoji_think.append(emoji)
         elif re.search(r'stare|peak', emoji_name):
             emoji_stare.append(emoji)
-        elif re.search(r'surprised|pog|wow|bruh', emoji_name):
+        elif re.search(r'surprised|pog|wow|bruh|eh', emoji_name):
             emoji_sup.append(emoji)
         elif re.search(r'happy|joy', emoji_name):
             emoji_happy.append(emoji)
@@ -1079,15 +1080,9 @@ async def time_check():
             # Nếu thấy user hoạt động thì chào
             if (user_stt == online) or (user_stt == idle):
                 day_check = False
-                lang = lang_detect(get_bot_answer())
-                note = "*Waking up and seeing you*"
-                if lang == "vi":
-                    note = f"*thức dậy và nhìn thấy {ai_name}"
-                if lang == "ja":
-                    note = "*目覚めてあなたに会う*"
-                user_answer(note)
+                note = f"Looks like {user_nick} just woke up."
                 async with user.typing():
-                    asyncio.create_task(bot_remind_answer(user, channel_id))
+                    asyncio.create_task(bot_remind_answer(user, channel_id, note))
                 vals_save('vals.json', 'day_check', day_check)
 
     # Sleep check
@@ -1097,21 +1092,11 @@ async def time_check():
             # Nếu thấy user onl thì chào
             if (user_stt == online) or (user_stt == idle) or (user_stt == dnd):
                 night_check = False
-                lang = lang_detect(get_bot_answer())
-                note = "*it's late now, it would be better if someone reminded me to go to sleep*"
-                if lang == "vi":
-                    note = f"*Đã khá khuya, có ai nhắc {user_nick} đi ngủ thì tuyệt quá*"
-                if lang == "ja":
-                    note = f"もう遅いよ、誰かが私に寝るように思い出させてくれたら良いのに"
+                note = f"it's late now, reminded {user_nick} to go to sleep."
                 if user_stt == dnd:
-                    note = "*It's time for bed but I'm still working. You decided to come closer and wish me good night*"
-                    if lang == "vi":
-                        note = f"*Đã tới giờ đi ngủ nhưng {user_name} vẫn đang work. {ai_name} quyết định sẽ tới gần và chúc {user_name} ngủ ngon*"
-                    if lang == "ja":
-                        note = "*もう寝る時間ですが、まだ仕事をしています。 あなたは近づいて私におやすみを告げようと決めた*"
-                user_answer(note)
+                    note = f"It's time for bed but {user_nick} still working. let wish {user_nick} good night."
                 async with user.typing():
-                    asyncio.create_task(bot_remind_answer(user, channel_id))
+                    asyncio.create_task(bot_remind_answer(user, channel_id, note))
                 vals_save('vals.json', 'night_check', night_check)
 
     # Restart sche
@@ -1130,15 +1115,9 @@ async def time_check():
             alarm_time = alarm_time[:-3]
             if current_time == alarm_time:
                 alarm_check = False
-                lang = lang_detect(get_bot_answer())
                 case = "Remind"
-                if lang == "vi":
-                    case = "Hãy nhắc nhở"
-                text = f"*{case} {user_nick}: {note}*"
-                if lang == "ja":
-                    text = f"*「{note}」と警告してください*"
-                user_answer(text)
-                asyncio.create_task(bot_remind_answer(user, channel_id))
+                text = f"{case} {user_nick}: {note}"
+                asyncio.create_task(bot_remind_answer(user, channel_id, text))
                 alarms.remove(alarm)
                 save_alarms_to_json(alarms)
     alarm_check = True

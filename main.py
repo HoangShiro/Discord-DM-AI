@@ -1,6 +1,4 @@
 import bot
-import asyncio
-import os
 import subprocess
 
 github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"

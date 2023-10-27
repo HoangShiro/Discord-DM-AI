@@ -4,4 +4,3 @@ pytz
 translate
 langdetect
 jaconv
-timeout-decorator

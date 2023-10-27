@@ -3,6 +3,41 @@ from utils.config import *
 from utils.katakana import *
 import re
 import requests
+import torch
+import os
+from pydub import AudioSegment
+
+def tts_get_en(tts, speaker):
+    lang = "en"
+    model = "v3_en"
+    if not speaker:
+        speaker = "en_18"
+    text_fill = remove_act(tts)
+    if not text_fill:
+        if not tts:
+            tts = "Error error"
+        text_fill = tts
+
+    device = torch.device('cpu')
+    torch.set_num_threads(4)
+    local_file = 'model.pt'
+
+    if not os.path.isfile(local_file):
+        torch.hub.download_url_to_file(f'https://models.silero.ai/models/tts/{lang}/{model}.pt',
+                                    local_file)  
+
+    model = torch.package.PackageImporter(local_file).load_pickle("tts_models", "model")
+    model.to(device)
+
+    sample_rate = 48000
+    model.save_wav(text=tts,
+                    speaker=speaker,
+                    sample_rate=sample_rate)
+    
+    input_wav_file = 'test.wav'
+    output_ogg_file = 'ai_voice_msg.ogg'
+    audio = AudioSegment.from_wav(input_wav_file)
+    audio.export(output_ogg_file, format="ogg")
 
 def tts_get(text, speaker, pitch, intonation_scale, speed, console_log):
     text_fill = remove_act(text)
@@ -16,7 +51,7 @@ def tts_get(text, speaker, pitch, intonation_scale, speed, console_log):
     response = requests.get(url)
     
     if response.status_code == 200:
-        # Lưu audio vào file .ogg
+
         with open('ai_voice_msg.ogg', 'wb') as f:
             f.write(response.content)
         if console_log:

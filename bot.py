@@ -80,6 +80,8 @@ tts_toggle = False
 nsfw = True
 public_chat = False
 public_chat_num = 2
+voice_mode = 'ja'
+en_speaker = 'en_18'
 
 default_values = {
     "bot_mood": 50.0,
@@ -96,7 +98,13 @@ default_values = {
     "nsfw": True,
     "public_chat": False,
     "public_chat_num": 2,
-    "dm_channel_id": 0
+    "dm_channel_id": 0,
+    "voice_mode": 'ja',
+    "en_speaker": 'en_18',
+    "speaker": 1,
+    "pitch": 0,
+    "intonation_scale": 1,
+    "speed": 1
 }
 
 # Kiểm tra xem tệp JSON có tồn tại không
@@ -287,7 +295,7 @@ async def on_message(message):
 # Bot restart
 @bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")
 async def renew(interaction: discord.Interaction):
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         await interaction.response.send_message(f"`{ai_name} sẽ quay lại ngay sau 3s...`", ephemeral=True)
         await bot.close()
     else:
@@ -298,7 +306,7 @@ async def renew(interaction: discord.Interaction):
 @bot.tree.command(name="newchat", description="Cuộc trò chuyện mới.")
 async def newchat(interaction: discord.Interaction):
     global bot_mood
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         clear_conversation_history()
         bot_mood = 50
         vals_save('vals.json', 'bot_mood', bot_mood)
@@ -311,7 +319,7 @@ async def newchat(interaction: discord.Interaction):
 # Cuộc trò chuyện mới trong server
 @bot.tree.command(name="clearchat", description="Cuộc trò chuyện public mới.")
 async def new_pchat(interaction: discord.Interaction):
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         clear_conversation_history_public()
         await interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện public.`", ephemeral=True)
     else:
@@ -322,7 +330,7 @@ async def new_pchat(interaction: discord.Interaction):
 # Tạo lại câu trả lời
 @bot.tree.command(name="delchat", description=f"Xoá chat của {ai_name}.")
 async def answer_regen(interaction: discord.Interaction):
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         await interaction.response.send_message(f"_{ai_name} đang xoá chat..._", delete_after = 1)
         if console_log:
             print(f"Đang xoá các tin nhắn của {ai_name}...")
@@ -362,7 +370,7 @@ async def answer_regen(interaction: discord.Interaction):
 # Check user status
 @bot.tree.command(name="status", description=f"Trạng thái hoạt động của {user_nick}.")
 async def us_status(interaction: discord.Interaction):
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         user_stt = "offline"
         # Check user_stt status
         user_stt = user_stt_check()
@@ -375,7 +383,7 @@ async def us_status(interaction: discord.Interaction):
 @bot.tree.command(name="chatlog", description=f"Hiển thị log chat ra console. Total chat: {total_msg}")
 async def chatlog(interaction: discord.Interaction):
     global console_log
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         if console_log:
             case = "tắt"
             console_log = False
@@ -392,7 +400,7 @@ async def chatlog(interaction: discord.Interaction):
 @bot.tree.command(name="erate", description=f"Tỷ lệ tương tác emoji của {ai_name}: {emoji_rate_percent}%")
 async def emo_rate(interaction: discord.Interaction, rate: int):
     global emoji_rate
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         if rate == 0:
             case = "sẽ không tương tác emoji nữa."
         elif rate < 40:
@@ -416,7 +424,7 @@ async def emo_rate(interaction: discord.Interaction, rate: int):
 # Lưu lời nhắc
 @bot.tree.command(name="remind", description=f"Nhắc {user_nick} khi tới giờ.")
 async def reminder(interaction: discord.Interaction, note: str, time: str, date: str = None):
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         try:
             current_date = datetime.datetime.now()
             if date is not None:
@@ -441,7 +449,7 @@ async def reminder(interaction: discord.Interaction, note: str, time: str, date:
 # Danh sách lời nhắc
 @bot.tree.command(name="remindlist", description=f"Danh sách lời nhắc.")
 async def reminder_list(interaction: discord.Interaction):
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         if not alarms:
             await interaction.response.send_message('`Hiện không có lời nhắc nào.`', ephemeral=True)
         else:
@@ -454,7 +462,7 @@ async def reminder_list(interaction: discord.Interaction):
 # Xoá lời nhắc
 @bot.tree.command(name="remindremove", description=f"Xóa lời nhắc cho {user_nick}.")
 async def reminder_remover(interaction: discord.Interaction, index: int):
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         if index < 0 or index >= len(alarms):
             await interaction.response.send_message('`Lời nhắc không tồn tại.`', ephemeral=True)
             return
@@ -468,22 +476,73 @@ async def reminder_remover(interaction: discord.Interaction, index: int):
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
-# Tỷ lệ gửi voice chat
-@bot.tree.command(name="vchat", description=f"{ai_name} voice chat.")
-async def voice_chat(interaction: discord.Interaction):
-    global tts_toggle
-    if interaction.user.id == (user_id or user_id[1]):
-        text = f"{ai_name} sẽ không"
-        if tts_toggle:
+# Đổi mode voice chat
+@bot.tree.command(name="vchat", description=f"Ngôn ngữ voice chat của {ai_name}: [{voice_mode}].")
+async def voice_chat(interaction: discord.Interaction, language: str = None):
+    global tts_toggle, voice_mode, en_speaker
+    if interaction.user.id == user_id:
+        text = f"{ai_name} sẽ không gửi voice chat nữa."
+        if language is None:
             tts_toggle = False
-        else:
+        elif re.search('ja', language.lower()):
             if len(vv_key) == 15:
                 tts_toggle = True
-                text = f"{ai_name} sẽ"
+                text = f"{ai_name} sẽ gửi voice chat bằng Japanese"
+                voice_mode = "ja"
+                en_speaker = speaker
             else:
                 await interaction.response.send_message(f"`Hãy nhập VoiceVox api-key trước khi bật nó.`", ephemeral=True)
-        await interaction.response.send_message(f"`{text} gửi voice chat.`", ephemeral=True)
+        else:
+            tts_toggle = True
+            text = f"{ai_name} sẽ gửi voice chat bằng English"
+            voice_mode = "en"
+        await interaction.response.send_message(f"`{text}`", ephemeral=True)
         vals_save('vals.json', 'tts_toggle', tts_toggle)
+        vals_save('vals.json', 'voice_mode', voice_mode)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
+# Thiết lập voice chat
+@bot.tree.command(name="vconfig", description=f"Voice chat config: Spr:{en_speaker}, P:{pitch}, I:{intonation_scale}, Spd{speed}.")
+async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: float = None, vintonation: float = None, vspeed: float = None):
+    global en_speaker, speaker, pitch, intonation_scale, speed
+    if interaction.user.id == user_id:
+        if voice_mode == "en":
+            if 1 > speaker > 117:
+                await interaction.response.send_message("`Voice English không tồn tại, chọn voice từ 1 -> 117.`", ephemeral=True)
+                return
+            name = "en_"
+            en_speaker = name + str(vspeaker)
+            vals_save('vals.json', 'en_speaker', en_speaker)
+
+        if voice_mode == "ja":
+            if vspeaker > 72:
+                await interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 72.`", ephemeral=True)
+                return
+            if -0.15 > pitch > 0.15:
+                await interaction.response.send_message("`Pitch(cao độ) không hợp lệ, chọn pitch từ -0.15 -> 0.15.`", ephemeral=True)
+                return
+            if 0 > vintonation > 2:
+                await interaction.response.send_message("`Intonation(diễn cảm) không hợp lệ, chọn intonation từ 0 -> 2.`", ephemeral=True)
+                return
+            if 0.5 > vspeed > 2:
+                await interaction.response.send_message("`Speed(tốc độ) không hợp lệ, chọn speed từ 0.5 -> 2.`", ephemeral=True)
+                return
+            
+            speaker = vspeaker
+            vals_save('vals.json', 'speaker', speaker)
+            if vpitch is not None:
+                pitch = vpitch
+                vals_save('vals.json', 'pitch', pitch)
+            if vintonation is not None:
+                intonation_scale = vintonation
+                vals_save('vals.json', 'intonation_scale', intonation_scale)
+            if vspeed is not None:
+                speed = vspeed
+                vals_save('vals.json', 'speed', speed)
+
+        await interaction.response.send_message(f"`Đã lưu thiết lập voice. Speaker:{vspeaker}, pitch:{pitch}, intonation:{intonation_scale}, speed:{speed}.`", ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -492,7 +551,7 @@ async def voice_chat(interaction: discord.Interaction):
 @bot.tree.command(name="nsfw", description=f"{ai_name} nsfw chat.")
 async def nsfw_chat(interaction: discord.Interaction):
     global nsfw
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         text = f"tắt"
         if nsfw:
             nsfw = False
@@ -509,7 +568,7 @@ async def nsfw_chat(interaction: discord.Interaction):
 @bot.tree.command(name="pchat", description=f"Cho phép {ai_name} chat public. limit: {public_chat_num}")
 async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
     global nsfw, public_chat_num, public_chat
-    if interaction.user.id == (user_id or user_id[1]):
+    if interaction.user.id == user_id:
         text = f"tắt"
         if limit == None or limit == 0:
             public_chat = False
@@ -800,9 +859,14 @@ async def msg_send_channel(message, text):
 
 # Tạo voice cho bot
 async def ai_voice_create(ai_text):
-    lang = "ja"
-    translated = text_translate(ai_text, lang)
-    tts_get(translated, speaker, pitch, intonation_scale, speed, console_log)
+    if voice_mode == "ja":
+        lang = "ja"
+        translated = text_translate(ai_text, lang)
+        tts_get(translated, speaker, pitch, intonation_scale, speed, console_log)
+    else:
+        lang = "en"
+        translated = text_translate(ai_text, lang)
+        tts_get_en(ai_text, en_speaker)
 
 # Phân loại emoji
 def emoji_split(emojis):
@@ -895,7 +959,7 @@ async def bot_tasks(message):
     threshold = 0.1 + (emoji_rate * probability)
     if random.uniform(0, 1) < threshold:
         async for prev_message in message.channel.history(limit=10):
-            if prev_message.author.id == (user_id or user_id[1]):
+            if prev_message.author.id == user_id:
                 await prev_message.add_reaction(emoji)
                 if console_log:
                     print("Emoji reaction:", emoji)

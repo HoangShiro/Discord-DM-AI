@@ -4,3 +4,4 @@ pytz
 translate
 langdetect
 jaconv
+customtkinter

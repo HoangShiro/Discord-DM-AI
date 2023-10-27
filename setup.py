@@ -177,6 +177,7 @@ def load_config_values():
     speed_entry.delete(0, "end")
     speed_entry.insert(0, config_values.get("speed", ""))
 
+
 app = tk.Tk()
 app.attributes('-alpha', 0.9)
 app.iconbitmap('images/Yuueh.ico')

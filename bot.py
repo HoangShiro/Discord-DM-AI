@@ -592,7 +592,7 @@ async def rmv_bt_atv(interaction):
     except:
         pass
     await interaction.message.delete()
-    if not message.content.startswith('`Error'):
+    if not interaction.message.content.startswith('`Error'):
         remove_near_answer()
         remove_nearest_user_answer()
 

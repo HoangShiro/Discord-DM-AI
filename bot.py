@@ -592,8 +592,9 @@ async def rmv_bt_atv(interaction):
     except:
         pass
     await interaction.message.delete()
-    remove_near_answer()
-    remove_nearest_user_answer()
+    if not message.content.startswith('`Error'):
+        remove_near_answer()
+        remove_nearest_user_answer()
 
     user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
@@ -725,7 +726,7 @@ async def rep_limit():
 # Tạo câu trả lời cho bot
 async def bot_answer():
     # Gọi Openai
-    answer = "*Error error"
+    answer = "`Error error`"
     if not call_limit:
         try:
             openai_answer()
@@ -733,13 +734,13 @@ async def bot_answer():
         except Exception as e:
             error_message = str(e)
             if "Rate limit reached" in error_message:
-                answer = "*Please wait for me in 20s*"
+                answer = "`Error: Please wait for me in 20s`"
                 await rep_limit()
             else:
-                answer = "*Error error*"
+                answer = "`Error error`"
             print("Error OPEN-AI:", error_message)
     else:
-        answer = "*Please wait for me in 20s*"
+        answer = "`Error: Please wait for me in 20s`"
     # Lấy câu trả lời sau khi hoàn thành phản hồi từ openai
     if console_log:
         print(f"[{ai_name}]:", answer)
@@ -747,20 +748,20 @@ async def bot_answer():
 
 async def bot_answer_2(case):
     # Gọi Openai
-    answer = "*Error error"
+    answer = "`Error error`"
     if not call_limit:
         try:
             answer = await openai_task(case)
         except Exception as e:
             error_message = str(e)
             if "Rate limit reached" in error_message:
-                answer = "*Please wait for me in 20s*"
+                answer = "`Error: Please wait for me in 20s`"
                 await rep_limit()
             else:
-                answer = "*Error error*"
+                answer = "`Error error`"
             print("Error OPEN-AI:", error_message)
     else:
-        answer = "*Please wait for me in 20s*"
+        answer = "`Error: Please wait for me in 20s`"
     # Lấy câu trả lời sau khi hoàn thành phản hồi từ openai
     if console_log:
         print(f"[{ai_name}]:", answer)
@@ -773,6 +774,7 @@ async def bot_answer_channel(message):
         openai_answer_channel()
     except Exception as e:
         print("Error OPEN-AI: {0}".format(e))
+        await bot_error_notice(e)
     # Lấy câu trả lời sau khi hoàn thành phản hồi từ openai
     answer = get_bot_answer_channel()
     if console_log:
@@ -787,6 +789,13 @@ async def bot_remind_answer(user, channel_id, case):
     await ai_voice_create(ai_text)
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
+
+# Báo cho user biết khi lỗi
+async def bot_error_notice(error):
+    user = await bot.fetch_user(user_id)
+    if user.dm_channel is None:
+        await user.create_dm()
+    await user.send(f"`Error {error}`")
 
 # Nhận dạng voice và trả lời lại
 async def bot_reaction_with_voice(files, message):
@@ -866,7 +875,11 @@ async def ai_voice_create(ai_text):
     else:
         lang = "en"
         translated = text_translate(ai_text, lang)
-        tts_get_en(ai_text, en_speaker)
+        try:
+            tts_get_en(ai_text, en_speaker)
+        except Exception as e:
+            print("Voice En error: {0}".format(e))
+            await bot_error_notice('Voice En gen error')
 
 # Phân loại emoji
 def emoji_split(emojis):

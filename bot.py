@@ -800,6 +800,18 @@ async def bot_continue_answer(interaction):
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
         await interaction.message.edit(view=clear_view)
         await interaction.channel.send(paragraph, view=view)
+        # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
+        skip_first_bot_message = False
+        async for message in interaction.channel.history(limit=3):
+            if message.author == bot.user:
+                if skip_first_bot_message:
+                    if message.content:
+                        await message.edit(view=None)
+                    break
+                else:
+                    # Bỏ qua tin nhắn đầu tiên của bot.user
+                    skip_first_bot_message = True
+
 
 # Báo cho user biết khi lỗi
 async def bot_error_notice(error):

@@ -5,3 +5,6 @@ translate
 langdetect
 jaconv
 customtkinter
+torch
+pydub
+numpy

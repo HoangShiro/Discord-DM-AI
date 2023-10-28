@@ -10,20 +10,20 @@ if exist %USERPROFILE%\scoop\ (
 )
 
 :step_2
+git --version > nul 2>&1
+if %errorlevel% equ 0 (
+    echo Git installed.
+) else (
+    scoop install git
+)
+
+:step_3
 python --version > nul 2>&1
 if %errorlevel% equ 0 (
     echo Python installed.
 ) else (
     scoop bucket add versions
     scoop install python311
-)
-
-:step_3
-git --version > nul 2>&1
-if %errorlevel% equ 0 (
-    echo Git installed.
-) else (
-    scoop install git
 )
 
 :step_4
@@ -51,7 +51,7 @@ if not exist ".git" (
 
 pip install -r requirements.txt
 
-py setup.py
+python setup.py
 
 start start_bot.bat
 

@@ -7,7 +7,7 @@ pip install -r requirements.txt
 
 :start_ai
 cls
-py main.py
+python main.py
 
 echo ----------------------
 echo.

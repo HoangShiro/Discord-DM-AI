@@ -26,6 +26,8 @@ if %errorlevel% equ 0 (
     scoop install python311
 )
 
+scoop install ffmpeg
+
 :step_4
 :: Sử dụng thư mục hiện tại của file batch làm thư mục gốc
 set "base_dir=%~dp0"

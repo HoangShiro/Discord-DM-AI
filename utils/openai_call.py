@@ -193,7 +193,7 @@ async def openai_task(case):
     )
     command = response['choices'][0]['message']['content']
 
-    if case == 2:
+    if case != 1:
 
         conversation.append({'role': 'assistant', 'content': command})
 

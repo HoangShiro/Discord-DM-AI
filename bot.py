@@ -633,26 +633,11 @@ async def rc_bt_atv(interaction):
     await interaction.message.edit(content=paragraph, view=view)
 
 async def ctn_bt_atv(interaction):
-    clear_view = View()
-    view = View()
-    view.add_item(rmv_bt)
-    view.add_item(rc_bt)
-    view.add_item(continue_bt)
-
     try:
         await interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
-    case = "Continue the conversation or action where you left off proactively and creatively without asking."
-    ai_text = await bot_answer_2(case)
-    if tts_toggle:
-        await ai_voice_create(ai_text)
-        await voice_message(channel_id, console_log)
-    sentences = await split_text(ai_text)
-    paragraph = "\n".join(sentence.strip() for sentence in sentences)
-    await interaction.message.edit(view=clear_view)
-    await interaction.channel.send(paragraph, view=view)
-
+    asyncio.create_task(bot_continue_answer(interaction))
 # Save json
 def vals_save(file_name, variable_name, variable_value):
     try:
@@ -760,6 +745,7 @@ async def bot_answer_2(case):
             else:
                 answer = "`Error error`"
             print("Error OPEN-AI:", error_message)
+        asyncio.create_task(count_msg())
     else:
         answer = "`Error: Please wait for me in 20s`"
     # Lấy câu trả lời sau khi hoàn thành phản hồi từ openai
@@ -789,6 +775,24 @@ async def bot_remind_answer(user, channel_id, case):
     await ai_voice_create(ai_text)
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
+
+# Tạo câu trả lời tiếp tục cho bot
+async def bot_continue_answer(interaction):
+    clear_view = View()
+    view = View()
+    view.add_item(rmv_bt)
+    view.add_item(rc_bt)
+    view.add_item(continue_bt)
+    case = "Continue the conversation or action where you left off proactively and creatively without asking."
+    async with interaction.channel.typing():
+        ai_text = await bot_answer_2(case)
+        if tts_toggle:
+            await ai_voice_create(ai_text)
+            await voice_message(channel_id, console_log)
+        sentences = await split_text(ai_text)
+        paragraph = "\n".join(sentence.strip() for sentence in sentences)
+        await interaction.message.edit(view=clear_view)
+        await interaction.channel.send(paragraph, view=view)
 
 # Báo cho user biết khi lỗi
 async def bot_error_notice(error):

@@ -627,10 +627,11 @@ async def rc_bt_atv(interaction):
     except:
         pass
     remove_near_answer()
-    ai_text = await bot_answer()
-    sentences = await split_text(ai_text)
-    paragraph = "\n".join(sentence.strip() for sentence in sentences)
-    await interaction.message.edit(content=paragraph, view=view)
+    async with interaction.channel.typing():
+        ai_text = await bot_answer()
+        sentences = await split_text(ai_text)
+        paragraph = "\n".join(sentence.strip() for sentence in sentences)
+        await interaction.message.edit(content=paragraph, view=view)
 
 async def ctn_bt_atv(interaction):
     try:
@@ -638,6 +639,7 @@ async def ctn_bt_atv(interaction):
     except:
         pass
     asyncio.create_task(bot_continue_answer(interaction))
+
 # Save json
 def vals_save(file_name, variable_name, variable_value):
     try:

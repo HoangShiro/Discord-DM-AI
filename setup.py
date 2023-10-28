@@ -243,9 +243,6 @@ server_id_label.grid(row=12, column=1)
 server_id_entry = tk.Entry(app)
 server_id_entry.grid(row=13, column=1)
 
-speaker_label = tk.Label(app, text="\nCharacter's voice setting (optional)", font=("Helvetica", 10))
-speaker_label.grid(row=14, column=0, columnspan=2)
-
 speaker_label = tk.Label(app, text="\nCharacter speaker id:")
 speaker_label.grid(row=15, column=0)
 speaker_entry = tk.Entry(app)

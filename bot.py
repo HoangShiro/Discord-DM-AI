@@ -790,7 +790,7 @@ async def bot_continue_answer(interaction):
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
-    case = "Please continue your actions."
+    case = "Please continue your actions creatively."
     async with interaction.channel.typing():
         ai_text = await bot_answer_2(case)
         if tts_toggle:

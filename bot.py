@@ -618,20 +618,11 @@ async def rmv_bt_atv(interaction):
                 break
 
 async def rc_bt_atv(interaction):
-    view = View()
-    view.add_item(rmv_bt)
-    view.add_item(rc_bt)
-    view.add_item(continue_bt)
     try:
         await interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
-    remove_near_answer()
-    async with interaction.channel.typing():
-        ai_text = await bot_answer()
-        sentences = await split_text(ai_text)
-        paragraph = "\n".join(sentence.strip() for sentence in sentences)
-        await interaction.message.edit(content=paragraph, view=view)
+    asyncio.create_task(bot_regen_answer(interaction))
 
 async def ctn_bt_atv(interaction):
     try:
@@ -777,6 +768,20 @@ async def bot_remind_answer(user, channel_id, case):
     await ai_voice_create(ai_text)
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
+
+# Tạo lại câu trả lời cho bot
+
+async def bot_regen_answer(interaction):
+    view = View()
+    view.add_item(rmv_bt)
+    view.add_item(rc_bt)
+    view.add_item(continue_bt)
+    remove_near_answer()
+    async with interaction.channel.typing():
+        ai_text = await bot_answer()
+        sentences = await split_text(ai_text)
+        paragraph = "\n".join(sentence.strip() for sentence in sentences)
+        await interaction.message.edit(content=paragraph, view=view)
 
 # Tạo câu trả lời tiếp tục cho bot
 async def bot_continue_answer(interaction):

@@ -23,9 +23,6 @@ From next time just run the file ```run.bat```
 ```
 git clone https://github.com/HoangShiro/Discord-DM-AI.git
 ```
-- Run the file ```run.bat``` and exit
-- Then run the file ```edit_info.bat``` and setting the necessary information.
-- Run the file ```run.bat```
 
 ### Setting: <br>
 ```edit_info.bat```

@@ -31,6 +31,7 @@ config_updates = {
     "discord_bot_key": '',
     "vv_key": '',
     "user_id": 0,
+    "bot_id": [0, 0],
     "server_id": 0,
     "ai_name": "Sena",
     "ai_first_name": "Watanabe",

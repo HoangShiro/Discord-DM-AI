@@ -65,7 +65,5 @@ python utils/setup.py
 
 start run.bat
 
-PAUSE
-
 :: Kết thúc script
 exit /b

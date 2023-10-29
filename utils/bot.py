@@ -1051,7 +1051,7 @@ def mood_name_change(bot_mood):
         mood_name = f"Obsessive love with {user_nick} ♥️"
 
     # Lưu lại mood vào prompt
-    with open("prompt/current_mood.txt", "w", encoding="utf-8") as f:
+    with open("user_files/prompt/current_mood.txt", "w", encoding="utf-8") as f:
         mood = f"Your current mood is: {mood_name}"
         f.write(mood)
         f.close()

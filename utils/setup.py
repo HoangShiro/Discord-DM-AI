@@ -21,19 +21,19 @@ config_updates = {
 def save_character_info():
     character_info = character_text.get(1.0, "end-1c")
     if character_info.strip():
-        with open(".\\prompt\\character.txt", "w", encoding="utf-8") as character_file:
+        with open(".\\user_files\\prompt\\character.txt", "w", encoding="utf-8") as character_file:
             character_file.write(character_info)
 
 def save_user_info():
     user_info = user_text.get(1.0, "end-1c")
     if user_info.strip():
-        with open(".\\prompt\\user.txt", "w", encoding="utf-8") as user_file:
+        with open(".\\user_files\\prompt\\user.txt", "w", encoding="utf-8") as user_file:
             user_file.write(user_info)
 
 def save_character_behavior():
     char_bv = charbv_text.get(1.0, "end-1c")
     if char_bv.strip():
-        with open(".\\prompt\\behavior.txt", "w", encoding="utf-8") as user_file:
+        with open(".\\user_files\\prompt\\behavior.txt", "w", encoding="utf-8") as user_file:
             user_file.write(char_bv)
 
 def save_config_info():
@@ -69,7 +69,7 @@ def save_config_info():
     config_updates["speed"] = int(speed)
 
     # Đọc nội dung của tệp cấu hình
-    with open(".\\utils\\config.py", "r", encoding="utf-8") as config_file:
+    with open(".\\user_files\\config.py", "r", encoding="utf-8") as config_file:
         config_contents = config_file.readlines()
 
     # Duyệt qua từng dòng trong tệp cấu hình và cập nhật giá trị nếu có
@@ -89,7 +89,7 @@ def save_config_info():
             updated_config_contents.append(line)
 
     # Ghi lại nội dung cập nhật vào tệp cấu hình
-    with open(".\\utils\\config.py", "w", encoding="utf-8") as config_file:
+    with open(".\\user_files\\config.py", "w", encoding="utf-8") as config_file:
         config_file.writelines(updated_config_contents)
 
 
@@ -97,19 +97,19 @@ def save_config_info():
 def load_config_values():
     try:
         # Đọc giá trị từ tệp character.txt và điền vào trường nhập liệu
-        with open(".\\prompt\\character.txt", "r", encoding="utf-8") as character_file:
+        with open(".\\user_files\\prompt\\character.txt", "r", encoding="utf-8") as character_file:
             character_info = character_file.read()
             character_text.delete(1.0, "end")
             character_text.insert("insert", character_info)
 
         # Đọc giá trị từ tệp user.txt và điền vào trường nhập liệu
-        with open(".\\prompt\\user.txt", "r", encoding="utf-8") as user_file:
+        with open(".\\user_files\\prompt\\user.txt", "r", encoding="utf-8") as user_file:
             user_info = user_file.read()
             user_text.delete(1.0, "end")
             user_text.insert("insert", user_info)
         
         # Đọc giá trị từ tệp behavior.txt và điền vào trường nhập liệu
-        with open(".\\prompt\\behavior.txt", "r", encoding="utf-8") as charbv_file:
+        with open(".\\user_files\\prompt\\behavior.txt", "r", encoding="utf-8") as charbv_file:
             char_bv = charbv_file.read()
             charbv_text.delete(1.0, "end")
             charbv_text.insert("insert", char_bv)
@@ -118,7 +118,7 @@ def load_config_values():
 
     # Đọc giá trị từ tệp cấu hình và điền vào các trường nhập liệu
     config_values = {}
-    with open(".\\utils\\config.py", "r", encoding="utf-8") as config_file:
+    with open(".\\user_files\\config.py", "r", encoding="utf-8") as config_file:
         config_contents = config_file.readlines()
 
     for line in config_contents:

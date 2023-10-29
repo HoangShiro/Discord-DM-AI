@@ -27,8 +27,7 @@ if %errorlevel% equ 0 (
 )
 
 :step_4
-ffmpeg > nul 2>&1
-if %errorlevel% equ 0 (
+if exist %USERPROFILE%\scoop\apps\ffmpeg\ (
     echo ffmpeg installed.
 ) else (
     scoop install ffmpeg
@@ -64,7 +63,9 @@ python user_files/config.py
 
 python utils/setup.py
 
-start start_bot.bat
+start run.bat
+
+PAUSE
 
 :: Kết thúc script
 exit /b

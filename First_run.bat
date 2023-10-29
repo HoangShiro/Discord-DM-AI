@@ -57,7 +57,10 @@ if not exist ".git" (
   git pull
 )
 
+pip install torch pydub numpy
 pip install -r requirements.txt
+
+python user_files/config.py
 
 python utils/setup.py
 

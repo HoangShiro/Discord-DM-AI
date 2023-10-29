@@ -33,7 +33,7 @@ def tts_get_en(tts, speaker):
     sample_rate = 48000
     model.save_wav(text=tts,
                     speaker=speaker,
-                    sample_rate=sample_rate, path='user_files/test.wav')
+                    sample_rate=sample_rate)
     
     input_wav_file = 'test.wav'
     output_ogg_file = 'user_files/ai_voice_msg.ogg'

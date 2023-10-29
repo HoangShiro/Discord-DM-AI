@@ -110,10 +110,10 @@ default_values = {
 
 # Kiểm tra xem tệp JSON có tồn tại không
 try:
-    with open('user_files/vals.json', 'r') as file:
+    with open('user_files/vals.json', 'r', encoding="utf-8") as file:
         data3 = json.load(file)
 except FileNotFoundError:
-    with open('user_files/vals.json', 'w') as file:
+    with open('user_files/vals.json', 'w', encoding="utf-8") as file:
         json.dump(default_values, file)
     # Nếu tệp không tồn tại, sử dụng giá trị mặc định
     data3 = default_values
@@ -637,10 +637,10 @@ async def ctn_bt_atv(interaction):
 # Save json
 def vals_save(file_name, variable_name, variable_value):
     try:
-        with open(file_name, 'r') as file:
+        with open(file_name, 'r', encoding="utf-8") as file:
             data = json.load(file)
         data[variable_name] = variable_value
-        with open(file_name, 'w') as file:
+        with open(file_name, 'w', encoding="utf-8") as file:
             json.dump(data, file)
     except FileNotFoundError:
         print(f"File '{file_name}' not found.")
@@ -650,7 +650,7 @@ def vals_save(file_name, variable_name, variable_value):
 # Load json
 def vals_load(file_name, variable_name):
     try:
-        with open(file_name, 'r') as file:
+        with open(file_name, 'r', encoding="utf-8") as file:
             data = json.load(file)
         variable_value = data[variable_name]
         return variable_value
@@ -1121,16 +1121,16 @@ def user_stt_check():
 
 # Lưu hoặc load lời nhắc
 def save_alarms_to_json(alarms):
-    with open('alarms.json', 'w') as file:
+    with open('alarms.json', 'w', encoding="utf-8") as file:
         json.dump(alarms, file, default=str)
 
 def load_alarms_from_json():
     try:
-        with open('alarms.json', 'r') as file:
+        with open('alarms.json', 'r', encoding="utf-8") as file:
             alarms = json.load(file)
     except FileNotFoundError:
         alarms = []
-        with open('alarms.json', 'w') as file:
+        with open('alarms.json', 'w', encoding="utf-8") as file:
             json.dump(alarms, file, default=str)
     return alarms
 

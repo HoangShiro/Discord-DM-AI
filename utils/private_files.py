@@ -21,7 +21,7 @@ for file_name, content in file_contents.items():
     file_path = folder_path + file_name
 
     if not os.path.exists(file_path):
-        with open(file_path, "w") as file:
+        with open(file_path, "w", encoding="utf-8") as file:
             file.write(content)
 
 # Config.py
@@ -45,12 +45,12 @@ config_file_path = "user_files/config.py"
 
 if not os.path.exists(config_file_path):
     # Nếu tệp config.py không tồn tại, tạo nó và thêm các biến
-    with open(config_file_path, "w") as config_file:
+    with open(config_file_path, "w", encoding="utf-8") as config_file:
         for key, value in config_updates.items():
             config_file.write(f"{key} = {repr(value)}\n")
 else:
     # Nếu tệp config.py đã tồn tại, kiểm tra và thêm các biến nếu chưa tồn tại
-    with open(config_file_path, "r") as config_file:
+    with open(config_file_path, "r", encoding="utf-8") as config_file:
         existing_content = config_file.read()
         for key, value in config_updates.items():
             if key not in existing_content:

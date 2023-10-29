@@ -21,7 +21,10 @@ def vals_open(file_name):
             data = json.load(file)
         return data
     except FileNotFoundError:
-        print(f"File '{file_name}' not found.")
+        conversation = []
+        history = {"history": conversation}
+        with open(file_name, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=4)
     except Exception as e:
         print(f"An error occurred: {str(e)}")    
 

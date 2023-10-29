@@ -102,7 +102,7 @@ default_values = {
     "dm_channel_id": 0,
     "voice_mode": 'ja',
     "en_speaker": 'en_18',
-    "speaker": 1,
+    "speaker": 46,
     "pitch": 0,
     "intonation_scale": 1,
     "speed": 1

@@ -8,11 +8,11 @@ Interface language: Vietnamese
 
 ## Installation
 ### Dependencies: <br>
-- ```Python```: Tested on python 3.11
-- ```Git``` (for automatic updates)
-- ```ffmpeg``` (for bot voice en)
+- Python: Tested on python 3.11
+- Git (for automatic updates)
+- ffmpeg (for bot voice en)
 
-- Libraries used in file ```requirements.txt``` and ```torch, pydub, numpy```
+- Libraries used in file requirements.txt and torch, pydub, numpy.
 
 #### One step:
 - Download and run the ```first_run.bat``` file
@@ -27,7 +27,7 @@ git clone https://github.com/HoangShiro/Discord-DM-AI.git
 - Then run the file ```edit_info.bat``` and setting the necessary information.
 - Run the file ```run.bat```
 
-### Setting <br>
+### Setting: <br>
 ```edit_info.bat```
 
 #### Prompt:

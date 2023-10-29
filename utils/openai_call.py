@@ -1,7 +1,7 @@
 import json
 import re
 from utils.promptMaker_self import getPrompt, getPrompt_task, getPrompt_channel
-from utils.config import openai_key_1, openai_key_2, ai_name
+from user_files.config import openai_key_1, openai_key_2, ai_name
 import openai
 import aiohttp
 from translate import Translator
@@ -9,10 +9,10 @@ from utils.translate import lang_detect
 
 total_characters = 0
 total_characters_channel = 0
-audio_filename = 'user_audio_msg.wav'
+audio_filename = 'user_files/user_audio_msg.wav'
 
 try:
-    with open("conversation.json", "r", encoding="utf-8") as f:
+    with open('user_files/conversation.json', "r", encoding="utf-8") as f:
         history = json.load(f)
         conversation = history.get("history", [])
 except:
@@ -21,7 +21,7 @@ except:
     history = {"history": conversation}
 
 try:
-    with open("channel_history.json", "r", encoding="utf-8") as f2:
+    with open('user_files/channel_history.json', "r", encoding="utf-8") as f2:
         history2 = json.load(f2)
         channel_history = history2.get("history", [])
 except:
@@ -69,7 +69,7 @@ def remove_bot_answer():
                 del conversation[i]
         elif conversation[i]["role"] == "user":
             remove = True  # Gặp message của user, đánh dấu để dừng lại
-    with open("conversation.json", "w", encoding="utf-8") as f:
+    with open('user_files/conversation.json', "w", encoding="utf-8") as f:
         # Write the message data to the file in JSON format
         json.dump(conversation, f, indent=4)
 
@@ -78,7 +78,7 @@ def remove_near_answer():
         if conversation[i]["role"] == "assistant":
             del conversation[i]
             break
-    with open("conversation.json", "w", encoding="utf-8") as f:
+    with open('user_files/conversation.json', "w", encoding="utf-8") as f:
         # Write the message data to the file in JSON format
         json.dump(history, f, indent=4)
 
@@ -87,7 +87,7 @@ def remove_near_user_answer():
         if conversation[i]["role"] == "user":
             del conversation[i]
             break
-    with open("conversation.json", "w", encoding="utf-8") as f:
+    with open('user_files/conversation.json', "w", encoding="utf-8") as f:
         # Write the message data to the file in JSON format
         json.dump(history, f, indent=4)
 
@@ -98,7 +98,7 @@ def remove_nearest_user_answer():
         if conversation[i]["role"] == "user":
             del conversation[i]
             break
-    with open("conversation.json", "w", encoding="utf-8") as f:
+    with open('user_files/conversation.json', "w", encoding="utf-8") as f:
         # Write the message data to the file in JSON format
         json.dump(history, f, indent=4)
 
@@ -117,7 +117,7 @@ def openai_answer():
         except Exception as e:
             print("Error removing old messages: {0}".format(e))
 
-    with open("conversation.json", "w", encoding="utf-8") as f:
+    with open('user_files/conversation.json', "w", encoding="utf-8") as f:
         # Write the message data to the file in JSON format
         json.dump(history, f, indent=4)
 
@@ -135,7 +135,7 @@ def openai_answer():
 
     conversation.append({'role': 'assistant', 'content': message})
 
-    with open("conversation.json", "w", encoding="utf-8") as f:
+    with open('user_files/conversation.json', "w", encoding="utf-8") as f:
         # Write the message data to the file in JSON format
         json.dump(history, f, indent=4)
 
@@ -154,7 +154,7 @@ def openai_answer_channel():
         except Exception as e:
             print("Error removing old messages: {0}".format(e))
 
-    with open("channel_history.json", "w", encoding="utf-8") as f2:
+    with open('user_files/channel_history.json', "w", encoding="utf-8") as f2:
         # Write the message data to the file in JSON format
         json.dump(history2, f2, indent=4)
 
@@ -174,7 +174,7 @@ def openai_answer_channel():
 
     channel_history.append({'role': 'assistant', 'content': message})
 
-    with open("channel_history.json", "w", encoding="utf-8") as f2:
+    with open('user_files/channel_history.json', "w", encoding="utf-8") as f2:
         # Write the message data to the file in JSON format
         json.dump(history2, f2, indent=4)
 
@@ -197,7 +197,7 @@ async def openai_task(case):
 
         conversation.append({'role': 'assistant', 'content': command})
 
-        with open("conversation.json", "w", encoding="utf-8") as f:
+        with open('user_files/conversation.json', "w", encoding="utf-8") as f:
         # Write the message data to the file in JSON format
             json.dump(history, f, indent=4)
 

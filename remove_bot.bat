@@ -7,7 +7,7 @@ echo Press any key to completely delete your bot.
 echo -----------------------------------------------------------
 pause
 cls
-set "bot_py_path=%~dp0\bot.py"
+set "bot_py_path=%~dp0\main.py"
 
 if exist "!bot_py_path!" (
     set "parent_dir=%~dp0"

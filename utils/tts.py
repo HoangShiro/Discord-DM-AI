@@ -1,5 +1,5 @@
 import requests
-from utils.config import *
+from user_files.config import *
 from utils.katakana import *
 import re
 import requests
@@ -21,7 +21,7 @@ def tts_get_en(tts, speaker):
 
     device = torch.device('cpu')
     torch.set_num_threads(4)
-    local_file = 'model.pt'
+    local_file = 'user_files/model.pt'
 
     if not os.path.isfile(local_file):
         torch.hub.download_url_to_file(f'https://models.silero.ai/models/tts/{lang}/{model}.pt',
@@ -35,8 +35,8 @@ def tts_get_en(tts, speaker):
                     speaker=speaker,
                     sample_rate=sample_rate)
     
-    input_wav_file = 'test.wav'
-    output_ogg_file = 'ai_voice_msg.ogg'
+    input_wav_file = 'user_files/test.wav'
+    output_ogg_file = 'user_files/ai_voice_msg.ogg'
     audio = AudioSegment.from_wav(input_wav_file)
     audio.export(output_ogg_file, format="ogg")
 
@@ -53,7 +53,7 @@ def tts_get(text, speaker, pitch, intonation_scale, speed, console_log):
     
     if response.status_code == 200:
 
-        with open('ai_voice_msg.ogg', 'wb') as f:
+        with open('user_files/ai_voice_msg.ogg', 'wb') as f:
             f.write(response.content)
         if console_log:
             print(f"Voice của {ai_name} đã được tải về thành công.")

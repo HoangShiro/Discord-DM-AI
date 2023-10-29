@@ -1,4 +1,4 @@
-import bot
+import utils.bot as bot
 import subprocess
 
 github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"

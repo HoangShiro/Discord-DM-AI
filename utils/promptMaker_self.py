@@ -30,20 +30,20 @@ def getPrompt():
     time = datetime.datetime.now(timezone)
     total_len = 0
     prompt = []
-    vals = vals_open('vals.json')
+    vals = vals_open('user_files/vals.json')
     nsfw_toggle = vals['nsfw']
 
     nsfw_text = ""
     if nsfw_toggle:
-        nsfw_text = getIdentity("prompt/nsfw.txt")
-    sys_prompt = getIdentity("prompt/sys_prompt.txt")
-    char_info = getIdentity("prompt/character.txt")
-    user_info = getIdentity("prompt/user.txt")
-    goal = getIdentity("prompt/goal.txt")
+        nsfw_text = getIdentity("user_files/prompt/nsfw.txt")
+    sys_prompt = getIdentity("user_files/prompt/sys_prompt.txt")
+    char_info = getIdentity("user_files/prompt/character.txt")
+    user_info = getIdentity("user_files/prompt/user.txt")
+    goal = getIdentity("user_files/prompt/goal.txt")
     current_time = time.strftime('%Y-%m-%d %H:%M:')
     current_time = ("Current time:", current_time)
-    current_mood = getIdentity("prompt/current_mood.txt")
-    behavior = getIdentity("prompt/behavior.txt")
+    current_mood = getIdentity("user_files/prompt/current_mood.txt")
+    behavior = getIdentity("user_files/prompt/behavior.txt")
 
     iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
     prompt.append({"role": "system", "content": iden})
@@ -76,14 +76,14 @@ def getPrompt_channel():
     total_len = 0
     prompt = []
 
-    sys_prompt = getIdentity("prompt/sys_prompt.txt")
-    char_info = getIdentity("prompt/character.txt")
-    user_info = getIdentity("prompt/user.txt")
-    friends_info = getIdentity("prompt/friends.txt")
+    sys_prompt = getIdentity("user_files/prompt/sys_prompt.txt")
+    char_info = getIdentity("user_files/prompt/character.txt")
+    user_info = getIdentity("user_files/prompt/user.txt")
+    friends_info = getIdentity("user_files/prompt/friends.txt")
     current_time = time.strftime('%Y-%m-%d %H:%M:')
     current_time = ("Current time:", current_time)
-    current_mood = getIdentity("prompt/current_mood.txt")
-    channel_behavior = getIdentity("prompt/behavior.txt")
+    current_mood = getIdentity("user_files/prompt/current_mood.txt")
+    channel_behavior = getIdentity("user_files/prompt/behavior.txt")
 
     iden = f"{sys_prompt}\n{char_info}\n{user_info}\n{friends_info}\n{current_time}\n{current_mood}\n{channel_behavior}"
     prompt.append({"role": "system", "content": iden})
@@ -117,27 +117,27 @@ def getPrompt_task(case):
     history = hist["history"]
     timezone = pytz.timezone('Asia/Bangkok')
     time = datetime.datetime.now(timezone)
-    vals = vals_open('vals.json')
+    vals = vals_open('user_files/vals.json')
     nsfw_toggle = vals['nsfw']
     nsfw_text = ""
 
     if case == 1:
-        prompt.append(getprompt_normal("prompt/mood.txt"))
+        prompt.append(getprompt_normal("user_files/prompt/mood.txt"))
         recent_history = history[-2:]
         for message in recent_history:
             prompt.append(message)
 
     else:
         if nsfw_toggle:
-            nsfw_text = getIdentity("prompt/nsfw.txt")
-        sys_prompt = getIdentity("prompt/sys_prompt.txt")
-        char_info = getIdentity("prompt/character.txt")
-        user_info = getIdentity("prompt/user.txt")
-        goal = getIdentity("prompt/goal.txt")
+            nsfw_text = getIdentity("user_files/prompt/nsfw.txt")
+        sys_prompt = getIdentity("user_files/prompt/sys_prompt.txt")
+        char_info = getIdentity("user_files/prompt/character.txt")
+        user_info = getIdentity("user_files/prompt/user.txt")
+        goal = getIdentity("user_files/prompt/goal.txt")
         current_time = time.strftime('%Y-%m-%d %H:%M:')
         current_time = ("Current time:", current_time)
-        current_mood = getIdentity("prompt/current_mood.txt")
-        behavior = getIdentity("prompt/behavior.txt")
+        current_mood = getIdentity("user_files/prompt/current_mood.txt")
+        behavior = getIdentity("user_files/prompt/behavior.txt")
 
         iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
         prompt.append({"role": "system", "content": iden})

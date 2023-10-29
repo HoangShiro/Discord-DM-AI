@@ -26,9 +26,15 @@ if %errorlevel% equ 0 (
     scoop install python311
 )
 
-scoop install ffmpeg
-
 :step_4
+ffmpeg > nul 2>&1
+if %errorlevel% equ 0 (
+    echo ffmpeg installed.
+) else (
+    scoop install ffmpeg
+)
+
+:step_5
 :: Sử dụng thư mục hiện tại của file batch làm thư mục gốc
 set "base_dir=%~dp0"
 
@@ -53,7 +59,7 @@ if not exist ".git" (
 
 pip install -r requirements.txt
 
-python setup.py
+python utils/setup.py
 
 start start_bot.bat
 

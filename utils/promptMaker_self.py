@@ -47,7 +47,7 @@ def getPrompt():
     iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{current_time}\n{current_mood}\n{behavior}"
     prompt.append({"role": "system", "content": iden})
 
-    hist = vals_open('conversation.json')
+    hist = vals_open('user_files/conversation.json')
     history = hist["history"]
     for message in history[:-1]:
         prompt.append(message)
@@ -87,7 +87,7 @@ def getPrompt_channel():
     iden = f"{sys_prompt}\n{char_info}\n{user_info}\n{friends_info}\n{current_time}\n{current_mood}\n{channel_behavior}"
     prompt.append({"role": "system", "content": iden})
 
-    hist2 = vals_open('channel_history.json')
+    hist2 = vals_open('user_files/channel_history.json')
     history2 = hist2["history"]
     for message in history2[:-1]:
         prompt.append(message)
@@ -112,7 +112,7 @@ def getPrompt_channel():
 def getPrompt_task(case):
     prompt = []
     total_len = 0
-    hist = vals_open('conversation.json')
+    hist = vals_open('user_files/conversation.json')
     history = hist["history"]
     timezone = pytz.timezone('Asia/Bangkok')
     time = datetime.datetime.now(timezone)

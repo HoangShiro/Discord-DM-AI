@@ -1,1 +1,1 @@
-You can freely edit all your files here.
+You can freely edit all your config files here or delete it to reset.

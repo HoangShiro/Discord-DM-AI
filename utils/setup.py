@@ -64,9 +64,9 @@ def save_config_info():
     if not speaker:
         speaker = 46
     config_updates["speaker"] = int(speaker)
-    config_updates["pitch"] = int(pitch)
-    config_updates["intonation_scale"] = int(intonation_scale)
-    config_updates["speed"] = int(speed)
+    config_updates["pitch"] = float(pitch)
+    config_updates["intonation_scale"] = float(intonation_scale)
+    config_updates["speed"] = float(speed)
 
     # Đọc nội dung của tệp cấu hình
     with open(".\\user_files\\config.py", "r", encoding="utf-8") as config_file:

@@ -1121,16 +1121,16 @@ def user_stt_check():
 
 # Lưu hoặc load lời nhắc
 def save_alarms_to_json(alarms):
-    with open('alarms.json', 'w', encoding="utf-8") as file:
+    with open('user_files/alarms.json', 'w', encoding="utf-8") as file:
         json.dump(alarms, file, default=str)
 
 def load_alarms_from_json():
     try:
-        with open('alarms.json', 'r', encoding="utf-8") as file:
+        with open('user_files/alarms.json', 'r', encoding="utf-8") as file:
             alarms = json.load(file)
     except FileNotFoundError:
         alarms = []
-        with open('alarms.json', 'w', encoding="utf-8") as file:
+        with open('user_files/alarms.json', 'w', encoding="utf-8") as file:
             json.dump(alarms, file, default=str)
     return alarms
 

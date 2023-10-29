@@ -35,7 +35,7 @@ def tts_get_en(tts, speaker):
                     speaker=speaker,
                     sample_rate=sample_rate, path='user_files/test.wav')
     
-    input_wav_file = 'user_files/test.wav'
+    input_wav_file = 'test.wav'
     output_ogg_file = 'user_files/ai_voice_msg.ogg'
     audio = AudioSegment.from_wav(input_wav_file)
     audio.export(output_ogg_file, format="ogg")

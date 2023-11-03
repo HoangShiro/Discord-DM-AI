@@ -42,12 +42,13 @@ def getPrompt():
     sys_prompt = getIdentity("user_files/prompt/sys_prompt.txt")
     char_info = getIdentity("user_files/prompt/character.txt")
     user_info = getIdentity("user_files/prompt/user.txt")
+    goal = getIdentity("prompt/goal.txt")
     current_time = time.strftime('%Y-%m-%d %H:%M:')
     current_time = ("Current time:", current_time)
     current_mood = getIdentity("user_files/prompt/current_mood.txt")
     behavior = getIdentity("user_files/prompt/behavior.txt")
 
-    iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{current_time}\n{current_mood}\n{behavior}"
+    iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
     prompt.append({"role": "system", "content": iden})
 
     hist = vals_open('user_files/conversation.json')
@@ -135,12 +136,13 @@ def getPrompt_task(case):
         sys_prompt = getIdentity("user_files/prompt/sys_prompt.txt")
         char_info = getIdentity("user_files/prompt/character.txt")
         user_info = getIdentity("user_files/prompt/user.txt")
+        goal = getIdentity("prompt/goal.txt")
         current_time = time.strftime('%Y-%m-%d %H:%M:')
         current_time = ("Current time:", current_time)
         current_mood = getIdentity("user_files/prompt/current_mood.txt")
         behavior = getIdentity("user_files/prompt/behavior.txt")
 
-        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{current_time}\n{current_mood}\n{behavior}"
+        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
         prompt.append({"role": "system", "content": iden})
 
         for message in history[:-1]:

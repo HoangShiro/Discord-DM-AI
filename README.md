@@ -7,26 +7,21 @@ Main file: main.py
 Interface language: Vietnamese
 
 ## Installation
-### Dependencies: <br>
+#### Dependencies: <br>
 - Python: Tested on python 3.11
 - Git (for automatic updates)
 - ffmpeg (for bot voice en)
 
 - Libraries used in file requirements.txt and torch, pydub, numpy.
 
-#### One step:
+### Method 1 - One step with run file:
 - Download and run the ```first_run.bat``` file
 
 From next time just run the file ```run.bat```
 
-#### From windows cmd:
+### Method 2 - With git:
 ```
 git clone https://github.com/HoangShiro/Discord-DM-AI.git
-```
-
-#### From host:
-```
-main.py
 ```
 
 ### Setting: <br>

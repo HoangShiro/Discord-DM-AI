@@ -24,8 +24,13 @@ From next time just run the file ```run.bat```
 git clone https://github.com/HoangShiro/Discord-DM-AI.git
 ```
 
+#### From host:
+```
+main.py
+```
+
 ### Setting: <br>
-```edit_info.bat```
+```edit_info.bat``` or ```/user_files``` folder
 
 #### Prompt:
 - Character:

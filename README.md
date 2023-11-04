@@ -19,7 +19,7 @@ Interface language: Vietnamese
 
 From next time just run the file ```run.bat```
 
-#### From git in windows cmd:
+#### From windows cmd:
 ```
 git clone https://github.com/HoangShiro/Discord-DM-AI.git
 ```

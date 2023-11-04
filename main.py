@@ -1,4 +1,3 @@
-import utils.bot as bot
 import subprocess
 
 github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"
@@ -15,8 +14,12 @@ def update_bot():
         print(f"Lỗi khi cập nhật bot từ GitHub: {e}")
 
 def start():
+    import utils.bot as bot
     bot.bot_run()
 
 if __name__ == '__main__':
     update_bot()
-    start()
+    try:
+        start()
+    except Exception as e:
+        print("Start bot error: {0}".format(e))

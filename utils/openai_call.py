@@ -126,7 +126,7 @@ def openai_answer():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=prompt,
-        max_tokens=256,
+        max_tokens=1024,
         temperature=1,
         top_p=0.9,
         timeout=20
@@ -166,7 +166,7 @@ def openai_answer_channel():
         max_tokens=128,
         temperature=1,
         top_p=0.9,
-        timeout=20
+        timeout=60
     )
     message = response['choices'][0]['message']['content']
 
@@ -186,10 +186,10 @@ async def openai_task(case):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=prompt,
-        max_tokens=128,
+        max_tokens=1024,
         temperature=1,
         top_p=0.9,
-        timeout=20
+        timeout=60
     )
     command = response['choices'][0]['message']['content']
 

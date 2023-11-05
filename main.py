@@ -6,7 +6,7 @@ github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"
 def update_bot():
     if not os.path.exists(".git"):
         # Thư mục Git chưa tồn tại, nên ta sẽ clone dự án từ GitHub
-        subprocess.run(["git", "clone", github_repo], check=True)
+        subprocess.run(["git", "clone", github_repo, "."], check=True)
     else:
         try:
             # Đảm bảo bạn đang ở trạng thái sạch, không có sự thay đổi cục bộ

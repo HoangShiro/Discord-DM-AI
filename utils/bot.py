@@ -128,6 +128,15 @@ for key, value in default_values.items():
     if key == list(default_values.keys())[-1]:
         break
 
+# Kiểm tra và thêm biến thiếu vào tệp JSON nếu cần
+for key, value in default_values.items():
+    if key not in data3:
+        data3[key] = value
+
+# Cập nhật tệp JSON với các biến mới nếu có
+with open('user_files/vals.json', 'w', encoding="utf-8") as file:
+    json.dump(data3, file)
+
 emoji_rate_percent = emoji_rate * 100
 
 

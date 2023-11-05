@@ -129,7 +129,7 @@ def getPrompt_task(case):
     time = datetime.datetime.now(timezone)
     vals = vals_open('user_files/vals.json')
     nsfw_toggle = vals['nsfw']
-    beha_down = vals ['beha_down']
+    beha_down = vals['beha_down']
     nsfw_text = ""
 
     if case == 1:

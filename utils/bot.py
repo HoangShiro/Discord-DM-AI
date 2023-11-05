@@ -520,8 +520,8 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
             vals_save('user_files/vals.json', 'en_speaker', en_speaker)
 
         if voice_mode == "ja":
-            if vspeaker > 73:
-                await interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 72.`", ephemeral=True)
+            if vspeaker > 75:
+                await interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 75.`", ephemeral=True)
                 return
             
             speaker = vspeaker

@@ -35,8 +35,8 @@ channel_id = 0
 dm_channel_id = 0
 
 rmv_bt = discord.ui.Button(label="🔆 remove", custom_id="remove", style=discord.ButtonStyle.grey)
-rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.green)
-continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.blurple)
+rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
+continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 
 user_name = "Master"
 user_nick = "user"

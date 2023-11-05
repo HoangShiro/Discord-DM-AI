@@ -83,6 +83,7 @@ public_chat = False
 public_chat_num = 2
 voice_mode = 'ja'
 en_speaker = 'en_18'
+beha_down = False
 
 default_values = {
     "bot_mood": 50.0,
@@ -105,7 +106,8 @@ default_values = {
     "speaker": 46,
     "pitch": 0,
     "intonation_scale": 1,
-    "speed": 1
+    "speed": 1,
+    "beha_down": False
 }
 
 # Kiểm tra xem tệp JSON có tồn tại không
@@ -395,6 +397,23 @@ async def chatlog(interaction: discord.Interaction):
             console_log = True
         await interaction.response.send_message(f"`Log chat ra console đã được {case}`", ephemeral=True)
         vals_save('user_files/vals.json', 'console_log', console_log)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
+# Behavior prompt mode up/down
+@bot.tree.command(name="bemode", description=f"Đổi mode behavior. Reverse: {beha_down}")
+async def bemode(interaction: discord.Interaction):
+    global beha_down
+    if interaction.user.id == user_id:
+        if beha_down:
+            case = "tắt"
+            beha_down = False
+        else:
+            case = "bật"
+            beha_down = True
+        await interaction.response.send_message(f"`Chế độ đảo behavior đã {case}`", ephemeral=True)
+        vals_save('user_files/vals.json', 'beha_down', beha_down)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

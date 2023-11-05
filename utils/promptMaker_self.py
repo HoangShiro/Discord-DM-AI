@@ -35,6 +35,9 @@ def getPrompt():
     prompt = []
     vals = vals_open('user_files/vals.json')
     nsfw_toggle = vals['nsfw']
+    beha_down = vals['beha_down']
+    hist = vals_open('user_files/conversation.json')
+    history = hist["history"]
 
     nsfw_text = ""
     if nsfw_toggle:
@@ -48,15 +51,19 @@ def getPrompt():
     current_mood = getIdentity("user_files/prompt/current_mood.txt")
     behavior = getIdentity("user_files/prompt/behavior.txt")
 
-    iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
-    prompt.append({"role": "system", "content": iden})
-
-    hist = vals_open('user_files/conversation.json')
-    history = hist["history"]
-    for message in history[:-1]:
-        prompt.append(message)
-
-    prompt.append(history[-1])
+    if not beha_down:
+        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
+        prompt.append({"role": "system", "content": iden})
+        for message in history[:-1]:
+            prompt.append(message)
+        prompt.append(history[-1])
+    else:
+        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}"
+        prompt.append({"role": "system", "content": iden})
+        for message in history[:-1]:
+            prompt.append(message)
+        prompt.append(history[-1])
+        prompt.append({"role": "system", "content": behavior})
 
     total_len = sum(len(d['content']) for d in prompt)
     
@@ -122,6 +129,7 @@ def getPrompt_task(case):
     time = datetime.datetime.now(timezone)
     vals = vals_open('user_files/vals.json')
     nsfw_toggle = vals['nsfw']
+    beha_down = vals ['beha_down']
     nsfw_text = ""
 
     if case == 1:
@@ -141,25 +149,30 @@ def getPrompt_task(case):
         current_time = ("Current time:", current_time)
         current_mood = getIdentity("user_files/prompt/current_mood.txt")
         behavior = getIdentity("user_files/prompt/behavior.txt")
+        if not beha_down:
+            iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
+            prompt.append({"role": "system", "content": iden})
+            for message in history[:-1]:
+                prompt.append(message)
+            prompt.append(history[-1])
+            prompt.append({"role": "system", "content": case})
+        else:
+            iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}"
+            prompt.append({"role": "system", "content": iden})
+            for message in history[:-1]:
+                prompt.append(message)
+            prompt.append(history[-1])
+            prompt.append({"role": "system", "content": behavior})
 
-        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
-        prompt.append({"role": "system", "content": iden})
-
-        for message in history[:-1]:
-            prompt.append(message)
-
-        prompt.append(history[-1])
 
         total_len = sum(len(d['content']) for d in prompt)
         
-        while total_len > 3900:
+        while total_len > 4000:
             try:
                 prompt.pop(2)
                 total_len = sum(len(d['content']) for d in prompt)
             except:
                 print("Error: Prompt too long!")
-
-        prompt.append({"role": "system", "content": case})
 
     return prompt
 

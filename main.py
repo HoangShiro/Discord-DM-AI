@@ -12,7 +12,7 @@ def update_bot():
         
     except Exception as e:
         print(f"Lỗi khi cập nhật bot từ GitHub: {e}")
-        subprocess.run(["git", "clone"], check=True)
+        subprocess.run(["git", "clone", f"{github_repo}"], check=True)
 
 def start():
     import utils.bot as bot

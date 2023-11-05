@@ -937,72 +937,72 @@ def emoji_split(emojis):
 
 # Hiểu và thực thi các task theo câu trả lời
 async def bot_tasks(message):
-    # Mood check
-    mood = 0
-    emoji = "\U0001F496"
-    case = 1
-    answ = "mood: 0"
-    try:
-        answ = await openai_task(case)
-    except Exception as e:
-        print("Error OPEN-AI while detect mood: {0}".format(e))
-    pattern = r'-?\d+'
-    matches = re.findall(pattern, answ)
-    if matches:
-        mood = matches[0]
-    else:
+    if emoji_rate != 0:
+        # Mood check
         mood = 0
-    await mood_change(mood)
-    # Schedule
-    case = 2
+        emoji = "\U0001F496"
+        case = 1
+        answ = "mood: 0"
+        try:
+            answ = await openai_task(case)
+        except Exception as e:
+            print("Error OPEN-AI while detect mood: {0}".format(e))
+        pattern = r'-?\d+'
+        matches = re.findall(pattern, answ)
+        if matches:
+            mood = matches[0]
+        else:
+            mood = 0
+        await mood_change(mood)
+        # Schedule
+        case = 2
 
-    # Emoji reaction
-    mood = int(mood)
-    if mood < -8:
-        if emoji_angry:
-            emoji = random.choice(emoji_angry)
-    if -9 < mood < -6:
-        if emoji_stress:
-            emoji = random.choice(emoji_stress)
-    if -7 < mood < -4:
-        if emoji_sad:
-            emoji = random.choice(emoji_sad)
-    if mood == -1:
-        if emoji_think:
-            emoji = random.choice(emoji_think)
-    if mood == 1:
-        if emoji_stare:
-            emoji = random.choice(emoji_stare)
-    if 1 < mood < 4:
-        if emoji_sup:
-            emoji = random.choice(emoji_sup)
-    if 3 < mood < 6:
-        if emoji_happy:
-            emoji = random.choice(emoji_happy)
-    if 5 < mood < 8:
-        if emoji_hype:
-            emoji = random.choice(emoji_hype)
-    if 7 < mood < 10:
-        if emoji_love:
-            emoji = random.choice(emoji_love)
-    if mood == 10:
-        if emoji_kiss:
-            emoji = random.choice(emoji_kiss)
-    if mood == 0:
-        if emoji_random:
-            emoji = random.choice(emoji_random)
-        
+        # Emoji reaction
+        mood = int(mood)
+        if mood < -8:
+            if emoji_angry:
+                emoji = random.choice(emoji_angry)
+        if -9 < mood < -6:
+            if emoji_stress:
+                emoji = random.choice(emoji_stress)
+        if -7 < mood < -4:
+            if emoji_sad:
+                emoji = random.choice(emoji_sad)
+        if mood == -1:
+            if emoji_think:
+                emoji = random.choice(emoji_think)
+        if mood == 1:
+            if emoji_stare:
+                emoji = random.choice(emoji_stare)
+        if 1 < mood < 4:
+            if emoji_sup:
+                emoji = random.choice(emoji_sup)
+        if 3 < mood < 6:
+            if emoji_happy:
+                emoji = random.choice(emoji_happy)
+        if 5 < mood < 8:
+            if emoji_hype:
+                emoji = random.choice(emoji_hype)
+        if 7 < mood < 10:
+            if emoji_love:
+                emoji = random.choice(emoji_love)
+        if mood == 10:
+            if emoji_kiss:
+                emoji = random.choice(emoji_kiss)
+        if mood == 0:
+            if emoji_random:
+                emoji = random.choice(emoji_random)
 
-    # Reaction emoji vào chat của user, tỷ lệ dựa theo mood
-    probability = sigmoid(mood)
-    threshold = 0.1 + (emoji_rate * probability)
-    if random.uniform(0, 1) < threshold:
-        async for prev_message in message.channel.history(limit=10):
-            if prev_message.author.id == user_id:
-                await prev_message.add_reaction(emoji)
-                if console_log:
-                    print("Emoji reaction:", emoji)
-                break
+        # Reaction emoji vào chat của user, tỷ lệ dựa theo mood
+        probability = sigmoid(mood)
+        threshold = 0.1 + (emoji_rate * probability)
+        if random.uniform(0, 1) < threshold:
+            async for prev_message in message.channel.history(limit=10):
+                if prev_message.author.id == user_id:
+                    await prev_message.add_reaction(emoji)
+                    if console_log:
+                        print("Emoji reaction:", emoji)
+                    break
 
 # Maybe for gacha?
 def sigmoid(x):

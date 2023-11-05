@@ -1,18 +1,21 @@
 import subprocess
+import os
 
 github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"
 
 def update_bot():
-    try:
-        # Đảm bảo bạn đang ở trạng thái sạch, không có sự thay đổi cục bộ
-        subprocess.run(["git", "reset", "--hard", "HEAD"], check=True)
+    if not os.path.exists(".git"):
+        # Thư mục Git chưa tồn tại, nên ta sẽ clone dự án từ GitHub
+        subprocess.run(["git", "clone", github_repo], check=True)
+    else:
+        try:
+            # Đảm bảo bạn đang ở trạng thái sạch, không có sự thay đổi cục bộ
+            subprocess.run(["git", "reset", "--hard", "HEAD"], check=True)
 
-        # Lấy phiên bản mới nhất từ kho GitHub
-        subprocess.run(["git", "pull", "origin", "main"], check=True)
-        
-    except Exception as e:
-        print(f"Lỗi khi cập nhật bot từ GitHub: {e}")
-        subprocess.run(["git", "clone", f"{github_repo}"], check=True)
+            # Lấy phiên bản mới nhất từ kho GitHub
+            subprocess.run(["git", "pull", "origin", "main"], check=True)
+        except Exception as e:
+            print(f"Lỗi khi cập nhật bot từ GitHub: {e}")
 
 def start():
     import utils.bot as bot

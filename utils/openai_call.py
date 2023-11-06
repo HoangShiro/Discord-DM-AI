@@ -1,5 +1,4 @@
 import json
-import requests
 import re
 from utils.promptMaker_self import getPrompt, getPrompt_task, getPrompt_channel
 from user_files.config import openai_key_1, openai_key_2, ai_name
@@ -236,17 +235,7 @@ async def openai_images(prompt):
         response_format="url"
     )
     image_url = response.data[0].url
-    image_data = requests.get(image_url)
-
-    if image_data.status_code == 200:
-        # Đặt tên cho tệp ảnh bạn muốn lưu
-        file_name = "/user_files/image_gen.png"
-
-        # Mở tệp và ghi dữ liệu ảnh vào đó
-        with open(file_name, 'wb') as f:
-            f.write(image_data.content)
-    else:
-        print("Không thể tải ảnh từ URL")
+    return image_url
 
 # Hàm xoá cuộc trò chuyện
 def clear_conversation_history():

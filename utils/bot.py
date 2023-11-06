@@ -619,9 +619,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         embed = discord.Embed(title=f"Image đang được tạo... {emoji}", color=discord.Color.blue())
         view = View()
         view.add_item(rmv_bt)
-        sent_msg = await interaction.response.send_message(embed=embed, view=view)
-        print(sent_msg)
-        img_id = sent_msg.id
+        await interaction.response.send_message(embed=embed, view=view)
         mess = f"*Sent {user_nick} an image: {prompt}*"
         his = get_bot_answer()
         if his:
@@ -635,6 +633,8 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         embed.set_image(url=image_url)
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):
+            img_id = message.id
+            print(img_id)
             await message.edit(embed=embed)
     else:
         randaw = noperm_answ()

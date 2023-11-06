@@ -2,7 +2,7 @@ import json
 import re
 from utils.promptMaker_self import getPrompt, getPrompt_task, getPrompt_channel
 from user_files.config import openai_key_1, openai_key_2, ai_name
-import openai
+from openai import AsyncOpenAI, OpenAI
 import aiohttp
 from translate import Translator
 from utils.translate import lang_detect
@@ -105,7 +105,7 @@ def remove_nearest_user_answer():
 # Lấy câu trả lời từ OpenAI dành cho chat
 async def openai_answer():
     global total_characters, conversation
-    openai.api_key = openai_key_1
+    client = AsyncOpenAI(api_key=openai_key_1)
     total_characters = sum(len(d['content']) for d in conversation)
 
     while total_characters > 4000:
@@ -121,7 +121,7 @@ async def openai_answer():
 
     prompt = getPrompt()
 
-    response = await openai.ChatCompletion.acreate(
+    response = await client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=prompt,
         max_tokens=1024,
@@ -140,7 +140,7 @@ async def openai_answer():
 # Lấy câu trả lời từ OpenAI dành cho chat trong channel
 def openai_answer_channel():
     global total_characters_channel, channel_history
-    openai.api_key = openai_key_1
+    client = OpenAI(api_key=openai_key_1)
     total_characters_channel = sum(len(d['content']) for d in channel_history)
 
     while total_characters_channel > 4000:
@@ -158,7 +158,7 @@ def openai_answer_channel():
 
     prompt = getPrompt_channel()
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=prompt,
         max_tokens=128,
@@ -178,10 +178,10 @@ def openai_answer_channel():
 
 # Lấy câu trả lời từ OpenAI dành cho tasks
 async def openai_task(case):
-    openai.api_key = openai_key_2
+    client = AsyncOpenAI(api_key=openai_key_2)
     prompt = getPrompt_task(case)
 
-    response = await openai.ChatCompletion.acreate(
+    response = await client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=prompt,
         max_tokens=1024,
@@ -203,7 +203,7 @@ async def openai_task(case):
 
 # Chuyển đổi voice của user thành văn bản (STT)
 async def openai_audio(audio_url):
-    openai.api_key = openai_key_1
+    client = AsyncOpenAI(api_key=openai_key_1)
     async with aiohttp.ClientSession() as session:
         async with session.get(audio_url.url) as resp:
             tar_lang = lang_detect(get_bot_answer())
@@ -212,7 +212,7 @@ async def openai_audio(audio_url):
                     f.write(await resp.read())
                 # Thực hiện xử lý file âm thanh bằng OpenAI
                 with open(audio_filename, 'rb') as audio_file:
-                    transcript = openai.Audio.translate("whisper-1", file=audio_file)
+                    transcript = client.audio.translations("whisper-1", file=audio_file)
                 result = transcript.text
                 sour_lang = lang_detect(result)
                 if sour_lang != tar_lang:

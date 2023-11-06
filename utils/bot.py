@@ -274,8 +274,8 @@ async def on_message(message):
             if message.content:
                 task_busy_with_user = True
                 result = message.content
-                loop = asyncio.get_event_loop()
-                await loop.run_in_executor(None, lambda: threading.Thread(target=answer_send, args=(message, result)).start())
+                t = threading.Thread(target=run_answer_send, args=(message, result))
+                t.start()
                 #asyncio.create_task(answer_send(message, result))
                 task_busy_with_user = False
 
@@ -308,6 +308,10 @@ async def on_message(message):
     # Tiếp tục thực thi các command
     #await bot.process_commands(message)
 
+def run_answer_send(message, result):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(answer_send(message, result))
 
 # Bot restart
 @bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")

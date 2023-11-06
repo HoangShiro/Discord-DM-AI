@@ -904,7 +904,8 @@ async def msg_send(message, text):
         continue_bt.callback = ctn_bt_atv
         message_sent = await message.channel.send(paragraph, view=view)
         skip_first_bot_message = False
-        async for message in message.channel.history(limit=10):
+        async for message in message.channel.history(limit=6):
+            time.sleep(0.5)
             if message.author == bot.user:
                 if skip_first_bot_message:
                     if message.content:

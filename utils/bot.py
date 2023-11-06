@@ -340,7 +340,6 @@ async def new_pchat(interaction: discord.Interaction):
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
-
 # Tạo lại câu trả lời
 @bot.tree.command(name="delchat", description=f"Xoá chat của {ai_name}.")
 async def answer_regen(interaction: discord.Interaction):
@@ -843,7 +842,6 @@ async def bot_continue_answer(interaction):
                     # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
 
-
 # Báo cho user biết khi lỗi
 async def bot_error_notice(error):
     user = await bot.fetch_user(user_id)
@@ -905,7 +903,16 @@ async def msg_send(message, text):
         rmv_bt.callback = rmv_bt_atv
         continue_bt.callback = ctn_bt_atv
         message_sent = await message.channel.send(paragraph, view=view)
-
+        skip_first_bot_message = False
+        async for message in message.channel.history(limit=4):
+            if message.author == bot.user:
+                if skip_first_bot_message:
+                    if message.content:
+                        await message.edit(view=None)
+                    break
+                else:
+                    # Bỏ qua tin nhắn đầu tiên của bot.user
+                    skip_first_bot_message = True
         asyncio.create_task(count_msg())
 
 async def msg_send_channel(message, text):

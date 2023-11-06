@@ -823,7 +823,7 @@ async def bot_continue_answer(interaction):
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
         await interaction.message.edit(view=clear_view)
         if "`Error error`" in paragraph:
-            await interaction.response.send_message(paragraph, view=view, ephemeral=True)
+            pass
         else:
             await interaction.channel.send(paragraph, view=view)
         # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
@@ -900,8 +900,7 @@ async def msg_send(message, text):
         rmv_bt.callback = rmv_bt_atv
         continue_bt.callback = ctn_bt_atv
         if "`Error error`" in paragraph:
-            await message.channel.send(paragraph, view=view)
-            await message.edit(content=paragraph, ephemeral=True)
+            pass
         else:
             await message.channel.send(paragraph, view=view)
         skip_first_bot_message = False

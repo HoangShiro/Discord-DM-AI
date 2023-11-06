@@ -274,7 +274,7 @@ async def on_message(message):
             if message.content:
                 task_busy_with_user = True
                 result = message.content
-                await threading.Thread(target=answer_send, args=(message, result)).start()
+                threading.Thread(target=chat_answer, args=(message, result)).start()
                 #asyncio.create_task(answer_send(message, result))
                 task_busy_with_user = False
 
@@ -307,6 +307,8 @@ async def on_message(message):
     # Tiếp tục thực thi các command
     #await bot.process_commands(message)
 
+def chat_answer(message, result):
+    asyncio.create_task(answer_send(message, result))
 
 # Bot restart
 @bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")

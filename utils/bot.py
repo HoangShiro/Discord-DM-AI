@@ -1,6 +1,7 @@
 #♥️♥️
 
 import discord
+import threading
 from discord.ext import commands, tasks
 from discord import app_commands
 from discord.ui import View, button
@@ -273,7 +274,9 @@ async def on_message(message):
             if message.content:
                 task_busy_with_user = True
                 result = message.content
-                asyncio.create_task(answer_send(message, result))
+                thread = threading.Thread(target=answer_send(message, result))
+                thread.start()
+                #asyncio.create_task(answer_send(message, result))
                 task_busy_with_user = False
 
             # Trường hợp là tệp đính kèm:

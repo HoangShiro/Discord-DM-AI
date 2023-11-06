@@ -823,8 +823,7 @@ async def bot_continue_answer(interaction):
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
         await interaction.message.edit(view=clear_view)
         if "`Error error`" in paragraph:
-            await interaction.channel.send(paragraph, view=view)
-            await interaction.message.edit(content=paragraph, ephemeral=True)
+            await interaction.response.send_message(paragraph, view=view, ephemeral=True)
         else:
             await interaction.channel.send(paragraph, view=view)
         # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user

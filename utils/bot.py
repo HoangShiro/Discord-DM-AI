@@ -272,10 +272,10 @@ async def on_message(message):
             message = now_msg
             # Trường hợp là văn bản:
             if message.content:
-                task_busy_with_user = True
                 result = message.content
-                asyncio.create_task(answer_send(message, result))
-                task_busy_with_user = False
+                if task_busy_with_user:
+                    task.cancel()
+                task = asyncio.create_task(answer_send(message, result))
 
             # Trường hợp là tệp đính kèm:
             elif message.attachments:
@@ -704,14 +704,17 @@ async def delete_messages(interaction, limit):
 
 # Gửi câu trả lời của bot vào channel
 async def answer_send(message, result):
+    global task_busy_with_user
     asyncio.create_task(count_msg())
     user_answer(result)
     if console_log:
         print()
         print(result)
     async with message.channel.typing():
+        task_busy_with_user = True
         ai_text = await bot_answer()
         await msg_send(message, ai_text)
+        task_busy_with_user = False
     asyncio.create_task(bot_tasks(message))
 
 # Gửi câu trả lời của bot vào channel chung

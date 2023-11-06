@@ -36,6 +36,7 @@ channel_id = 0
 dm_channel_id = 0
 
 rmv_bt = discord.ui.Button(label="🔆 remove", custom_id="remove", style=discord.ButtonStyle.grey)
+irmv_bt = discord.ui.Button(label="🔆 remove", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 
@@ -181,6 +182,7 @@ async def on_ready():
     view.add_item(continue_bt)
     rc_bt.callback = rc_bt_atv
     rmv_bt.callback = rmv_bt_atv
+    irmv_bt.callback = irmv_bt_atv
     continue_bt.callback = ctn_bt_atv
     async for message in channel.history(limit=3):
         if message.author == bot.user:
@@ -618,7 +620,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         emoji = random.choice(emojis)
         embed = discord.Embed(title=f"Image đang được tạo... {emoji}", color=discord.Color.blue())
         view = View()
-        view.add_item(rmv_bt)
+        view.add_item(irmv_bt)
         await interaction.response.send_message(embed=embed, view=view)
         mess = f"*Sent {user_nick} an image: {prompt}*"
         his = get_bot_answer()
@@ -634,13 +636,19 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):
             img_id = message.id
-            print(img_id)
             await message.edit(embed=embed)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Button call
+async def irmv_bt_atv(interaction):
+    try:
+        await interaction.response.send_message(f" ", delete_after = 0)
+    except:
+        pass
+    await interaction.message.delete()
+
 async def rmv_bt_atv(interaction):
     try:
         await interaction.response.send_message(f" ", delete_after = 0)

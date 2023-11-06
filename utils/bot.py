@@ -274,6 +274,7 @@ async def on_message(message):
                 task_busy_with_user = True
                 result = message.content
                 asyncio.create_task(answer_send(message, result))
+                print("TEST")
                 task_busy_with_user = False
 
             # Trường hợp là tệp đính kèm:

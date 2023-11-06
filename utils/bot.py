@@ -146,11 +146,11 @@ print()
 
 # Bot Greeting
 @bot.event
-async def on_ready():
+def on_ready():
     print(f"{bot.user.name} đã kết nối tới Discord!")
     # Đồng bộ hoá commands
     try:
-        synced = await bot.tree.sync()
+        synced = bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(e)
@@ -163,13 +163,13 @@ async def on_ready():
     time_check.start()
 
     global alarms
-    await member_info()
+    member_info()
     alarms = load_alarms_from_json()
     
 
-    user = await bot.fetch_user(user_id)
+    user = bot.fetch_user(user_id)
     if user.dm_channel is None:
-        await user.create_dm()
+        user.create_dm()
     dm_channel_id = user.dm_channel.id
     channel = bot.get_channel(dm_channel_id)
 
@@ -180,24 +180,24 @@ async def on_ready():
     rc_bt.callback = rc_bt_atv
     rmv_bt.callback = rmv_bt_atv
     continue_bt.callback = ctn_bt_atv
-    async for message in channel.history(limit=3):
+    for message in channel.history(limit=3):
         if message.author == bot.user:
             if message.content:
-                await message.edit(view=view)
+                message.edit(view=view)
                 break
     print()
 
 # Check typing
 
 @client.event
-async def on_typing(channel, user, when):
+def on_typing(channel, user, when):
     global chat_wait
     if user.id in bot_id:
         chat_wait = True
 
 # AI Chat
 @bot.event
-async def on_message(message):
+def on_message(message):
     global channel_id, task_busy_with_user, task_busy_with_another, public_chat_num, chat_wait, dm_channel_id
     # Bỏ qua nếu tin nhắn là bot hoặc không phải user được chỉ định
     #if message.author == bot.user:
@@ -224,9 +224,9 @@ async def on_message(message):
             channel_id = message.channel.id
             vals_save('user_files/vals.json', 'channel_id', channel_id)
             if message.content:
-                async with message.channel.typing():
+                with message.channel.typing():
                     asyncio.create_task(bot_answer_channel(message))
-                #await answer_send_channel(message, result)
+                #answer_send_channel(message, result)
             elif message.attachments:
                 file_names = []
                 file_lists = []
@@ -250,11 +250,11 @@ async def on_message(message):
             # Nếu đang reply thì bỏ qua
             if task_busy_with_user:
                 busy_text = f"_Đợi chút {ai_name} đang reply..._"
-                await message.channel.send(busy_text)
+                message.channel.send(busy_text)
                 return
             elif task_busy_with_another:
                 busy_text = f"_{ai_name} đang bận reply ai đó..._"
-                await message.channel.send(busy_text)
+                message.channel.send(busy_text)
                 return
             dm_channel_id = message.channel.id
             vals_save('user_files/vals.json', 'dm_channel_id', dm_channel_id)
@@ -264,17 +264,19 @@ async def on_message(message):
             # Xoá button cũ
             rmv_view = View()
             now_msg = message
-            async for message in message.channel.history(limit=3):
+            for message in message.channel.history(limit=3):
                 if message.author == bot.user:
                     if message.content:
-                        await message.edit(view=rmv_view)
+                        message.edit(view=rmv_view)
                         break
             message = now_msg
             # Trường hợp là văn bản:
             if message.content:
                 task_busy_with_user = True
                 result = message.content
-                asyncio.create_task(answer_send(message, result))
+                thread = threading.Thread(target=answer_send(message, result))
+                thread.start()
+                #asyncio.create_task(answer_send(message, result))
                 task_busy_with_user = False
 
             # Trường hợp là tệp đính kèm:
@@ -304,64 +306,64 @@ async def on_message(message):
                 task_busy_with_user = False
             #asyncio.create_task(bot_tasks(message))
     # Tiếp tục thực thi các command
-    #await bot.process_commands(message)
+    #bot.process_commands(message)
 
 
 # Bot restart
 @bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")
-async def renew(interaction: discord.Interaction):
+def renew(interaction: discord.Interaction):
     if interaction.user.id == user_id:
-        await interaction.response.send_message(f"`{ai_name} sẽ quay lại ngay sau 3s...`", ephemeral=True)
-        await bot.close()
+        interaction.response.send_message(f"`{ai_name} sẽ quay lại ngay sau 3s...`", ephemeral=True)
+        bot.close()
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Cuộc trò chuyện mới
 @bot.tree.command(name="newchat", description="Cuộc trò chuyện mới.")
-async def newchat(interaction: discord.Interaction):
+def newchat(interaction: discord.Interaction):
     global bot_mood
     if interaction.user.id == user_id:
         clear_conversation_history()
         bot_mood = 50
         vals_save('user_files/vals.json', 'bot_mood', bot_mood)
 
-        await interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện.`", ephemeral=True)
+        interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện.`", ephemeral=True)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Cuộc trò chuyện mới trong server
 @bot.tree.command(name="clearchat", description="Cuộc trò chuyện public mới.")
-async def new_pchat(interaction: discord.Interaction):
+def new_pchat(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         clear_conversation_history_public()
-        await interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện public.`", ephemeral=True)
+        interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện public.`", ephemeral=True)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Tạo lại câu trả lời
 @bot.tree.command(name="delchat", description=f"Xoá chat của {ai_name}.")
-async def answer_regen(interaction: discord.Interaction):
+def answer_regen(interaction: discord.Interaction):
     if interaction.user.id == user_id:
-        await interaction.response.send_message(f"_{ai_name} đang xoá chat..._", delete_after = 1)
+        interaction.response.send_message(f"_{ai_name} đang xoá chat..._", delete_after = 1)
         if console_log:
             print(f"Đang xoá các tin nhắn của {ai_name}...")
         # Xác định số lượng tin nhắn của bot cần xoá
         limit = 0
-        async for message in interaction.channel.history():
+        for message in interaction.channel.history():
             if message.author == bot.user:
                 limit += 1
             elif message.author == interaction.user:
                 break
         if limit != 0:
-            await delete_messages(interaction, limit)
+            delete_messages(interaction, limit)
             # Xoá câu trả lời trước đó
         remove_bot_answer()
-        user = await bot.fetch_user(user_id)
+        user = bot.fetch_user(user_id)
         if user.dm_channel is None:
-            await user.create_dm()
+            user.create_dm()
         dm_channel_id = user.dm_channel.id
         channel = bot.get_channel(dm_channel_id)
 
@@ -372,30 +374,30 @@ async def answer_regen(interaction: discord.Interaction):
         rc_bt.callback = rc_bt_atv
         rmv_bt.callback = rmv_bt_atv
         continue_bt.callback = ctn_bt_atv
-        async for message in channel.history(limit=3):
+        for message in channel.history(limit=3):
             if message.author == bot.user:
                 if message.content:
-                    await message.edit(view=view)
+                    message.edit(view=view)
                     break
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Check user status
 @bot.tree.command(name="status", description=f"Trạng thái hoạt động của {user_nick}.")
-async def us_status(interaction: discord.Interaction):
+def us_status(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         user_stt = "offline"
         # Check user_stt status
         user_stt = user_stt_check()
-        await interaction.response.send_message(f"`trạng thái hoạt động của {user_nick} là {user_stt}`", ephemeral=True)
+        interaction.response.send_message(f"`trạng thái hoạt động của {user_nick} là {user_stt}`", ephemeral=True)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Chat log
 @bot.tree.command(name="chatlog", description=f"Hiển thị log chat ra console. Total chat: {total_msg}")
-async def chatlog(interaction: discord.Interaction):
+def chatlog(interaction: discord.Interaction):
     global console_log
     if interaction.user.id == user_id:
         if console_log:
@@ -404,15 +406,15 @@ async def chatlog(interaction: discord.Interaction):
         else:
             case = "bật"
             console_log = True
-        await interaction.response.send_message(f"`Log chat ra console đã được {case}`", ephemeral=True)
+        interaction.response.send_message(f"`Log chat ra console đã được {case}`", ephemeral=True)
         vals_save('user_files/vals.json', 'console_log', console_log)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Behavior prompt mode up/down
 @bot.tree.command(name="bemode", description=f"Đổi mode behavior. Reverse: {beha_down}")
-async def bemode(interaction: discord.Interaction):
+def bemode(interaction: discord.Interaction):
     global beha_down
     if interaction.user.id == user_id:
         if beha_down:
@@ -421,15 +423,15 @@ async def bemode(interaction: discord.Interaction):
         else:
             case = "bật"
             beha_down = True
-        await interaction.response.send_message(f"`Chế độ đảo behavior đã {case}`", ephemeral=True)
+        interaction.response.send_message(f"`Chế độ đảo behavior đã {case}`", ephemeral=True)
         vals_save('user_files/vals.json', 'beha_down', beha_down)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Thay đổi tỷ lệ tương tác emoji
 @bot.tree.command(name="erate", description=f"Tỷ lệ tương tác emoji của {ai_name}: {emoji_rate_percent}%")
-async def emo_rate(interaction: discord.Interaction, rate: int):
+def emo_rate(interaction: discord.Interaction, rate: int):
     global emoji_rate
     if interaction.user.id == user_id:
         if rate == 0:
@@ -444,17 +446,17 @@ async def emo_rate(interaction: discord.Interaction, rate: int):
             pass
         if 0 <= rate <= 100:
             emoji_rate = rate / 100.0  # Chuyển đổi giá trị từ 0-100 thành 0-0.9
-            await interaction.response.send_message(f"`{ai_name} {case}`", ephemeral=True)
+            interaction.response.send_message(f"`{ai_name} {case}`", ephemeral=True)
             vals_save('user_files/vals.json', 'emoji_rate', emoji_rate)
         else:
-            await interaction.response.send_message("`Hãy nhập giá trị từ 0 đến 100.`")
+            interaction.response.send_message("`Hãy nhập giá trị từ 0 đến 100.`")
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Lưu lời nhắc
 @bot.tree.command(name="remind", description=f"Nhắc {user_nick} khi tới giờ.")
-async def reminder(interaction: discord.Interaction, note: str, time: str, date: str = None):
+def reminder(interaction: discord.Interaction, note: str, time: str, date: str = None):
     if interaction.user.id == user_id:
         try:
             current_date = datetime.datetime.now()
@@ -470,46 +472,46 @@ async def reminder(interaction: discord.Interaction, note: str, time: str, date:
             if date == None:
                 date = ""
             save_alarms_to_json(alarms)
-            await interaction.response.send_message(f"`{ai_name} sẽ nhắc {user_nick} {note} vào {time} {date}.`", ephemeral=True)
+            interaction.response.send_message(f"`{ai_name} sẽ nhắc {user_nick} {note} vào {time} {date}.`", ephemeral=True)
         except ValueError:
-            await interaction.response.send_message('`Định dạng ngày hoặc thời gian không hợp lệ. Hãy sử dụng định dạng "DD/MM" cho ngày và "H:M" cho thời gian`')
+            interaction.response.send_message('`Định dạng ngày hoặc thời gian không hợp lệ. Hãy sử dụng định dạng "DD/MM" cho ngày và "H:M" cho thời gian`')
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Danh sách lời nhắc
 @bot.tree.command(name="remindlist", description=f"Danh sách lời nhắc.")
-async def reminder_list(interaction: discord.Interaction):
+def reminder_list(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         if not alarms:
-            await interaction.response.send_message('`Hiện không có lời nhắc nào.`', ephemeral=True)
+            interaction.response.send_message('`Hiện không có lời nhắc nào.`', ephemeral=True)
         else:
             alarm_list = '\n'.join([f'{index}: {alarm[0]} - {alarm[1]}' for index, alarm in enumerate(alarms)])
-            await interaction.response.send_message(f'```Danh sách lời nhắc:\n{alarm_list}```', ephemeral=True)
+            interaction.response.send_message(f'```Danh sách lời nhắc:\n{alarm_list}```', ephemeral=True)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Xoá lời nhắc
 @bot.tree.command(name="remindremove", description=f"Xóa lời nhắc cho {user_nick}.")
-async def reminder_remover(interaction: discord.Interaction, index: int):
+def reminder_remover(interaction: discord.Interaction, index: int):
     if interaction.user.id == user_id:
         if index < 0 or index >= len(alarms):
-            await interaction.response.send_message('`Lời nhắc không tồn tại.`', ephemeral=True)
+            interaction.response.send_message('`Lời nhắc không tồn tại.`', ephemeral=True)
             return
         
         removed_alarm = alarms.pop(index)
         
         save_alarms_to_json(alarms)
         
-        await interaction.response.send_message(f"`{ai_name} đã xóa lời nhắc cho {user_nick}: {removed_alarm[1]} vào {removed_alarm[0]}.`", ephemeral=True)
+        interaction.response.send_message(f"`{ai_name} đã xóa lời nhắc cho {user_nick}: {removed_alarm[1]} vào {removed_alarm[0]}.`", ephemeral=True)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Đổi mode voice chat
 @bot.tree.command(name="vchat", description=f"Ngôn ngữ voice chat của {ai_name}: [{voice_mode}].")
-async def voice_chat(interaction: discord.Interaction, language: str = None):
+def voice_chat(interaction: discord.Interaction, language: str = None):
     global tts_toggle, voice_mode, en_speaker
     if interaction.user.id == user_id:
         text = f"{ai_name} sẽ không gửi voice chat nữa."
@@ -522,26 +524,26 @@ async def voice_chat(interaction: discord.Interaction, language: str = None):
                 voice_mode = "ja"
                 en_speaker = speaker
             else:
-                await interaction.response.send_message(f"`Hãy nhập VoiceVox api-key trước khi bật nó.`", ephemeral=True)
+                interaction.response.send_message(f"`Hãy nhập VoiceVox api-key trước khi bật nó.`", ephemeral=True)
         else:
             tts_toggle = True
             text = f"{ai_name} sẽ gửi voice chat bằng English"
             voice_mode = "en"
-        await interaction.response.send_message(f"`{text}`", ephemeral=True)
+        interaction.response.send_message(f"`{text}`", ephemeral=True)
         vals_save('user_files/vals.json', 'tts_toggle', tts_toggle)
         vals_save('user_files/vals.json', 'voice_mode', voice_mode)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Thiết lập voice chat
 @bot.tree.command(name="vconfig", description=f"Voice chat config: Spr:{en_speaker}, P:{pitch}, I:{intonation_scale}, Spd{speed}.")
-async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: float = None, vintonation: float = None, vspeed: float = None):
+def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: float = None, vintonation: float = None, vspeed: float = None):
     global en_speaker, speaker, pitch, intonation_scale, speed
     if interaction.user.id == user_id:
         if voice_mode == "en":
             if 1 > speaker > 117:
-                await interaction.response.send_message("`Voice English không tồn tại, chọn voice từ 1 -> 117.`", ephemeral=True)
+                interaction.response.send_message("`Voice English không tồn tại, chọn voice từ 1 -> 117.`", ephemeral=True)
                 return
             name = "en_"
             en_speaker = name + str(vspeaker)
@@ -549,38 +551,38 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
 
         if voice_mode == "ja":
             if vspeaker > 75:
-                await interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 75.`", ephemeral=True)
+                interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 75.`", ephemeral=True)
                 return
             
             speaker = vspeaker
             vals_save('user_files/vals.json', 'speaker', speaker)
             if vpitch is not None:
                 if -0.15 > vpitch > 0.15:
-                    await interaction.response.send_message("`Pitch(cao độ) không hợp lệ, chọn pitch từ -0.15 -> 0.15.`", ephemeral=True)
+                    interaction.response.send_message("`Pitch(cao độ) không hợp lệ, chọn pitch từ -0.15 -> 0.15.`", ephemeral=True)
                     return
                 pitch = vpitch
                 vals_save('user_files/vals.json', 'pitch', pitch)
             if vintonation is not None:
                 if 0 > vintonation > 2:
-                    await interaction.response.send_message("`Intonation(diễn cảm) không hợp lệ, chọn intonation từ 0 -> 2.`", ephemeral=True)
+                    interaction.response.send_message("`Intonation(diễn cảm) không hợp lệ, chọn intonation từ 0 -> 2.`", ephemeral=True)
                     return
                 intonation_scale = vintonation
                 vals_save('user_files/vals.json', 'intonation_scale', intonation_scale)
             if vspeed is not None:
                 if 0.5 > vspeed > 2:
-                    await interaction.response.send_message("`Speed(tốc độ) không hợp lệ, chọn speed từ 0.5 -> 2.`", ephemeral=True)
+                    interaction.response.send_message("`Speed(tốc độ) không hợp lệ, chọn speed từ 0.5 -> 2.`", ephemeral=True)
                     return
                 speed = vspeed
                 vals_save('user_files/vals.json', 'speed', speed)
 
-        await interaction.response.send_message(f"`Đã lưu thiết lập voice. Speaker:{vspeaker}, pitch:{pitch}, intonation:{intonation_scale}, speed:{speed}.`", ephemeral=True)
+        interaction.response.send_message(f"`Đã lưu thiết lập voice. Speaker:{vspeaker}, pitch:{pitch}, intonation:{intonation_scale}, speed:{speed}.`", ephemeral=True)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # NSFW toggle
 @bot.tree.command(name="nsfw", description=f"{ai_name} nsfw chat.")
-async def nsfw_chat(interaction: discord.Interaction):
+def nsfw_chat(interaction: discord.Interaction):
     global nsfw
     if interaction.user.id == user_id:
         text = f"tắt"
@@ -589,15 +591,15 @@ async def nsfw_chat(interaction: discord.Interaction):
         else:
             nsfw = True
             text = f"bật"
-        await interaction.response.send_message(f"`NSFW chat đã {text}.`", ephemeral=True)
+        interaction.response.send_message(f"`NSFW chat đã {text}.`", ephemeral=True)
         vals_save('user_files/vals.json', 'nsfw', nsfw)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Public chat toggle
 @bot.tree.command(name="pchat", description=f"Cho phép {ai_name} chat public. limit: {public_chat_num}")
-async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
+def public_bot_chat(interaction: discord.Interaction, limit: int = None):
     global nsfw, public_chat_num, public_chat
     if interaction.user.id == user_id:
         text = f"tắt"
@@ -607,29 +609,29 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
             public_chat = True
             text = f"bật"
         else:
-            await interaction.response.send_message(f"`{ai_name} chỉ có thể chat tối đa 3 tin nhắn public trong 3 phút.`", ephemeral=True)
+            interaction.response.send_message(f"`{ai_name} chỉ có thể chat tối đa 3 tin nhắn public trong 3 phút.`", ephemeral=True)
         public_chat_num = limit
-        await interaction.response.send_message(f"`Public chat đã {text}.`", ephemeral=True)
+        interaction.response.send_message(f"`Public chat đã {text}.`", ephemeral=True)
         vals_save('user_files/vals.json', 'public_chat_num', public_chat_num)
         vals_save('user_files/vals.json', 'public_chat', public_chat)
     else:
         randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Button call
-async def rmv_bt_atv(interaction):
+def rmv_bt_atv(interaction):
     try:
-        await interaction.response.send_message(f" ", delete_after = 0)
+        interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
     if not interaction.message.content.startswith('`Error'):
         remove_near_answer()
         remove_nearest_user_answer()
-    await interaction.message.delete()
+    interaction.message.delete()
 
-    user = await bot.fetch_user(user_id)
+    user = bot.fetch_user(user_id)
     if user.dm_channel is None:
-        await user.create_dm()
+        user.create_dm()
     channel_id = user.dm_channel.id
     channel = bot.get_channel(channel_id)
     
@@ -640,24 +642,24 @@ async def rmv_bt_atv(interaction):
     rc_bt.callback = rc_bt_atv
     rmv_bt.callback = rmv_bt_atv
     continue_bt.callback = ctn_bt_atv
-    async for message in channel.history(limit=3):
+    for message in channel.history(limit=3):
         if message.author == bot.user:
             if not message.content:
-                await message.delete()
+                message.delete()
             else:
-                await message.edit(view=view)
+                message.edit(view=view)
                 break
 
-async def rc_bt_atv(interaction):
+def rc_bt_atv(interaction):
     try:
-        await interaction.response.send_message(f" ", delete_after = 0)
+        interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
     asyncio.create_task(bot_regen_answer(interaction))
 
-async def ctn_bt_atv(interaction):
+def ctn_bt_atv(interaction):
     try:
-        await interaction.response.send_message(f" ", delete_after = 0)
+        interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
     asyncio.create_task(bot_continue_answer(interaction))
@@ -692,48 +694,48 @@ def noperm_answ():
     return random_response
 
 # Xoá câu trả lời
-async def delete_messages(interaction, limit):
+def delete_messages(interaction, limit):
     messages = []
-    async for message in interaction.channel.history(limit=limit):
+    for message in interaction.channel.history(limit=limit):
         if message.author == bot.user:
             messages.append(message)
     
     for message in messages:
         time.sleep(1)
-        await message.delete()
+        message.delete()
 
 # Gửi câu trả lời của bot vào channel
-async def answer_send(message, result):
+def answer_send(message, result):
     asyncio.create_task(count_msg())
     user_answer(result)
     if console_log:
         print()
         print(result)
-    async with message.channel.typing():
-        ai_text = await bot_answer()
-        await msg_send(message, ai_text)
+    with message.channel.typing():
+        ai_text = bot_answer()
+        msg_send(message, ai_text)
     asyncio.create_task(bot_tasks(message))
 
 # Gửi câu trả lời của bot vào channel chung
-async def answer_send_channel(message, result):
+def answer_send_channel(message, result):
     asyncio.create_task(count_msg())
     user_answer_channel(result)
     if console_log:
         print()
         print(result)
-    async with message.channel.typing():
+    with message.channel.typing():
         ai_text = bot_answer_channel(message)
-        await msg_send(message, ai_text)
+        msg_send(message, ai_text)
 
 # Bot rep limit
-async def rep_limit():
+def rep_limit():
     global call_limit
     call_limit = True
-    await asyncio.sleep(21)  # Đợi trong 21 giây
+    time.sleep(21)  # Đợi trong 21 giây
     call_limit = False
 
 # Tạo câu trả lời cho bot
-async def bot_answer():
+def bot_answer():
     # Gọi Openai
     answer = "`Error error`"
     if not call_limit:
@@ -744,7 +746,7 @@ async def bot_answer():
             error_message = str(e)
             if "Rate limit reached" in error_message:
                 answer = "`Error: Please wait for me in 20s`"
-                await rep_limit()
+                rep_limit()
             else:
                 answer = "`Error error`"
             print("Error OPEN-AI:", error_message)
@@ -755,17 +757,17 @@ async def bot_answer():
         print(f"[{ai_name}]:", answer)
     return answer
 
-async def bot_answer_2(case):
+def bot_answer_2(case):
     # Gọi Openai
     answer = "`Error error`"
     if not call_limit:
         try:
-            answer = await openai_task(case)
+            answer = openai_task(case)
         except Exception as e:
             error_message = str(e)
             if "Rate limit reached" in error_message:
                 answer = "`Error: Please wait for me in 20s`"
-                await rep_limit()
+                rep_limit()
             else:
                 answer = "`Error error`"
             print("Error OPEN-AI:", error_message)
@@ -778,120 +780,120 @@ async def bot_answer_2(case):
     return answer
 
 # Tạo câu trả lời cho bot với trường hợp trong channel
-async def bot_answer_channel(message):
+def bot_answer_channel(message):
     # Gọi Openai
     try:
         openai_answer_channel()
     except Exception as e:
         print("Error OPEN-AI: {0}".format(e))
-        await bot_error_notice(e)
+        bot_error_notice(e)
     # Lấy câu trả lời sau khi hoàn thành phản hồi từ openai
     answer = get_bot_answer_channel()
     if console_log:
         print(f"[{ai_name}]:", answer)
     
-    await msg_send_channel(message, answer)
+    msg_send_channel(message, answer)
     return answer
 
 # Tạo câu trả lời với lời nhắc
-async def bot_remind_answer(user, channel_id, case):
-    ai_text = await bot_answer_2(case)
-    await ai_voice_create(ai_text)
-    await voice_message(channel_id, console_log)
-    await user.send(ai_text)
+def bot_remind_answer(user, channel_id, case):
+    ai_text = bot_answer_2(case)
+    ai_voice_create(ai_text)
+    voice_message(channel_id, console_log)
+    user.send(ai_text)
 
 # Tạo lại câu trả lời cho bot
 
-async def bot_regen_answer(interaction):
+def bot_regen_answer(interaction):
     view = View()
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
     remove_near_answer()
-    async with interaction.channel.typing():
-        ai_text = await bot_answer()
-        sentences = await split_text(ai_text)
+    with interaction.channel.typing():
+        ai_text = bot_answer()
+        sentences = split_text(ai_text)
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
-        await interaction.message.edit(content=paragraph, view=view)
+        interaction.message.edit(content=paragraph, view=view)
 
 # Tạo câu trả lời tiếp tục cho bot
-async def bot_continue_answer(interaction):
+def bot_continue_answer(interaction):
     clear_view = View()
     view = View()
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
     case = "Please continue your actions/words creatively."
-    async with interaction.channel.typing():
-        ai_text = await bot_answer_2(case)
+    with interaction.channel.typing():
+        ai_text = bot_answer_2(case)
         if tts_toggle:
-            await ai_voice_create(ai_text)
-            await voice_message(channel_id, console_log)
-        sentences = await split_text(ai_text)
+            ai_voice_create(ai_text)
+            voice_message(channel_id, console_log)
+        sentences = split_text(ai_text)
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
-        await interaction.message.edit(view=clear_view)
-        await interaction.channel.send(paragraph, view=view)
+        interaction.message.edit(view=clear_view)
+        interaction.channel.send(paragraph, view=view)
         # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
         skip_first_bot_message = False
-        async for message in interaction.channel.history(limit=6):
+        for message in interaction.channel.history(limit=6):
             time.sleep(0.5)
             if message.author == bot.user:
                 if skip_first_bot_message:
                     if message.content:
-                        await message.edit(view=None)
+                        message.edit(view=None)
                     break
                 else:
                     # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
 
 # Báo cho user biết khi lỗi
-async def bot_error_notice(error):
-    user = await bot.fetch_user(user_id)
+def bot_error_notice(error):
+    user = bot.fetch_user(user_id)
     if user.dm_channel is None:
-        await user.create_dm()
-    await user.send(f"`Error {error}`")
+        user.create_dm()
+    user.send(f"`Error {error}`")
 
 # Nhận dạng voice và trả lời lại
-async def bot_reaction_with_voice(files, message):
-    result = await openai_audio(files)
-    await answer_send(message, result)
+def bot_reaction_with_voice(files, message):
+    result = openai_audio(files)
+    answer_send(message, result)
     asyncio.create_task(bot_tasks(message))
 
 # Nhận dạng voice và trả lời lại trong channel
-async def bot_reaction_with_voice_channel(files, message):
+def bot_reaction_with_voice_channel(files, message):
     user_name = message.author.name
-    result = await openai_audio(files)
+    result = openai_audio(files)
     result = "{}: {}".format(user_name, result)
-    await answer_send_channel(message, result)
+    answer_send_channel(message, result)
 
 # Hàm tách dòng:
-async def split_text(text):
+def split_text(text):
     sentences = re.split(r'(\*.*?\*|".*?"|\(.*?\))', text)
     # Loại bỏ các chuỗi trống và None trong danh sách
     sentences = [s for s in sentences if s]
     return sentences
 
 # Hàm gửi nhiều tin nhắn theo từng câu:
-async def splits_send(message, text):
+def splits_send(message, text):
     if text:
         if tts_toggle:
-            await ai_voice_create(text)
-            await voice_message(channel_id, console_log)
+            ai_voice_create(text)
+            voice_message(channel_id, console_log)
 
-        sentences = await split_text(text)
+        sentences = split_text(text)
         for sentence in sentences:
             if sentence.strip():
-                await message.channel.send(sentence)
+                message.channel.send(sentence)
                 asyncio.create_task(count_msg())
 
 # Hàm gửi tin nhắn theo một lần
-async def msg_send(message, text):
+def msg_send(message, text):
     if text:
         if tts_toggle:
-            await ai_voice_create(text)
-            await voice_message(channel_id, console_log)
+            ai_voice_create(text)
+            voice_message(channel_id, console_log)
 
-        sentences = await split_text(text)
+        sentences = split_text(text)
         # Gộp các câu thành một đoạn văn bản
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
 
@@ -904,33 +906,33 @@ async def msg_send(message, text):
         rc_bt.callback = rc_bt_atv
         rmv_bt.callback = rmv_bt_atv
         continue_bt.callback = ctn_bt_atv
-        message_sent = await message.channel.send(paragraph, view=view)
+        message_sent = message.channel.send(paragraph, view=view)
         skip_first_bot_message = False
-        async for message in message.channel.history(limit=6):
+        for message in message.channel.history(limit=6):
             time.sleep(0.5)
             if message.author == bot.user:
                 if skip_first_bot_message:
                     if message.content:
-                        await message.edit(view=None)
+                        message.edit(view=None)
                 else:
                     # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
         asyncio.create_task(count_msg())
 
-async def msg_send_channel(message, text):
+def msg_send_channel(message, text):
     if text:
         if tts_toggle:
-            await ai_voice_create(text)
-            await voice_message(channel_id, console_log)
+            ai_voice_create(text)
+            voice_message(channel_id, console_log)
 
-        sentences = await split_text(text)
+        sentences = split_text(text)
         # Gộp các câu thành một đoạn văn bản
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
-        await message.channel.send(paragraph)
+        message.channel.send(paragraph)
         asyncio.create_task(count_msg())
 
 # Tạo voice cho bot
-async def ai_voice_create(ai_text):
+def ai_voice_create(ai_text):
     if voice_mode == "ja":
         lang = "ja"
         translated = text_translate(ai_text, lang)
@@ -942,7 +944,7 @@ async def ai_voice_create(ai_text):
             tts_get_en(ai_text, en_speaker)
         except Exception as e:
             print("Voice En error: {0}".format(e))
-            await bot_error_notice('Voice En gen error')
+            bot_error_notice('Voice En gen error')
 
 # Phân loại emoji
 def emoji_split(emojis):
@@ -973,7 +975,7 @@ def emoji_split(emojis):
             emoji_random.append(emoji)
 
 # Hiểu và thực thi các task theo câu trả lời
-async def bot_tasks(message):
+def bot_tasks(message):
     if emoji_rate != 0:
         # Mood check
         mood = 0
@@ -981,7 +983,7 @@ async def bot_tasks(message):
         case = 1
         answ = "mood: 0"
         try:
-            answ = await openai_task(case)
+            answ = openai_task(case)
         except Exception as e:
             print("Error OPEN-AI while detect mood: {0}".format(e))
         pattern = r'-?\d+'
@@ -990,7 +992,7 @@ async def bot_tasks(message):
             mood = matches[0]
         else:
             mood = 0
-        await mood_change(mood)
+        mood_change(mood)
         # Schedule
         case = 2
 
@@ -1034,9 +1036,9 @@ async def bot_tasks(message):
         probability = sigmoid(mood)
         threshold = 0.1 + (emoji_rate * probability)
         if random.uniform(0, 1) < threshold:
-            async for prev_message in message.channel.history(limit=10):
+            for prev_message in message.channel.history(limit=10):
                 if prev_message.author.id == user_id:
-                    await prev_message.add_reaction(emoji)
+                    prev_message.add_reaction(emoji)
                     if console_log:
                         print("Emoji reaction:", emoji)
                     break
@@ -1046,7 +1048,7 @@ def sigmoid(x):
     return 1 / (1 + math.exp(-x))
 
 # Hàm thay đổi mood
-async def mood_change(mood):
+def mood_change(mood):
     global bot_mood
     new_mood = bot_mood + int(mood)
 
@@ -1096,11 +1098,11 @@ def mood_name_change(bot_mood):
     return mood_name
 
 # Cập nhật bot mood
-async def bot_status(mood_name):
-    await status.bot_activ(bot, mood_name)
+def bot_status(mood_name):
+    status.bot_activ(bot, mood_name)
 
 # Mood tự tụt khi không chat
-async def mood_drop():
+def mood_drop():
     global bot_mood
     if bot_mood > 100:
         bot_mood -= 0.5
@@ -1120,10 +1122,10 @@ async def mood_drop():
         bot_mood = 0
     vals_save('user_files/vals.json', 'bot_mood', bot_mood)
     mood_name = mood_name_change(bot_mood)
-    await status.bot_activ_non_chat(bot, mood_name)
+    status.bot_activ_non_chat(bot, mood_name)
 
 # Lấy thông tin user
-async def member_info():
+def member_info():
     global user_name, user_nick, member, guild
     # Lấy thông tin user
     try:
@@ -1172,33 +1174,33 @@ def load_alarms_from_json():
     return alarms
 
 # Count chat
-async def count_msg():
+def count_msg():
     global total_msg
     total_msg = total_msg + 1
     vals_save('user_files/vals.json', 'total_msg', total_msg)
 
 # Bot idle or dnd
 @tasks.loop(seconds=random.randint(180, 300))
-async def bot_idle():
+def bot_idle():
     global public_chat_num
     if bot_mood >= 30:
-        await status.bot_status_change(bot)
+        status.bot_status_change(bot)
     elif bot_mood < 30:
-        await status.bot_status_change_sad(bot)
+        status.bot_status_change_sad(bot)
 
-    await mood_drop()
+    mood_drop()
     public_chat_num = vals_load('user_files/vals.json', 'public_chat_num')
 
 # Time check
 @tasks.loop(seconds=60)
-async def time_check():
+def time_check():
     global day_check, night_check, alarm_check
     my_timezone = pytz.timezone('Asia/Bangkok')
     vn_time = datetime.datetime.now(my_timezone)
 
-    user = await bot.fetch_user(user_id)
+    user = bot.fetch_user(user_id)
     if user.dm_channel is None:
-        await user.create_dm()
+        user.create_dm()
     channel_id = user.dm_channel.id
     channel = bot.get_channel(channel_id)
     
@@ -1209,10 +1211,10 @@ async def time_check():
     rc_bt.callback = rc_bt_atv
     rmv_bt.callback = rmv_bt_atv
     continue_bt.callback = ctn_bt_atv
-    async for message in channel.history(limit=3):
+    for message in channel.history(limit=3):
         if message.author == bot.user:
             if message.content:
-                await message.edit(view=view)
+                message.edit(view=view)
                 break
 
     # Wake up check
@@ -1223,7 +1225,7 @@ async def time_check():
             if (user_stt == online) or (user_stt == idle):
                 day_check = False
                 note = f"Looks like {user_nick} just woke up."
-                async with user.typing():
+                with user.typing():
                     asyncio.create_task(bot_remind_answer(user, channel_id, note))
                 vals_save('user_files/vals.json', 'day_check', day_check)
 
@@ -1237,7 +1239,7 @@ async def time_check():
                 note = f"it's late now, reminded {user_nick} to go to sleep."
                 if user_stt == dnd:
                     note = f"It's time for bed but {user_nick} still working. let wish {user_nick} good night."
-                async with user.typing():
+                with user.typing():
                     asyncio.create_task(bot_remind_answer(user, channel_id, note))
                 vals_save('user_files/vals.json', 'night_check', night_check)
 

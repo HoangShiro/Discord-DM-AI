@@ -103,7 +103,7 @@ def remove_nearest_user_answer():
         json.dump(history, f, indent=4)
 
 # Lấy câu trả lời từ OpenAI dành cho chat
-def openai_answer():
+async def openai_answer():
     global total_characters, conversation
     openai.api_key = openai_key_1
     total_characters = sum(len(d['content']) for d in conversation)

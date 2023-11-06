@@ -727,7 +727,7 @@ async def bot_answer():
     answer = "`Error error`"
     if not call_limit:
         try:
-            openai_answer()
+            await openai_answer()
             answer = get_bot_answer()
         except Exception as e:
             error_message = str(e)

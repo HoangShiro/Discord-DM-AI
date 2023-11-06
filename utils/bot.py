@@ -616,7 +616,8 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         embed = discord.Embed(title="Hình ảnh được tạo", description="Dưới đây là hình ảnh dựa trên prompt:", color=discord.Color.blue())
         embed.set_image(url=image_url)
         # Gửi embed lên kênh
-        await interaction.message.edit(embed=embed)
+        async for message in interaction.channel.history(limit=1):
+            await message.edit(embed=embed)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

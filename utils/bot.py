@@ -734,6 +734,8 @@ async def bot_answer():
             if "Rate limit reached" in error_message:
                 answer = "`Error: Please wait for me in 20s`"
                 await rep_limit()
+            elif "The server is overloaded or not ready yet" in error_message:
+                await openai_answer()
             else:
                 answer = "`Error error`"
             print("Error OPEN-AI:", error_message)
@@ -755,6 +757,8 @@ async def bot_answer_2(case):
             if "Rate limit reached" in error_message:
                 answer = "`Error: Please wait for me in 20s`"
                 await rep_limit()
+            elif "The server is overloaded or not ready yet" in error_message:
+                answer = await openai_task(case)
             else:
                 answer = "`Error error`"
             print("Error OPEN-AI:", error_message)
@@ -790,7 +794,6 @@ async def bot_remind_answer(user, channel_id, case):
     await user.send(ai_text)
 
 # Tạo lại câu trả lời cho bot
-
 async def bot_regen_answer(interaction):
     view = View()
     view.add_item(rmv_bt)
@@ -819,6 +822,8 @@ async def bot_continue_answer(interaction):
         sentences = await split_text(ai_text)
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
         await interaction.message.edit(view=clear_view)
+        if "`Error error`" in paragraph:
+            await message.channel.send(paragraph, view=view, ephemeral=True)
         await interaction.channel.send(paragraph, view=view)
         # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
         skip_first_bot_message = False
@@ -893,7 +898,9 @@ async def msg_send(message, text):
         rc_bt.callback = rc_bt_atv
         rmv_bt.callback = rmv_bt_atv
         continue_bt.callback = ctn_bt_atv
-        message_sent = await message.channel.send(paragraph, view=view)
+        if "`Error error`" in paragraph:
+            await message.channel.send(paragraph, view=view, ephemeral=True)
+        await message.channel.send(paragraph, view=view)
         skip_first_bot_message = False
         async for message in message.channel.history(limit=6):
             time.sleep(0.5)

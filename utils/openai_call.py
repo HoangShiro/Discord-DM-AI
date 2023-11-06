@@ -110,8 +110,6 @@ async def openai_answer():
 
     while total_characters > 4000:
         try:
-            # print(total_characters)
-            # print(len(conversation))
             conversation.pop(2)
             total_characters = sum(len(d['content']) for d in conversation)
         except Exception as e:

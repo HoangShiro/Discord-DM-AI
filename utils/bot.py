@@ -620,6 +620,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         view = View()
         view.add_item(rmv_bt)
         sent_msg = await interaction.response.send_message(embed=embed, view=view)
+        print(sent_msg)
         img_id = sent_msg.id
         mess = f"*Sent {user_nick} an image: {prompt}*"
         his = get_bot_answer()

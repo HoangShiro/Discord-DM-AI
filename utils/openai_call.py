@@ -128,7 +128,7 @@ async def openai_answer():
         temperature=1,
         top_p=0.9
     )
-    message = response['choices'][0]['message']['content']
+    message = response.choices[0].message.content
 
     conversation.append({'role': 'assistant', 'content': message})
 
@@ -164,7 +164,7 @@ def openai_answer_channel():
         temperature=1,
         top_p=0.9
     )
-    message = response['choices'][0]['message']['content']
+    message = response.choices[0].message.content
 
     message = re.sub(rf"{ai_name}:", "", message).strip()
 
@@ -186,7 +186,7 @@ async def openai_task(case):
         temperature=1,
         top_p=0.9
     )
-    command = response['choices'][0]['message']['content']
+    command = response.choices[0].message.content
 
     if case != 1:
 

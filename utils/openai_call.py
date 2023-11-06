@@ -105,7 +105,7 @@ def remove_nearest_user_answer():
 # Lấy câu trả lời từ OpenAI dành cho chat
 async def openai_answer():
     global total_characters, conversation
-    client = AsyncOpenAI(api_key=openai_key_1)
+    client = AsyncOpenAI(api_key=openai_key_1, timeout=60)
     total_characters = sum(len(d['content']) for d in conversation)
 
     while total_characters > 4000:
@@ -126,8 +126,7 @@ async def openai_answer():
         messages=prompt,
         max_tokens=1024,
         temperature=1,
-        top_p=0.9,
-        timeout=20
+        top_p=0.9
     )
     message = response['choices'][0]['message']['content']
 
@@ -140,7 +139,7 @@ async def openai_answer():
 # Lấy câu trả lời từ OpenAI dành cho chat trong channel
 def openai_answer_channel():
     global total_characters_channel, channel_history
-    client = OpenAI(api_key=openai_key_1)
+    client = OpenAI(api_key=openai_key_1, timeout=60)
     total_characters_channel = sum(len(d['content']) for d in channel_history)
 
     while total_characters_channel > 4000:
@@ -163,8 +162,7 @@ def openai_answer_channel():
         messages=prompt,
         max_tokens=128,
         temperature=1,
-        top_p=0.9,
-        timeout=60
+        top_p=0.9
     )
     message = response['choices'][0]['message']['content']
 
@@ -178,7 +176,7 @@ def openai_answer_channel():
 
 # Lấy câu trả lời từ OpenAI dành cho tasks
 async def openai_task(case):
-    client = AsyncOpenAI(api_key=openai_key_2)
+    client = AsyncOpenAI(api_key=openai_key_2, timeout=60)
     prompt = getPrompt_task(case)
 
     response = await client.chat.completions.create(
@@ -186,8 +184,7 @@ async def openai_task(case):
         messages=prompt,
         max_tokens=1024,
         temperature=1,
-        top_p=0.9,
-        timeout=60
+        top_p=0.9
     )
     command = response['choices'][0]['message']['content']
 

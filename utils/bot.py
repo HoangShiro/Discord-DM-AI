@@ -832,7 +832,8 @@ async def bot_continue_answer(interaction):
         await interaction.channel.send(paragraph, view=view)
         # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
         skip_first_bot_message = False
-        async for message in interaction.channel.history(limit=4):
+        async for message in interaction.channel.history(limit=6):
+            time.sleep(0.5)
             if message.author == bot.user:
                 if skip_first_bot_message:
                     if message.content:

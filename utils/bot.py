@@ -249,12 +249,8 @@ async def on_message(message):
         if isinstance(message.channel, discord.DMChannel):
             # Nếu đang reply thì bỏ qua
             if task_busy_with_user:
-                busy_text = f"_Đợi chút {ai_name} đang reply..._"
-                await message.channel.send(busy_text)
                 return
             elif task_busy_with_another:
-                busy_text = f"_{ai_name} đang bận reply ai đó..._"
-                await message.channel.send(busy_text)
                 return
             dm_channel_id = message.channel.id
             vals_save('user_files/vals.json', 'dm_channel_id', dm_channel_id)
@@ -262,22 +258,19 @@ async def on_message(message):
             vals_save('user_files/vals.json', 'channel_id', channel_id)
 
             # Xoá button cũ
-            rmv_view = View()
             now_msg = message
             async for message in message.channel.history(limit=3):
                 if message.author == bot.user:
                     if message.content:
-                        await message.edit(view=rmv_view)
+                        await message.edit(view=None)
                         break
             message = now_msg
             # Trường hợp là văn bản:
             if message.content:
                 result = message.content
                 asyncio.create_task(answer_send(message, result))
-
             # Trường hợp là tệp đính kèm:
             elif message.attachments:
-                task_busy_with_user = True
                 file_names = []
                 file_lists = []
                 for attachment in message.attachments:
@@ -299,10 +292,10 @@ async def on_message(message):
                     elif lang == "ja":
                         result = f"*{user_nick}から{file_names}が送られてきました*"
                     asyncio.create_task(answer_send(message, result))
-                task_busy_with_user = False
             #asyncio.create_task(bot_tasks(message))
     # Tiếp tục thực thi các command
     #await bot.process_commands(message)
+    return
 
 
 # Bot restart
@@ -702,7 +695,6 @@ async def delete_messages(interaction, limit):
 
 # Gửi câu trả lời của bot vào channel
 async def answer_send(message, result):
-    global task_busy_with_user
     asyncio.create_task(count_msg())
     user_answer(result)
     if console_log:

@@ -71,6 +71,7 @@ stt_lang = "auto"
 chat_wait = False
 call_limit = False
 img_prompt = "sky"
+img_id = 0
 
 bot_mood = 50.0
 split_send = False
@@ -610,7 +611,7 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 @bot.tree.command(name="image", description=f"Tạo ảnh")
 async def image_gen(interaction: discord.Interaction, prompt: str):
     if interaction.user.id == user_id:
-        global img_prompt
+        global img_prompt, img_id
         img_prompt = prompt
         guild = bot.get_guild(server_id)
         emojis = guild.emojis
@@ -618,7 +619,15 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         embed = discord.Embed(title=f"Image đang được tạo... {emoji}", color=discord.Color.blue())
         view = View()
         view.add_item(rmv_bt)
-        await interaction.response.send_message(embed=embed, view=view)
+        sent_msg = await interaction.response.send_message(embed=embed, view=view)
+        img_id = sent_msg.id
+        mess = f"*Sent {user_nick} an image: {prompt}*"
+        his = get_bot_answer()
+        if his:
+            lang = lang_detect(his)
+            if "vi" in lang:
+                mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
+        bot_answer_save(mess)
         image_url = await openai_images(prompt)
         # Tạo một Embed để gửi hình ảnh
         embed = discord.Embed(description=f"{prompt}", color=discord.Color.blue())

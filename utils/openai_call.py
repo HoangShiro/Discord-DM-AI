@@ -42,7 +42,7 @@ def get_bot_answer():
         mess = conversation[-1]['content']
     except Exception as e:
         print("Lỗi khi lấy chat của bot: Chưa có cuộc trò chuyện nào.")
-        mess = "Xin chào!"
+        mess = "Wow!"
     return mess
 
 # Ghi câu trả lời của user vào lịch sử

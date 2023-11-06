@@ -274,7 +274,6 @@ async def on_message(message):
                 task_busy_with_user = True
                 result = message.content
                 asyncio.create_task(answer_send(message, result))
-                print("TEST")
                 task_busy_with_user = False
 
             # Trường hợp là tệp đính kèm:
@@ -304,7 +303,7 @@ async def on_message(message):
                 task_busy_with_user = False
             #asyncio.create_task(bot_tasks(message))
     # Tiếp tục thực thi các command
-    await bot.process_commands(message)
+    #await bot.process_commands(message)
 
 
 # Bot restart

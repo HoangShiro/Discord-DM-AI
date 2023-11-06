@@ -274,7 +274,8 @@ async def on_message(message):
             if message.content:
                 task_busy_with_user = True
                 result = message.content
-                threading.Thread(target=answer_send, args=(message, result)).start()
+                loop = asyncio.get_event_loop()
+                await loop.run_in_executor(None, lambda: threading.Thread(target=answer_send, args=(message, result)).start())
                 #asyncio.create_task(answer_send(message, result))
                 task_busy_with_user = False
 

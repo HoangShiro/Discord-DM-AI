@@ -209,7 +209,7 @@ async def openai_audio(audio_url):
                     f.write(await resp.read())
                 # Thực hiện xử lý file âm thanh bằng OpenAI
                 with open(audio_filename, 'rb') as audio_file:
-                    transcript = client.audio.translations("whisper-1", file=audio_file)
+                    transcript = client.audio.translations.create("whisper-1", file=audio_file)
                 result = transcript.text
                 sour_lang = lang_detect(result)
                 if sour_lang != tar_lang:

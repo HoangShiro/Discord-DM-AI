@@ -123,7 +123,7 @@ async def openai_answer():
 
     prompt = getPrompt()
 
-    response = await openai.ChatCompletion.create(
+    response = openai.ChatCompletion.acreate(
         model="gpt-3.5-turbo",
         messages=prompt,
         max_tokens=1024,
@@ -183,7 +183,7 @@ async def openai_task(case):
     openai.api_key = openai_key_2
     prompt = getPrompt_task(case)
 
-    response = await openai.ChatCompletion.create(
+    response = openai.ChatCompletion.acreate(
         model="gpt-3.5-turbo",
         messages=prompt,
         max_tokens=1024,

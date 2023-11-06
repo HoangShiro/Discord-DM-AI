@@ -70,6 +70,7 @@ task_busy_with_another = False
 stt_lang = "auto"
 chat_wait = False
 call_limit = False
+img_prompt = "sky"
 
 bot_mood = 50.0
 split_send = False
@@ -609,11 +610,12 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 @bot.tree.command(name="image", description=f"Tạo ảnh")
 async def image_gen(interaction: discord.Interaction, prompt: str):
     if interaction.user.id == user_id:
-        embed = discord.Embed(title="Image đang được tạo...", color=discord.Color.blue())
+        emoji = random.choice(emojis.emoji)
+        embed = discord.Embed(title=f"Image đang được tạo... {emoji}", color=discord.Color.blue())
         await interaction.response.send_message(embed=embed)
         image_url = await openai_images(prompt)
         # Tạo một Embed để gửi hình ảnh
-        embed = discord.Embed(title="Hình ảnh được tạo", description="Dưới đây là hình ảnh dựa trên prompt:", color=discord.Color.blue())
+        embed = discord.Embed(description=f"{prompt}", color=discord.Color.blue())
         embed.set_image(url=image_url)
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):

@@ -605,6 +605,19 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
+# Image Gen
+@bot.tree.command(name="image", description=f"Tạo ảnh")
+async def image_gen(interaction: discord.Interaction, prompt: str):
+    if interaction.user.id == user_id:
+        await openai_images(prompt)
+        image_path = "/user_files/image_gen.png"
+        with open(image_path, "rb") as image_file:
+            image_data = image_file.read()
+        await interaction.followup.send(file=discord.File(image_data, "image_gen.png"))
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
 # Button call
 async def rmv_bt_atv(interaction):
     try:

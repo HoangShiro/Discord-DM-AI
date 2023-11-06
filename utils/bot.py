@@ -295,8 +295,6 @@ async def on_message(message):
             #asyncio.create_task(bot_tasks(message))
     # Tiếp tục thực thi các command
     #await bot.process_commands(message)
-    return
-
 
 # Bot restart
 @bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")

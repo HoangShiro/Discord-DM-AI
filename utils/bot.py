@@ -275,7 +275,9 @@ async def on_message(message):
                 result = message.content
                 if task_busy_with_user:
                     task.cancel()
+                    print("OK")
                 task = asyncio.create_task(answer_send(message, result))
+                print("OK")
 
             # Trường hợp là tệp đính kèm:
             elif message.attachments:

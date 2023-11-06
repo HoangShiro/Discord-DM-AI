@@ -609,13 +609,17 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 @bot.tree.command(name="image", description=f"Tạo ảnh")
 async def image_gen(interaction: discord.Interaction, prompt: str):
     if interaction.user.id == user_id:
+        try:
+            await interaction.response.send_message(f" ", delete_after = 0)
+        except:
+            pass
         image_url = await openai_images(prompt)
         # Tạo một Embed để gửi hình ảnh
         embed = discord.Embed(title="Hình ảnh được tạo", description="Dưới đây là hình ảnh dựa trên prompt:", color=discord.Color.blue())
         embed.set_image(url=image_url)
         
         # Gửi embed lên kênh
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

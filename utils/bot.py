@@ -823,8 +823,9 @@ async def bot_continue_answer(interaction):
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
         await interaction.message.edit(view=clear_view)
         if "`Error error`" in paragraph:
-            await message.channel.send(paragraph, view=view, ephemeral=True)
-        await interaction.channel.send(paragraph, view=view)
+            await interaction.channel.send(paragraph, view=view, ephemeral=True)
+        else:
+            await interaction.channel.send(paragraph, view=view)
         # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
         skip_first_bot_message = False
         async for message in interaction.channel.history(limit=6):
@@ -900,7 +901,8 @@ async def msg_send(message, text):
         continue_bt.callback = ctn_bt_atv
         if "`Error error`" in paragraph:
             await message.channel.send(paragraph, view=view, ephemeral=True)
-        await message.channel.send(paragraph, view=view)
+        else:
+            await message.channel.send(paragraph, view=view)
         skip_first_bot_message = False
         async for message in message.channel.history(limit=6):
             time.sleep(0.5)

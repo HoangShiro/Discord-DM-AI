@@ -610,11 +610,15 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 @bot.tree.command(name="image", description=f"Tạo ảnh")
 async def image_gen(interaction: discord.Interaction, prompt: str):
     if interaction.user.id == user_id:
+        global img_prompt
+        img_prompt = prompt
         guild = bot.get_guild(server_id)
         emojis = guild.emojis
         emoji = random.choice(emojis)
         embed = discord.Embed(title=f"Image đang được tạo... {emoji}", color=discord.Color.blue())
-        await interaction.response.send_message(embed=embed)
+        view = View()
+        view.add_item(rmv_bt)
+        await interaction.response.send_message(embed=embed, view=view)
         image_url = await openai_images(prompt)
         # Tạo một Embed để gửi hình ảnh
         embed = discord.Embed(description=f"{prompt}", color=discord.Color.blue())

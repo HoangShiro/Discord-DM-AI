@@ -8,7 +8,7 @@ from user_files.config import *
 # Thay đổi token của bot Discord ở đây
 BOT_TOKEN = discord_bot_key
 
-def voice_message(channel_id, console_log):
+async def voice_message(channel_id, console_log):
     CHANNEL_ID = channel_id
     # Đọc dữ liệu âm thanh từ tệp âm thanh
     voice_data = open(os.getcwd() + "/user_files/ai_voice_msg.ogg", "rb").read()

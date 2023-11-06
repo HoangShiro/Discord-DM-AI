@@ -179,7 +179,7 @@ def openai_answer_channel():
         json.dump(history2, f2, indent=4)
 
 # Lấy câu trả lời từ OpenAI dành cho tasks
-def openai_task(case):
+async def openai_task(case):
     openai.api_key = openai_key_2
     prompt = getPrompt_task(case)
 
@@ -204,14 +204,14 @@ def openai_task(case):
     return command
 
 # Chuyển đổi voice của user thành văn bản (STT)
-def openai_audio(audio_url):
+async def openai_audio(audio_url):
     openai.api_key = openai_key_1
-    with aiohttp.ClientSession() as session:
-        with session.get(audio_url.url) as resp:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(audio_url.url) as resp:
             tar_lang = lang_detect(get_bot_answer())
             if resp.status == 200:
                 with open(audio_filename, 'wb') as f:
-                    f.write(resp.read())
+                    f.write(await resp.read())
                 # Thực hiện xử lý file âm thanh bằng OpenAI
                 with open(audio_filename, 'rb') as audio_file:
                     transcript = openai.Audio.translate("whisper-1", file=audio_file)

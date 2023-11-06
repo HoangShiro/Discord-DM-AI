@@ -85,58 +85,6 @@ voice_mode = 'ja'
 en_speaker = 'en_18'
 beha_down = False
 
-default_values = {
-    "bot_mood": 50.0,
-    "split_send": False,
-    "day_check": True,
-    "night_check": True,
-    "console_log": False,
-    "emoji_rate": 1.0,
-    "total_msg": 0,
-    "user_nick": "user",
-    "stt_lang": "auto",
-    "tts_toggle": False,
-    "channel_id": 0,
-    "nsfw": True,
-    "public_chat": False,
-    "public_chat_num": 2,
-    "dm_channel_id": 0,
-    "voice_mode": 'ja',
-    "en_speaker": 'en_18',
-    "speaker": 46,
-    "pitch": 0,
-    "intonation_scale": 1,
-    "speed": 1,
-    "beha_down": False
-}
-
-# Kiểm tra xem tệp JSON có tồn tại không
-try:
-    with open('user_files/vals.json', 'r', encoding="utf-8") as file:
-        data3 = json.load(file)
-except FileNotFoundError:
-    with open('user_files/vals.json', 'w', encoding="utf-8") as file:
-        json.dump(default_values, file)
-    # Nếu tệp không tồn tại, sử dụng giá trị mặc định
-    data3 = default_values
-
-# Gán giá trị từ data cho các biến hiện tại
-for key, value in default_values.items():
-    globals()[key] = data3.get(key, value)
-
-    # Dừng sau khi đã duyệt qua tất cả các phần tử trong default_values
-    if key == list(default_values.keys())[-1]:
-        break
-
-# Kiểm tra và thêm biến thiếu vào tệp JSON nếu cần
-for key, value in default_values.items():
-    if key not in data3:
-        data3[key] = value
-
-# Cập nhật tệp JSON với các biến mới nếu có
-with open('user_files/vals.json', 'w', encoding="utf-8") as file:
-    json.dump(data3, file)
-
 emoji_rate_percent = emoji_rate * 100
 
 

@@ -1,4 +1,5 @@
 import subprocess
+import asyncio
 
 github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"
 
@@ -15,7 +16,9 @@ def update_bot():
 
 def start():
     import utils.bot as bot
-    bot.bot_run()
+    loop = asyncio.get_event_loop()
+    loop.create_task(bot.bot_run())
+    loop.run_forever()
 
 if __name__ == '__main__':
     update_bot()

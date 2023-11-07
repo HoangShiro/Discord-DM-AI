@@ -673,7 +673,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             if block is None:
                 block = img_block
             try:
-                se = booru.Rule34()
+                se = booru.Gelbooru()
                 img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
@@ -779,7 +779,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             if block is None:
                 block = img_block
             try:
-                se = booru.Rule34()
+                se = booru.Gelbooru()
                 img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:

@@ -676,10 +676,10 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 tag = await se.find_tags(query=keywords)
                 tag = booru.resolve(tag)
                 if tag != []:
-                    await interaction.response.send_message(f"Không có nè, ý là '{tag[0]}'?", ephemeral=True)
+                    await interaction.response.send_message(f"Không có art nè, ý là '{tag[0]}'?", ephemeral=True)
                 else:
                     await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
-                print("Error OPEN-AI:", str(e))
+                print("Image search:", str(e))
                 return
         
         if not nsfw:
@@ -694,47 +694,53 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 tag = await se.find_tags(query=keywords)
                 tag = booru.resolve(tag)
                 if tag != []:
-                    await interaction.response.send_message(f"Không có nè, ý là '{tag[0]}'?", ephemeral=True)
+                    await interaction.response.send_message(f"Không có art nè, ý là '{tag[0]}'?", ephemeral=True)
                 else:
                     await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
-                print("Error OPEN-AI:", str(e))
+                print("Image search:", str(e))
                 return
 
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
+        embed = discord.Embed(description=f"{keywords}   {index+1}/?   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
-        async def update_embed(interaction, index, img_urls_2):
+        async def update_embed(interaction, index, img_urls_2, num):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{num}   {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls_2[index])
-            await interaction.response.edit_message(embed=new_embed, view=view)
+            url = img_urls_2[index]
+            if url.endswith((".mp4", ".webp", ".gif")):
+                await interaction.response.edit_message(content=url ,embed=new_embed, view=view)
+            else:
+                await interaction.response.edit_message(embed=new_embed, view=view)
 
         async def nt_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
+            num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             if index < len(img_urls_2["img_urls"]) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2["img_urls"])
+            await update_embed(interaction, index, img_urls_2["img_urls"], num)
             message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
 
         async def bk_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
+            num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             if index > 0:
                 index -= 1
             else:
                 index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2["img_urls"])
+            await update_embed(interaction, index, img_urls_2["img_urls"], num)
             message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
 
         view = View(timeout=None)

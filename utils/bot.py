@@ -645,6 +645,9 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+        if random.random() < 0.2:
+            case = f"Please say something about the beautiful illustation that {user_nick} just requested."
+            asyncio.create_task(bot_imgreact_answer(interaction, case))
 
 # Image Search
 @bot.tree.command(name="isrc", description=f"Tìm art")

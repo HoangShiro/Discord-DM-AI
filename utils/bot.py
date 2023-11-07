@@ -76,7 +76,7 @@ chat_wait = False
 call_limit = False
 img_prompt = "sky"
 img_id = 0
-#message_states = {}
+message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
 
 bot_mood = 50.0
@@ -651,7 +651,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name="isrc", description=f"Tìm art")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
-        global img_block
+        global img_block, message_states
         if nsfw:
             sfw = "[NSFW]"
         else:
@@ -660,7 +660,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             vals_save('user_files/vals.json', 'img_block', block)
         if limit > 100:
             limit = 100
-        message_states = {}
         temp_limit = 1
         index = 0
         img_urls = ""

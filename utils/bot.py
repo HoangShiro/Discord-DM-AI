@@ -648,8 +648,8 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name="isrc", description=f"Tìm art (NSFW Warning)")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
-        if limit > 30:
-            limit = 30
+        if limit > 100:
+            limit = 100
         temp_limit = 1
         img_urls = ""
         if nsfw:
@@ -672,7 +672,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def update_embed(interaction, index):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{keywords}   {index}/{limit}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls[index])
             await interaction.response.edit_message(embed=new_embed, view=view)
 

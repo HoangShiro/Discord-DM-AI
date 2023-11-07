@@ -704,7 +704,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def nt_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
-            print(message_id)
+            img_urls = message_states.get(message_id, [])
             if index < len(img_urls) - 1:
                 index += 1
             else:
@@ -713,6 +713,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def bk_bt_atv(interaction):
             nonlocal index
+            message_id = interaction.message.id
+            img_urls = message_states.get(message_id, [])
             if index > 0:
                 index -= 1
             else:

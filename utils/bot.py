@@ -748,6 +748,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
                 print("Error OPEN-AI:", str(e))
         message_id = interaction.id
+        print(message_id)
         message_states[message_id] = img_urls
 
     else:

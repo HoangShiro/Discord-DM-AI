@@ -704,8 +704,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def nt_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
-            img_urls = message_states.get(message_id, [])
-            if index < len(img_urls) - 1:
+            img_urls_2 = message_states.get(message_id, [])
+            if index < len(img_urls_2) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
@@ -714,11 +714,11 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def bk_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
-            img_urls = message_states.get(message_id, [])
+            img_urls_2 = message_states.get(message_id, [])
             if index > 0:
                 index -= 1
             else:
-                index = len(img_urls) - 1  # Trở về link cuối nếu chạm giới hạn
+                index = len(img_urls_2) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index)
 
         view = View()

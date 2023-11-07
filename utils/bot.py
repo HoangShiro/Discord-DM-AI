@@ -1132,7 +1132,7 @@ async def msg_send(message, text):
         else:
             if random.random() < 0.2:
                 await message.channel.send(paragraph)
-                case = "Continue your answer above proactively by yourself, follow the line closely, maybe with actions. If the above is a question, don't ask it again."
+                case = "Continue your answer above proactively and creatively by yourself, follow the line closely, maybe with actions. If the above is a question, don't ask it again."
                 asyncio.create_task(bot_imgreact_answer(message, case))
             else:
                 await message.channel.send(paragraph, view=view)

@@ -740,10 +740,8 @@ async def rmv_bt_atv(interaction):
     continue_bt.callback = ctn_bt_atv
     async for message in channel.history(limit=3):
         if message.author == bot.user:
-            if not message.content or message.embeds:
+            if not message.content and message.embeds:
                 await message.delete()
-            elif message.embeds:
-                await message.edit(view=del_view)
             else:
                 await message.edit(view=view)
                 break

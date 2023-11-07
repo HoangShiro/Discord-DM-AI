@@ -716,7 +716,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             if "vi" in lang:
                 mess = f"*Đã gửi cho {user_nick} illustartions: {keywords}.*"
         bot_answer_save(mess)
-        rate = (0.2/(bot_mood*2))*100
+        rate = (0.2/((bot_mood+1)*2))*100
         if random.random() < rate:
             if nsfw:
                 case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"

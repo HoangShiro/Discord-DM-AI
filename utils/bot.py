@@ -662,6 +662,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         if len(img_urls) < limit:
             limit = len(img_urls)
         for i in range(limit):
+            print(img_urls[i])
             embed.set_image(url=img_urls[i])
         view = View()
         view.add_item(irmv_bt)

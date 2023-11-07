@@ -675,7 +675,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 se = booru.Rule34()
                 tag = await se.find_tags(query=keywords)
                 tag = booru.resolve(tag)
-                if tag[0]:
+                if tag != []:
                     await interaction.response.send_message(f"Không có nè, ý là '{tag[0]}'?", ephemeral=True)
                 else:
                     await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
@@ -693,7 +693,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 se = booru.Safebooru()
                 tag = await se.find_tags(query=keywords)
                 tag = booru.resolve(tag)
-                if tag[0]:
+                if tag != []:
                     await interaction.response.send_message(f"Không có nè, ý là '{tag[0]}'?", ephemeral=True)
                 else:
                     await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)

@@ -270,7 +270,7 @@ async def on_message(message):
             now_msg = message
             async for message in message.channel.history(limit=3):
                 if message.author == bot.user:
-                    if message.content:
+                    if message.content and not message.content.endswith((".mp4", ".webp")):
                         await message.edit(view=None)
                         break
             message = now_msg
@@ -704,15 +704,15 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        mess = f"*Sent a picture of {keywords}'s content when {user_nick} asked.*"
+        mess = f"*Sent illustartions of {keywords}'s content when {user_nick} asked.*"
         his = get_bot_answer()
         if his:
             lang = lang_detect(his)
             if "vi" in lang:
-                mess = f"*Đã gửi cho {user_nick} hình ảnh: {keywords}.*"
+                mess = f"*Đã gửi cho {user_nick} illustartions: {keywords}.*"
         bot_answer_save(mess)
 
-
+        asyncio.create_task(bot_continue_answer(interaction))
 
         embed = discord.Embed(description=f"{keywords}   {index+1}/?   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
@@ -834,7 +834,7 @@ async def rmv_bt_atv(interaction):
     continue_bt.callback = ctn_bt_atv
     async for message in channel.history(limit=3):
         if message.author == bot.user:
-            if not message.content and message.attachments:
+            if not message.content and not message.content.endswith((".mp4", ".webp")) and message.attachments:
                 await message.delete()
             elif message.content:
                 await message.edit(view=view)
@@ -1035,7 +1035,7 @@ async def bot_continue_answer(interaction):
             time.sleep(0.5)
             if message.author == bot.user:
                 if skip_first_bot_message:
-                    if message.content:
+                    if message.content and not message.content.endswith((".mp4", ".webp")):
                         await message.edit(view=None)
                     break
                 else:
@@ -1397,7 +1397,7 @@ async def time_check():
     my_timezone = pytz.timezone('Asia/Bangkok')
     vn_time = datetime.datetime.now(my_timezone)
 
-    """user = await bot.fetch_user(user_id)
+    user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
         await user.create_dm()
     channel_id = user.dm_channel.id
@@ -1412,9 +1412,9 @@ async def time_check():
     continue_bt.callback = ctn_bt_atv
     async for message in channel.history(limit=1):
         if message.author == bot.user:
-            if message.content:
+            if message.content and not message.content.endswith((".mp4", ".webp")):
                 await message.edit(view=view)
-                break"""
+                break
 
     # Wake up check
     if day_check:

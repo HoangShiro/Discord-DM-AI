@@ -659,8 +659,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
         embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
-        for img_url in img_urls:
-            embed.set_image(url=img_url)
+        embed = discord.Embed(description="\n".join(img_urls), color=discord.Color.blue())
         view = View()
         view.add_item(irmv_bt)
         await interaction.response.send_message(embed=embed, view=view)

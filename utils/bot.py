@@ -672,7 +672,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+                se = booru.Rule34()
+                tag = await se.find_tags(query=keywords)
+                if tag[0]:
+                    await interaction.response.send_message(f"Không có nè, ý là '{tag[0]}'?", ephemeral=True)
+                else:
+                    await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Error OPEN-AI:", str(e))
                 return
         
@@ -684,7 +689,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+                se = booru.Safebooru()
+                tag = await se.find_tags(query=keywords)
+                if tag[0]:
+                    await interaction.response.send_message(f"Không có nè, ý là '{tag[0]}'?", ephemeral=True)
+                else:
+                    await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Error OPEN-AI:", str(e))
                 return
 

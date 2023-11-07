@@ -40,6 +40,8 @@ rmv_bt = discord.ui.Button(label="🔆 remove", custom_id="remove", style=discor
 irmv_bt = discord.ui.Button(label="🔆 remove", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
+nt_bt = discord.ui.Button(label="➡️ next", custom_id="next", style=discord.ButtonStyle.grey)
+bk_bt = discord.ui.Button(label="⬅️ back", custom_id="back", style=discord.ButtonStyle.grey)
 
 user_name = "Master"
 user_nick = "user"
@@ -665,10 +667,34 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
         embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
-        for url in img_urls:
-            embed.set_image(url=url)
+        embed.set_image(url=img_urls[0])
+
+        async def update_embed(interaction, index):
+        # Tạo một Embed mới với URL hình ảnh mới từ img_urls
+            new_embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
+            new_embed.set_image(url=img_urls[index])
+            await interaction.response.edit_message(embed=new_embed, view=view)
+
+        index = 0
+
+        async def nt_bt_atv(interaction):
+            nonlocal index
+            if index < len(img_urls) - 1:
+                index += 1
+                await update_embed(interaction, index)
+
+        async def bk_bt_atv(interaction):
+            nonlocal index
+            if index > 0:
+                index -= 1
+                await update_embed(interaction, index)
+
         view = View()
         view.add_item(irmv_bt)
+        view.add_item(bk_bt)
+        view.add_item(nt_bt)
+        bk_bt.callback = bk_bt_atv
+        nt_bt.callback = nt_bt_atv
         await interaction.response.send_message(embed=embed, view=view)
     else:
         randaw = noperm_answ()

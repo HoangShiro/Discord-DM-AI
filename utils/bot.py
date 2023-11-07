@@ -578,7 +578,7 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # NSFW toggle
-@bot.tree.command(name="nsfw", description=f"{ai_name} nsfw chat.")
+@bot.tree.command(name="nsfw", description=f"{ai_name} nsfw mode.")
 async def nsfw_chat(interaction: discord.Interaction):
     global nsfw
     if interaction.user.id == user_id:
@@ -588,7 +588,7 @@ async def nsfw_chat(interaction: discord.Interaction):
         else:
             nsfw = True
             text = f"bật"
-        await interaction.response.send_message(f"`NSFW chat đã {text}.`", ephemeral=True)
+        await interaction.response.send_message(f"`NSFW mode đã {text}.`", ephemeral=True)
         vals_save('user_files/vals.json', 'nsfw', nsfw)
     else:
         randaw = noperm_answ()
@@ -704,23 +704,22 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def nt_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
-            img_urls_2 = message_states.get(message_id, [])
-            print(img_urls_2)
-            if index < len(img_urls_2) - 1:
+            img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
+            if index < len(img_urls_2["img_urls"]) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2)
+            await update_embed(interaction, index, img_urls_2["img_urls"])
 
         async def bk_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
-            img_urls_2 = message_states.get(message_id, [])
+            img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
             if index > 0:
                 index -= 1
             else:
-                index = len(img_urls_2) - 1  # Trở về link cuối nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2)
+                index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
+            await update_embed(interaction, index, img_urls_2["img_urls"])
 
         view = View()
         view.add_item(irmv_bt)
@@ -751,7 +750,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 print("Error img search:", str(e))
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
-            message_states[message_id] = img_urls
+            message_states[message_id] = {"index": index, "img_urls": img_urls}
         print(message_states)
 
     else:

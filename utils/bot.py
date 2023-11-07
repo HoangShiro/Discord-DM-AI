@@ -618,7 +618,7 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 @bot.tree.command(name="igen", description=f"Tạo art")
 async def image_gen(interaction: discord.Interaction, prompt: str):
     if interaction.user.id == user_id:
-        global img_prompt, img_id
+        global img_prompt, img_id, bot_mood
         img_prompt = prompt
         guild = bot.get_guild(server_id)
         emojis = guild.emojis
@@ -645,7 +645,9 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
-        if random.random() < 0.2:
+        bot_mood +=1
+        rate = (0.2/(bot_mood*2))*100
+        if random.random() < rate:
             case = f"Please say something about the beautiful illustation that {user_nick} just requested."
             asyncio.create_task(bot_imgreact_answer(interaction, case))
 
@@ -654,7 +656,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
         import booru
-        global img_block, message_states
+        global img_block, message_states, bot_mood
         
         if nsfw:
             sfw = "[NSFW]"
@@ -714,7 +716,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             if "vi" in lang:
                 mess = f"*Đã gửi cho {user_nick} illustartions: {keywords}.*"
         bot_answer_save(mess)
-        if random.random() < 0.2:
+        rate = (0.2/(bot_mood*2))*100
+        if random.random() < rate:
             if nsfw:
                 case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
             else:
@@ -736,6 +739,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def nt_bt_atv(interaction):
             nonlocal index
+            global bot_mood
             message_id = interaction.message.id
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
             num = len(img_urls_2["img_urls"])
@@ -746,9 +750,11 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 index = 0  # Trở về link đầu nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num)
             message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
+            bot_mood += 0.1
 
         async def bk_bt_atv(interaction):
             nonlocal index
+            global bot_mood
             message_id = interaction.message.id
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
             num = len(img_urls_2["img_urls"])
@@ -759,6 +765,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num)
             message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
+            bot_mood += 0.1
 
         view = View(timeout=None)
         view.add_item(irmv_bt)
@@ -767,6 +774,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         bk_bt.callback = bk_bt_atv
         nt_bt.callback = nt_bt_atv
         await interaction.response.send_message(embed=embed, view=view)
+        bot_mood += 1
         if nsfw:
             if block is None:
                 block = img_block

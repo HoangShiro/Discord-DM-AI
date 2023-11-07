@@ -652,6 +652,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
         global img_block, message_states
+        
         if nsfw:
             sfw = "[NSFW]"
         else:
@@ -703,8 +704,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def nt_bt_atv(interaction):
             nonlocal index
             message_id = interaction.id
-            img_urls = message_states.get(message_id, [])
-            if index < len(img_urls) - 1:
+            message_img_urls = message_states.get(message_id, [])
+            if index < len(message_img_urls) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
@@ -713,11 +714,11 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def bk_bt_atv(interaction):
             nonlocal index
             message_id = interaction.id
-            img_urls = message_states.get(message_id, [])
+            message_img_urls = message_states.get(message_id, [])
             if index > 0:
                 index -= 1
             else:
-                index = len(img_urls) - 1  # Trở về link cuối nếu chạm giới hạn
+                index = len(message_img_urls) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index)
 
         view = View()

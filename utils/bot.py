@@ -649,7 +649,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
         embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
-        await interaction.response.send_message(embed=embed, view=view)
+        await interaction.response.send_message(embed=embed)
         if limit > 30:
             limit = 30
         img_urls = ""

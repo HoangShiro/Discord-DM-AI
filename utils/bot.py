@@ -76,6 +76,7 @@ chat_wait = False
 call_limit = False
 img_prompt = "sky"
 img_id = 0
+img_block = "futanari furry bestiality yaoi hairy"
 
 bot_mood = 50.0
 split_send = False
@@ -114,7 +115,8 @@ default_values = {
     "pitch": 0,
     "intonation_scale": 1,
     "speed": 1,
-    "beha_down": False
+    "beha_down": False,
+    "img_block": ""
 }
 
 # Kiểm tra xem tệp JSON có tồn tại không
@@ -645,9 +647,16 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Image Search
-@bot.tree.command(name="isrc", description=f"Tìm art (NSFW Warning)")
+@bot.tree.command(name="isrc", description=f"Tìm art")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
+        global img_block
+        if nsfw:
+            sfw = "NSFW"
+        else:
+            sfw = ""
+        if block is not None:
+            vals_save('user_files/vals.json', 'img_block', block)
         if limit > 100:
             limit = 100
         temp_limit = 1
@@ -655,7 +664,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         img_urls = ""
         if nsfw:
             if block is None:
-                block = "futanari furry bestiality yaoi hairy"
+                block = img_block
             try:
                 se = booru.Rule34()
                 img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
@@ -665,16 +674,28 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 print("Error OPEN-AI:", str(e))
                 return
         
+        if not nsfw:
+            if block is None:
+                block = img_block
+            try:
+                se = booru.Safebooru()
+                img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
+                img_urls = booru.resolve(img_urls)
+            except Exception as e:
+                await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+                print("Error OPEN-AI:", str(e))
+                return
+
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}", color=discord.Color.blue())
+        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   [{sfw}]", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   [{sfw}]", color=discord.Color.blue())
             new_embed.set_image(url=img_urls[index])
             await interaction.response.edit_message(embed=new_embed, view=view)
 
@@ -703,13 +724,25 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         await interaction.response.send_message(embed=embed, view=view)
         if nsfw:
             if block is None:
-                block = "futanari furry bestiality yaoi hairy"
+                block = img_block
             try:
                 se = booru.Rule34()
                 img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
                 print("Error OPEN-AI:", str(e))
+        
+        if not nsfw:
+            if block is None:
+                block = img_block
+            try:
+                se = booru.Safebooru()
+                img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
+                img_urls = booru.resolve(img_urls)
+            except Exception as e:
+                await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+                print("Error OPEN-AI:", str(e))
+
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

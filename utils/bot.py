@@ -705,6 +705,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             nonlocal index
             message_id = interaction.message.id
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
+            index = img_urls_2["index"]
             if index < len(img_urls_2["img_urls"]) - 1:
                 index += 1
             else:
@@ -716,6 +717,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             nonlocal index
             message_id = interaction.message.id
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
+            index = img_urls_2["index"]
             if index > 0:
                 index -= 1
             else:

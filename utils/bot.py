@@ -643,7 +643,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Image Search
-@bot.tree.command(name="isrc", description=f"Tìm art")
+@bot.tree.command(name="isrc", description=f"Tìm art (NSFW Warning)")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, block: str=None):
     if interaction.user.id == user_id:
         if not nsfw:

@@ -76,6 +76,7 @@ chat_wait = False
 call_limit = False
 img_prompt = "sky"
 img_id = 0
+message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
 
 bot_mood = 50.0
@@ -701,6 +702,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def nt_bt_atv(interaction):
             nonlocal index
+            message_id = interaction.message.id
+            img_urls = message_states.get(message_id, [])
             if index < len(img_urls) - 1:
                 index += 1
             else:
@@ -709,6 +712,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def bk_bt_atv(interaction):
             nonlocal index
+            message_id = interaction.message.id
+            img_urls = message_states.get(message_id, [])
             if index > 0:
                 index -= 1
             else:
@@ -742,6 +747,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
                 print("Error OPEN-AI:", str(e))
+        message_id = interaction.message.id
+        message_states[message_id] = img_urls
 
     else:
         randaw = noperm_answ()

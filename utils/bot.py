@@ -268,7 +268,7 @@ async def on_message(message):
             now_msg = message
             async for message in message.channel.history(limit=3):
                 if message.author == bot.user:
-                    if message.content:
+                    if message.content or message.embeds:
                         await message.edit(view=None)
                         break
             message = now_msg

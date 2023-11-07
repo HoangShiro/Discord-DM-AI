@@ -699,10 +699,20 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                     await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))
                 return
-
+            
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
+
+        mess = f"*Sent a picture of {keywords}'s content when {user_nick} asked.*"
+        his = get_bot_answer()
+        if his:
+            lang = lang_detect(his)
+            if "vi" in lang:
+                mess = f"*Đã gửi cho {user_nick} hình ảnh: {keywords}.*"
+        bot_answer_save(mess)
+
+
 
         embed = discord.Embed(description=f"{keywords}   {index+1}/?   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
@@ -777,7 +787,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async for message in interaction.channel.history(limit=3):
             if message.author == bot.user:
                 if skip_first_bot_message:
-                    if message.content:
+                    if message.content and not message.content.endswith((".mp4", ".webp")):
                         await message.edit(view=None)
                     break
                 else:

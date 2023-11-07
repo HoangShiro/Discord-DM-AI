@@ -710,6 +710,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"])
+            message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
 
         async def bk_bt_atv(interaction):
             nonlocal index
@@ -720,6 +721,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"])
+            message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
 
         view = View()
         view.add_item(irmv_bt)

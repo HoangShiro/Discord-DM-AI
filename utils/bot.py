@@ -15,7 +15,6 @@ import datetime
 import pytz
 import math
 import time
-import booru
 
 import utils.status as status
 from utils.private_files import *
@@ -651,6 +650,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name="isrc", description=f"Tìm art")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
+        import booru
         global img_block, message_states
         
         if nsfw:

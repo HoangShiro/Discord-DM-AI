@@ -1060,6 +1060,7 @@ async def bot_error_notice(error):
 async def bot_imgreact_answer(interaction, case):
     view = View(timeout=None)
     view.add_item(rmv_bt)
+    view.add_item(rc_bt)
     view.add_item(continue_bt)
     async with interaction.channel.typing():
         ai_text = await bot_answer_2(case)
@@ -1129,7 +1130,12 @@ async def msg_send(message, text):
         if "`Error error`" in paragraph:
             pass
         else:
-            await message.channel.send(paragraph, view=view)
+            if random.random() < 0.2:
+                await message.channel.send(paragraph)
+                case = "Continue your answer above proactively by yourself, follow the line closely, maybe with actions. If the above is a question, don't ask it again."
+                asyncio.create_task(bot_imgreact_answer(message, case))
+            else:
+                await message.channel.send(paragraph, view=view)
         skip_first_bot_message = False
         async for message in message.channel.history(limit=6):
             time.sleep(0.5)
@@ -1140,9 +1146,6 @@ async def msg_send(message, text):
                 else:
                     # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
-        if random.random() < 0.2:
-            case = "Continue your answer above proactively, by yourself."
-            asyncio.create_task(bot_imgreact_answer(message, case))
         asyncio.create_task(count_msg())
 
 async def msg_send_channel(message, text):

@@ -1387,7 +1387,7 @@ async def time_check():
     my_timezone = pytz.timezone('Asia/Bangkok')
     vn_time = datetime.datetime.now(my_timezone)
 
-    user = await bot.fetch_user(user_id)
+    """user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
         await user.create_dm()
     channel_id = user.dm_channel.id
@@ -1404,7 +1404,7 @@ async def time_check():
         if message.author == bot.user:
             if message.content:
                 await message.edit(view=view)
-                break
+                break"""
 
     # Wake up check
     if day_check:

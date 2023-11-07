@@ -692,18 +692,19 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
+        embed = discord.Embed(description=f"{keywords}   {index}/{limit}   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{keywords}   {index}/{limit}   {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls[index])
             await interaction.response.edit_message(embed=new_embed, view=view)
 
         async def nt_bt_atv(interaction):
             nonlocal index
             message_id = interaction.id
+            print(message_id)
             message_img_urls = message_states.get(message_id, [])
             if index < len(message_img_urls) - 1:
                 index += 1
@@ -714,6 +715,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def bk_bt_atv(interaction):
             nonlocal index
             message_id = interaction.id
+            print(message_id)
             message_img_urls = message_states.get(message_id, [])
             if index > 0:
                 index -= 1

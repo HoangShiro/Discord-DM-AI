@@ -692,21 +692,20 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        embed = discord.Embed(description=f"{keywords}   {index}/{limit}   {sfw}", color=discord.Color.blue())
+        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{keywords}   {index}/{limit}   {sfw}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls[index])
             await interaction.response.edit_message(embed=new_embed, view=view)
 
         async def nt_bt_atv(interaction):
             nonlocal index
-            message_id = interaction.id
+            message_id = interaction.message.id
             print(message_id)
-            message_img_urls = message_states.get(message_id, [])
-            if index < len(message_img_urls) - 1:
+            if index < len(img_urls) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
@@ -714,13 +713,10 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def bk_bt_atv(interaction):
             nonlocal index
-            message_id = interaction.id
-            print(message_id)
-            message_img_urls = message_states.get(message_id, [])
             if index > 0:
                 index -= 1
             else:
-                index = len(message_img_urls) - 1  # Trở về link cuối nếu chạm giới hạn
+                index = len(img_urls) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index)
 
         view = View()
@@ -750,8 +746,9 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
                 print("Error img search:", str(e))
-        message_id = interaction.id
-        message_states[message_id] = img_urls
+        async for message in interaction.channel.history(limit=1):
+            message_id = message.id
+            message_states[message_id] = img_urls
         print(message_states)
 
     else:

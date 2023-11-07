@@ -182,7 +182,7 @@ async def on_ready():
     dm_channel_id = user.dm_channel.id
     channel = bot.get_channel(dm_channel_id)
 
-    view = View()
+    view = View(timeout=None)
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
@@ -364,7 +364,7 @@ async def answer_regen(interaction: discord.Interaction):
         dm_channel_id = user.dm_channel.id
         channel = bot.get_channel(dm_channel_id)
 
-        view = View()
+        view = View(timeout=None)
         view.add_item(rmv_bt)
         view.add_item(rc_bt)
         view.add_item(continue_bt)
@@ -625,7 +625,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         emojis = guild.emojis
         emoji = random.choice(emojis)
         embed = discord.Embed(title=f"Image đang được tạo... {emoji}", color=discord.Color.blue())
-        view = View()
+        view = View(timeout=None)
         view.add_item(irmv_bt)
         await interaction.response.send_message(embed=embed, view=view)
         mess = f"*Sent {user_nick} an image: {prompt}*"
@@ -784,10 +784,10 @@ async def rmv_bt_atv(interaction):
         await user.create_dm()
     channel_id = user.dm_channel.id
     channel = bot.get_channel(channel_id)
-    del_view = View()
+    del_view = View(timeout=None)
     del_view.add_item(irmv_bt)
     irmv_bt.callback = irmv_bt_atv
-    view = View()
+    view = View(timeout=None)
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
@@ -960,7 +960,7 @@ async def bot_remind_answer(user, channel_id, case):
 
 # Tạo lại câu trả lời cho bot
 async def bot_regen_answer(interaction):
-    view = View()
+    view = View(timeout=None)
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
@@ -974,7 +974,7 @@ async def bot_regen_answer(interaction):
 # Tạo câu trả lời tiếp tục cho bot
 async def bot_continue_answer(interaction):
     clear_view = View()
-    view = View()
+    view = View(timeout=None)
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
@@ -1056,7 +1056,7 @@ async def msg_send(message, text):
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
 
 
-        view = View()
+        view = View(timeout=None)
         view.add_item(rmv_bt)
         view.add_item(rc_bt)
         view.add_item(continue_bt)
@@ -1365,7 +1365,7 @@ async def time_check():
     channel_id = user.dm_channel.id
     channel = bot.get_channel(channel_id)
     
-    view = View()
+    view = View(timeout=None)
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)

@@ -1130,7 +1130,8 @@ async def msg_send(message, text):
         if "`Error error`" in paragraph:
             pass
         else:
-            if random.random() < 0.2:
+            rate = (0.2/(bot_mood*2))*100
+            if random.random() < rate:
                 await message.channel.send(paragraph)
                 case = "Continue your answer above proactively and creatively by yourself, follow the line closely, maybe with actions. If the above is a question, don't ask it again."
                 asyncio.create_task(bot_imgreact_answer(message, case))

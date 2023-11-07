@@ -39,8 +39,8 @@ rmv_bt = discord.ui.Button(label="⚜️ remove", custom_id="remove", style=disc
 irmv_bt = discord.ui.Button(label="⚜️ remove", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
-nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.grey)
-bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.grey)
+nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
+bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
 
 user_name = "Master"
 user_nick = "user"
@@ -1140,6 +1140,9 @@ async def msg_send(message, text):
                 else:
                     # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
+        if random.random() < 0.2:
+            case = "Continue your answer above proactively, by yourself."
+            asyncio.create_task(bot_imgreact_answer(message, case))
         asyncio.create_task(count_msg())
 
 async def msg_send_channel(message, text):

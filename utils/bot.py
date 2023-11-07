@@ -660,7 +660,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             return
         embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
         for i, url in enumerate(img_urls):
-            embed.set_image(url=url)
+            print(url)
+            #embed.set_image(url=url)
         view = View()
         view.add_item(irmv_bt)
         await interaction.response.send_message(embed=embed, view=view)

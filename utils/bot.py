@@ -648,21 +648,20 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name="isrc", description=f"Tìm art (NSFW Warning)")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
-        if not nsfw:
-            await interaction.response.send_message(f"`NSFW đang tắt.`", ephemeral=True)
-            return
-        if block is None:
-            block = "futanari furry bestiality yaoi hairy"
-        if limit > 10:
-            limit = 10
+        if limit > 30:
+            limit = 30
         img_urls = ""
-        try:
-            se = booru.Rule34()
-            img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
-            img_urls = booru.resolve(img_urls)
-        except Exception as e:
-            await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
-            return
+        if nsfw:
+            if block is None:
+                block = "futanari furry bestiality yaoi hairy"
+            try:
+                se = booru.Rule34()
+                img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
+                img_urls = booru.resolve(img_urls)
+            except Exception as e:
+                await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+                return
+        
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return

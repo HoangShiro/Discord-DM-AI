@@ -660,6 +660,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             img_urls = booru.resolve(img_urls)
         except Exception as e:
             await interaction.response.send_message({e}, ephemeral=True)
+            return
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return

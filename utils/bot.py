@@ -750,6 +750,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 print("Error img search:", str(e))
         message_id = interaction.id
         message_states[message_id] = img_urls
+        print(message_states)
 
     else:
         randaw = noperm_answ()

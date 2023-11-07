@@ -702,7 +702,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def nt_bt_atv(interaction):
             nonlocal index
-            message_id = interaction.message.id
+            message_id = interaction.id
             img_urls = message_states.get(message_id, [])
             if index < len(img_urls) - 1:
                 index += 1
@@ -712,7 +712,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def bk_bt_atv(interaction):
             nonlocal index
-            message_id = interaction.message.id
+            message_id = interaction.id
             img_urls = message_states.get(message_id, [])
             if index > 0:
                 index -= 1
@@ -747,7 +747,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
                 print("Error OPEN-AI:", str(e))
-        message_id = interaction.message.id
+        message_id = interaction.id
         message_states[message_id] = img_urls
 
     else:

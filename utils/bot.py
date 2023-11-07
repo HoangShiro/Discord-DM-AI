@@ -733,7 +733,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             new_embed.set_image(url=img_urls_2[index])
             url = img_urls_2[index]
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"{index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
+                await interaction.response.edit_message(content=f"{keywords}   {index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 

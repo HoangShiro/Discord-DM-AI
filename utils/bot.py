@@ -695,21 +695,22 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
-        async def update_embed(interaction, index):
+        async def update_embed(interaction, index, img_urls_2):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
             new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
-            new_embed.set_image(url=img_urls[index])
+            new_embed.set_image(url=img_urls_2[index])
             await interaction.response.edit_message(embed=new_embed, view=view)
 
         async def nt_bt_atv(interaction):
             nonlocal index
             message_id = interaction.message.id
             img_urls_2 = message_states.get(message_id, [])
+            print(img_urls_2)
             if index < len(img_urls_2) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
-            await update_embed(interaction, index)
+            await update_embed(interaction, index, img_urls_2)
 
         async def bk_bt_atv(interaction):
             nonlocal index

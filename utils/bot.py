@@ -720,7 +720,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 index -= 1
             else:
                 index = len(img_urls_2) - 1  # Trở về link cuối nếu chạm giới hạn
-            await update_embed(interaction, index)
+            await update_embed(interaction, index, img_urls_2)
 
         view = View()
         view.add_item(irmv_bt)

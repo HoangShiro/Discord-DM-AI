@@ -648,7 +648,9 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name="isrc", description=f"Tìm art (NSFW Warning)")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
-        embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
+        view = View()
+        view.add_item(irmv_bt)
+        embed = discord.Embed(description=f"Tìm art cho: {keywords}...", color=discord.Color.blue())
         await interaction.response.send_message(embed=embed)
         if limit > 30:
             limit = 30
@@ -661,14 +663,18 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                await interaction.response.edit_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+                new_embed = discord.Embed(description=f"Không tìm thấy art cho '{keywords}'.", color=discord.Color.blue())
+                await interaction.response.edit_message(embed=new_embed, view=view)
                 return
         
         if not img_urls:
-            await interaction.response.edit_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+            new_embed = discord.Embed(description=f"Không tìm thấy art cho '{keywords}'.", color=discord.Color.blue())
+            await interaction.response.edit_message(embed=new_embed, view=view)
             return
+        
         embed.set_image(url=img_urls[0])
-
+        view.add_item(bk_bt)
+        view.add_item(nt_bt)
         async def update_embed(interaction, index):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
             new_embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
@@ -693,10 +699,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 index = len(img_urls) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index)
 
-        view = View()
-        view.add_item(irmv_bt)
-        view.add_item(bk_bt)
-        view.add_item(nt_bt)
         bk_bt.callback = bk_bt_atv
         nt_bt.callback = nt_bt_atv
         await interaction.response.edit_message(embed=embed, view=view)

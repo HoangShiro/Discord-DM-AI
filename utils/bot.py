@@ -76,7 +76,7 @@ chat_wait = False
 call_limit = False
 img_prompt = "sky"
 img_id = 0
-message_states = {}
+#message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
 
 bot_mood = 50.0
@@ -660,6 +660,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             vals_save('user_files/vals.json', 'img_block', block)
         if limit > 100:
             limit = 100
+        message_states = {}
         temp_limit = 1
         index = 0
         img_urls = ""
@@ -735,7 +736,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                print("Error OPEN-AI:", str(e))
+                print("Error img search:", str(e))
         
         if not nsfw:
             if block is None:
@@ -746,9 +747,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
-                print("Error OPEN-AI:", str(e))
+                print("Error img search:", str(e))
         message_id = interaction.id
-        print(message_id)
         message_states[message_id] = img_urls
 
     else:

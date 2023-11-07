@@ -652,7 +652,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
     if interaction.user.id == user_id:
         global img_block
         if nsfw:
-            sfw = "NSFW"
+            sfw = "[NSFW]"
         else:
             sfw = ""
         if block is not None:
@@ -690,12 +690,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   [{sfw}]", color=discord.Color.blue())
+        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   [{sfw}]", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}   {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls[index])
             await interaction.response.edit_message(embed=new_embed, view=view)
 

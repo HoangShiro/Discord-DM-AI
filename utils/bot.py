@@ -664,7 +664,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
                 new_embed = discord.Embed(description=f"Không tìm thấy art cho '{keywords}'.", color=discord.Color.blue())
-                await interaction.response.edit_message(embed=new_embed, view=view)
+                await interaction.message.edit(embed=new_embed, view=view)
                 return
         
         if not img_urls:

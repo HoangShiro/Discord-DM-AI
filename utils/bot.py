@@ -741,7 +741,7 @@ async def rmv_bt_atv(interaction):
         if message.author == bot.user:
             if not message.content and message.attachments:
                 await message.delete()
-            else:
+            elif message.content:
                 await message.edit(view=view)
                 break
 

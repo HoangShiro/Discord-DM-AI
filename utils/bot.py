@@ -655,13 +655,13 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             limit = 10
         se = booru.Rule34()
         img_urls = await se.search_image(query=keywords, limit=limit, block=block)
+        img_urls = booru.resolve(img_urls)
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
         embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
-        for i, url in enumerate(img_urls):
-            print(url)
-            #embed.set_image(url=url)
+        for url in img_urls:
+            embed.set_image(url=url)
         view = View()
         view.add_item(irmv_bt)
         await interaction.response.send_message(embed=embed, view=view)

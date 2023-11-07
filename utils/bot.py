@@ -651,6 +651,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         if limit > 100:
             limit = 100
         temp_limit = 1
+        index = 0
         img_urls = ""
         if nsfw:
             if block is None:
@@ -667,7 +668,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
-        embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
+
+        embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index):
@@ -675,8 +677,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             new_embed = discord.Embed(description=f"{keywords}   {index+1}/{limit}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls[index])
             await interaction.response.edit_message(embed=new_embed, view=view)
-
-        index = 0
 
         async def nt_bt_atv(interaction):
             nonlocal index

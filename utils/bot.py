@@ -681,13 +681,17 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             nonlocal index
             if index < len(img_urls) - 1:
                 index += 1
-                await update_embed(interaction, index)
+            else:
+                index = 0  # Trở về link đầu nếu chạm giới hạn
+            await update_embed(interaction, index)
 
         async def bk_bt_atv(interaction):
             nonlocal index
             if index > 0:
                 index -= 1
-                await update_embed(interaction, index)
+            else:
+                index = len(img_urls) - 1  # Trở về link cuối nếu chạm giới hạn
+            await update_embed(interaction, index)
 
         view = View()
         view.add_item(irmv_bt)

@@ -725,7 +725,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await update_embed(interaction, index, img_urls_2["img_urls"])
             message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
 
-        view = View()
+        view = View(timeout=None)
         view.add_item(irmv_bt)
         view.add_item(bk_bt)
         view.add_item(nt_bt)
@@ -755,7 +755,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
             message_states[message_id] = {"index": index, "img_urls": img_urls}
-        print(message_states)
 
     else:
         randaw = noperm_answ()

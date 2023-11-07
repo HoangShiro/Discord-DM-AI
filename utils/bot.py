@@ -1382,7 +1382,7 @@ async def time_check():
     rc_bt.callback = rc_bt_atv
     rmv_bt.callback = rmv_bt_atv
     continue_bt.callback = ctn_bt_atv
-    async for message in channel.history(limit=3):
+    async for message in channel.history(limit=1):
         if message.author == bot.user:
             if message.content:
                 await message.edit(view=view)

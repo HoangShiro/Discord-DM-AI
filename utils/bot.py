@@ -725,7 +725,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             if url.endswith((".mp4", ".webp")):
                 await interaction.response.edit_message(content=f"{index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
             else:
-                await interaction.response.edit_message(embed=new_embed, view=view)
+                await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 
         async def nt_bt_atv(interaction):
             nonlocal index

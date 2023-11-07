@@ -268,7 +268,7 @@ async def on_message(message):
             now_msg = message
             async for message in message.channel.history(limit=3):
                 if message.author == bot.user:
-                    if message.content or message.embeds:
+                    if message.content:
                         await message.edit(view=None)
                         break
             message = now_msg
@@ -728,7 +728,9 @@ async def rmv_bt_atv(interaction):
         await user.create_dm()
     channel_id = user.dm_channel.id
     channel = bot.get_channel(channel_id)
-    
+    del_view = View()
+    del_view.add_item(irmv_bt)
+    irmv_bt.callback = irmv_bt_atv
     view = View()
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
@@ -738,8 +740,10 @@ async def rmv_bt_atv(interaction):
     continue_bt.callback = ctn_bt_atv
     async for message in channel.history(limit=3):
         if message.author == bot.user:
-            if not message.content:
+            if not message.content or message.embeds:
                 await message.delete()
+            elif message.embeds:
+                await message.edit(view=del_view)
             else:
                 await message.edit(view=view)
                 break

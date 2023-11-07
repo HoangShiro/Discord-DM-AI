@@ -648,10 +648,8 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name="isrc", description=f"Tìm art (NSFW Warning)")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
-        try:
-            await interaction.response.send_message(f" ", delete_after = 0)
-        except:
-            pass
+        embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
+        await interaction.response.send_message(embed=embed, view=view)
         if limit > 30:
             limit = 30
         img_urls = ""
@@ -663,13 +661,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+                await interaction.response.edit_message(f"Không có art nào với '{keywords}'", ephemeral=True)
                 return
         
         if not img_urls:
-            await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+            await interaction.response.edit_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
-        embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index):
@@ -702,7 +699,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         view.add_item(nt_bt)
         bk_bt.callback = bk_bt_atv
         nt_bt.callback = nt_bt_atv
-        await interaction.response.send_message(embed=embed, view=view)
+        await interaction.response.edit_message(embed=embed, view=view)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

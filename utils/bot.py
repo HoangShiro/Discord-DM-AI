@@ -15,6 +15,7 @@ import datetime
 import pytz
 import math
 import time
+import booru
 
 import utils.status as status
 from utils.private_files import *
@@ -610,7 +611,7 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Image Gen
-@bot.tree.command(name="image", description=f"Tạo ảnh")
+@bot.tree.command(name="igen", description=f"Tạo art")
 async def image_gen(interaction: discord.Interaction, prompt: str):
     if interaction.user.id == user_id:
         global img_prompt, img_id
@@ -640,6 +641,33 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
+# Image Search
+@bot.tree.command(name="isrc", description=f"Tìm art")
+async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, block: str=None):
+    if interaction.user.id == user_id:
+        if not nsfw:
+            await interaction.response.send_message(f"`NSFW đang tắt.`", ephemeral=True)
+            return
+        if block is None:
+            block = "futanari furry bestiality yaoi hairy"
+        if limit > 10:
+            limit = 10
+        se = booru.Rule34()
+        img_urls = await se.search_image(query=keywords, limit=limit, block=block)
+        if not img_urls:
+            await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+            return
+        embed = discord.Embed(description=f"{keywords}", color=discord.Color.blue())
+        for img_url in img_urls:
+            embed.add_field(value=img_url, inline=False)
+        view = View()
+        view.add_item(irmv_bt)
+        await interaction.response.send_message(embed=embed, view=view)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
 
 # Button call
 async def irmv_bt_atv(interaction):

@@ -711,8 +711,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             if "vi" in lang:
                 mess = f"*Đã gửi cho {user_nick} illustartions: {keywords}.*"
         bot_answer_save(mess)
-        case = f"Please say something about the illustation that {user_nick} just requested"
-        asyncio.create_task(bot_imgreact_answer(interaction, case))
+        if random.random() < 0.2:
+            if nsfw:
+                case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
+            else:
+                case = f"Please say something about the illustation that {user_nick} just requested."
+            asyncio.create_task(bot_imgreact_answer(interaction, case))
 
         embed = discord.Embed(description=f"{keywords}   {index+1}/?   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
@@ -1053,7 +1057,6 @@ async def bot_error_notice(error):
 async def bot_imgreact_answer(interaction, case):
     view = View(timeout=None)
     view.add_item(rmv_bt)
-    view.add_item(rc_bt)
     view.add_item(continue_bt)
     async with interaction.channel.typing():
         ai_text = await bot_answer_2(case)

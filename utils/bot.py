@@ -648,6 +648,10 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name="isrc", description=f"Tìm art (NSFW Warning)")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
+        try:
+            await interaction.response.send_message(f" ", delete_after = 0)
+        except:
+            pass
         if limit > 30:
             limit = 30
         img_urls = ""

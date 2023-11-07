@@ -755,6 +755,16 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
             message_states[message_id] = {"index": index, "img_urls": img_urls}
+        skip_first_bot_message = False
+        async for message in interaction.channel.history(limit=3):
+            if message.author == bot.user:
+                if skip_first_bot_message:
+                    if message.content:
+                        await message.edit(view=None)
+                    break
+                else:
+                    # Bỏ qua tin nhắn đầu tiên của bot.user
+                    skip_first_bot_message = True
 
     else:
         randaw = noperm_answ()

@@ -640,14 +640,15 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         async for message in interaction.channel.history(limit=1):
             img_id = message.id
             await message.edit(embed=embed)
+        bot_mood +=1
+        if isinstance(interaction.channel, discord.DMChannel):
+            rate = (0.2/(bot_mood*2))*100
+            if random.random() < rate:
+                case = f"Please say something about the beautiful illustation that {user_nick} just requested."
+                asyncio.create_task(bot_imgreact_answer(interaction, case))
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
-        bot_mood +=1
-        rate = (0.2/(bot_mood*2))*100
-        if random.random() < rate:
-            case = f"Please say something about the beautiful illustation that {user_nick} just requested."
-            asyncio.create_task(bot_imgreact_answer(interaction, case))
 
 # Image Search
 @bot.tree.command(name="isrc", description=f"Tìm art")
@@ -832,20 +833,22 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 else:
                     skip_first_bot_message = True
 
-        mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"
-        his = get_bot_answer()
-        if his:
-            lang = lang_detect(his)
-            if "vi" in lang:
-                mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
-        bot_answer_save(mess)
-        rate = (0.2/((bot_mood+1)*2))*100
-        if random.random() < rate:
-            if nsfw:
-                case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
-            else:
-                case = f"Please say something about the illustation that {user_nick} just requested."
-            asyncio.create_task(bot_imgreact_answer(interaction, case))
+        if isinstance(interaction.channel, discord.DMChannel):
+            mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"
+            his = get_bot_answer()
+            if his:
+                lang = lang_detect(his)
+                if "vi" in lang:
+                    mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
+            bot_answer_save(mess)
+            rate = (0.2/((bot_mood+1)*2))*100
+            if random.random() < rate:
+                if nsfw:
+                    case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
+                else:
+                    case = f"Please say something about the illustation that {user_nick} just requested."
+                asyncio.create_task(bot_imgreact_answer(interaction, case))
+        
         guild = bot.get_guild(server_id)
         emojis = guild.emojis
         emoji_split(emojis)

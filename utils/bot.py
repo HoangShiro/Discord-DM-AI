@@ -148,6 +148,8 @@ with open('user_files/vals.json', 'w', encoding="utf-8") as file:
 
 emoji_rate_percent = emoji_rate * 100
 
+with open('user_files/img_lists', 'r', encoding="utf-8") as file:
+    message_states = json.load(file)
 
 print(f"{ai_full_name} đang thức dậy!")
 print()
@@ -173,7 +175,6 @@ async def on_ready():
     global alarms
     await member_info()
     alarms = load_alarms_from_json()
-    
 
     user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
@@ -790,6 +791,9 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
             message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
+            with open(file_name, 'w', encoding="utf-8") as file:
+                json.dump(message_states, file)
+        
         skip_first_bot_message = False
         async for message in interaction.channel.history(limit=3):
             if message.author == bot.user:
@@ -891,6 +895,8 @@ def vals_save(file_name, variable_name, variable_value):
         with open(file_name, 'w', encoding="utf-8") as file:
             json.dump(data, file)
     except FileNotFoundError:
+        with open(file_name, 'w', encoding="utf-8") as file:
+            json.dump(data, file)
         print(f"File '{file_name}' not found.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")

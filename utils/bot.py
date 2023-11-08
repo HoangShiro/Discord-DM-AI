@@ -149,10 +149,10 @@ with open('user_files/vals.json', 'w', encoding="utf-8") as file:
 emoji_rate_percent = emoji_rate * 100
 
 try:
-    with open('user_files/img_lists', 'r', encoding="utf-8") as file:
+    with open('user_files/img_lists.json', 'r', encoding="utf-8") as file:
         message_states = json.load(file)
 except FileNotFoundError:
-    with open('user_files/img_lists', 'w', encoding="utf-8") as file:
+    with open('user_files/img_lists.json', 'w', encoding="utf-8") as file:
         json.dump(message_states, file)
 
 print(f"{ai_full_name} đang thức dậy!")
@@ -795,7 +795,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
             message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
-            with open(file_name, 'w', encoding="utf-8") as file:
+            with open('user_files/img_lists.json', 'w', encoding="utf-8") as file:
                 json.dump(message_states, file)
         
         skip_first_bot_message = False

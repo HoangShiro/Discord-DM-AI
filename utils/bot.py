@@ -911,10 +911,13 @@ def int_emoji(num):
         is_negative = True
         num = abs(num)
 
-    while num > 0:
-        digit = num % 10
-        emoji_str = emoji_digits[str(digit)] + emoji_str
-        num //= 10
+    if num < 10:
+        emoji_str = emoji_digits['0'] + emoji_digits[str(num)]
+    else:
+        while num > 0:
+            digit = num % 10
+            emoji_str = emoji_digits[str(digit)] + emoji_str
+            num //= 10
 
     if is_negative:
         emoji_str = '➖' + emoji_str

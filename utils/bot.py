@@ -795,6 +795,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
             message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
+            print(message_states)
             with open(file_name, 'w', encoding="utf-8") as file:
                 json.dump(message_states, file)
         

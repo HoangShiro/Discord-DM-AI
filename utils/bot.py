@@ -711,10 +711,9 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         if not limit:
             num_l = 1
 
-        embed=discord.Embed(title="", url=imgs[0]['file_url'], description=f"🏷️ {fix_kws}", color=discord.Color.blue())
-        embed.add_field(name=f"💟 {imgs[0]['rating']}", value="", inline=False)
+        embed=discord.Embed(title="", url=imgs[0]['file_url'], description=f"🏷️ {fix_kws} 💟 {imgs[0]['rating']}", color=discord.Color.blue())
         embed.add_field(name=f"{int_emoji(index+1)}🔹{num_l}", value="", inline=False)
-        embed.add_field(name="", value=imgs[0]['post_url'])
+        embed.add_field(name="", value=f"🔗 [See the post]({imgs[0]['post_url']})")
         embed.set_image(url=imgs[0]['file_url'])
         async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls

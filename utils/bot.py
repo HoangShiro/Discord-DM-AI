@@ -741,6 +741,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             print()
             img_urls_2 = message_states.get(message_id, {"index": 0, "tags": "", "img_urls": []})
             print(img_urls_2)
+            print()
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             tags = img_urls_2["tags"]
@@ -798,7 +799,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
             message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
-            print(message_states)
             with open(file_name, 'w', encoding="utf-8") as file:
                 json.dump(message_states, file)
         

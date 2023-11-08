@@ -738,7 +738,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             num = len(imgs_2["imgs"]) - 1
             index = imgs_2["index"]
             tags = imgs_2["tags"]
-            if index < num:
+            if index < (num-1):
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
@@ -758,7 +758,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             if index > 0:
                 index -= 1
             else:
-                index = num  # Trở về link cuối nếu chạm giới hạn
+                index = (num-1)  # Trở về link cuối nếu chạm giới hạn
             img_url = imgs_2["imgs"][index]
             await update_embed(interaction, index, img_url, num, tags)
             message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}

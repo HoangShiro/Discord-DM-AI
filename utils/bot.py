@@ -677,7 +677,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                se = booru.Rule34()
+                se = booru.Gelbooru()
                 tag = await se.find_tags(query=keywords)
                 tag = booru.resolve(tag)
                 if tag != []:

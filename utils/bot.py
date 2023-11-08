@@ -671,14 +671,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 se = booru.Gelbooru()
                 fix_kws = await fix_src(se, keywords)
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
-                img_urls = booru.resolve(img_urls)
-                for image in img_urls:
-                    img_info = {
-                        'file_url': image['file_url'],
-                        'post_url': image['post_url'],
-                        'rating': image['rating']
-                    }
-                    imgs.append(img_info)
+                img = booru.resolve(img_urls)
+                for image_info in img:
+                    file_url = image_info['file_url']
+                    post_url = image_info['post_url']
+                    rating = image_info['rating']
+                    imgs.append({'file_url': file_url, 'post_url': post_url, 'rating': rating})
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))
@@ -692,13 +690,11 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 fix_kws = await fix_src(se, keywords)
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
                 img = booru.resolve(img_urls)
-                for image in img:
-                    img_info = {
-                        'file_url': image['file_url'],
-                        'post_url': image['post_url'],
-                        'rating': image['rating']
-                    }
-                    imgs.append(img_info)
+                for image_info in img:
+                    file_url = image_info['file_url']
+                    post_url = image_info['post_url']
+                    rating = image_info['rating']
+                    imgs.append({'file_url': file_url, 'post_url': post_url, 'rating': rating})
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))

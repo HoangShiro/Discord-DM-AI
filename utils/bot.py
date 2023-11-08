@@ -41,6 +41,7 @@ rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.Bu
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
 bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
+link_bt = discord.ui.Button(custom_id="link", style=discord.ButtonStyle.link)
 
 user_name = "Master"
 user_nick = "user"
@@ -662,6 +663,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         temp_limit = 1
         index = 0
         img_urls = ""
+        link = ""
         imgs = []
         fix_kws = keywords
         if nsfw:
@@ -717,6 +719,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
+            nonlocal link
+            link = img_url['post_url']
             new_embed = discord.Embed(title="", url=img_url['file_url'], description=f"🏷️ [{fix_kws}]({img_url['post_url']}) 💟 {img_url['rating']}", color=discord.Color.blue())
             new_embed.add_field(name=f"{int_emoji(index+1)}🔹{int_emoji(num)}", value="", inline=False)
             new_embed.set_image(url=img_url['file_url'])
@@ -760,10 +764,15 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}
             bot_mood += 0.1
 
+        async def link_bt_atv(interaction):
+            discord.ui.Button.url=link
+
         view = View(timeout=None)
         view.add_item(irmv_bt)
+        view.add_item(link_bt)
         view.add_item(bk_bt)
         view.add_item(nt_bt)
+        link_bt.callback = link_bt_atv
         bk_bt.callback = bk_bt_atv
         nt_bt.callback = nt_bt_atv
         await interaction.response.send_message(embed=embed, view=view)

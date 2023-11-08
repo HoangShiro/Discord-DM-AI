@@ -746,7 +746,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[message_id] = {"index": index, "tags": "", "img_urls": img_urls_2["img_urls"]}
+            message_states[message_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
         async def bk_bt_atv(interaction):
@@ -762,7 +762,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[message_id] = {"index": index, "tags": "", "img_urls": img_urls_2["img_urls"]}
+            message_states[message_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
         view = View(timeout=None)

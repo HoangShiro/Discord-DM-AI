@@ -664,17 +664,61 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             vals_save('user_files/vals.json', 'img_block', block)
         if limit > 100:
             limit = 100
+        temp_limit = 1
         index = 0
         img_urls = ""
         fix_kws = keywords
-        guild = bot.get_guild(server_id)
-        emojis = guild.emojis
-        emoji = random.choice(emojis)
+        if nsfw:
+            if block is None:
+                block = img_block
+            try:
+                se = booru.Gelbooru()
+                fix_kws = await fix_src(se, keywords)
+                img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
+                img_urls = booru.resolve(img_urls)
+            except Exception as e:
+                await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
+                print("Image search:", str(e))
+                return
+        
+        if not nsfw:
+            if block is None:
+                block = img_block
+            try:
+                se = booru.Safebooru()
+                fix_kws = await fix_src(se, keywords)
+                img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
+                img_urls = booru.resolve(img_urls)
+            except Exception as e:
+                await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
+                print("Image search:", str(e))
+                return
+            
+        if not img_urls:
+            await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
+            return
 
-        embed = discord.Embed(description=f"{ai_name} đang tìm art với từ khoá: {keywords}... {emoji}", color=discord.Color.blue())
+        mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"
+        his = get_bot_answer()
+        if his:
+            lang = lang_detect(his)
+            if "vi" in lang:
+                mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
+        bot_answer_save(mess)
+        rate = (0.2/((bot_mood+1)*2))*100
+        if random.random() < rate:
+            if nsfw:
+                case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
+            else:
+                case = f"Please say something about the illustation that {user_nick} just requested."
+            asyncio.create_task(bot_imgreact_answer(interaction, case))
+
+        embed = discord.Embed(description=f"{fix_kws}   {index+1}/?   {sfw}", color=discord.Color.blue())
+        embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index, img_urls_2, num, tags):
-            new_embed = discord.Embed(description=f"{tags}   [{index+1}/{num}]   {sfw}", color=discord.Color.blue())
+        # Tạo một Embed mới với URL hình ảnh mới từ img_urls
+            new_embed = discord.Embed(description=f"{tags}   {index+1}/{num}   {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls_2[index])
             url = img_urls_2[index]
             if url.endswith((".mp4", ".webp")):
@@ -722,45 +766,29 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         nt_bt.callback = nt_bt_atv
         await interaction.response.send_message(embed=embed, view=view)
         bot_mood += 1
-
         if nsfw:
             if block is None:
                 block = img_block
             try:
                 se = booru.Gelbooru()
-                fix_kws = await fix_src(se, keywords)
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                await interaction.response.edit_message(content=f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Error img search:", str(e))
+
         if not nsfw:
             if block is None:
                 block = img_block
             try:
                 se = booru.Safebooru()
-                fix_kws = await fix_src(se, keywords)
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                await interaction.response.edit_message(content=f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Error img search:", str(e))
-
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
             message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
-
-        num = len(message_states[message_id]["img_urls"])
-        embed = discord.Embed(description=f"{fix_kws}   [{index+1}/{num}]   {sfw}", color=discord.Color.blue())
-        embed.set_image(url=message_states[message_id]["img_urls"][0])    
-
-        url = message_states[message_id]["img_urls"][0]
-        async for message in interaction.channel.history(limit=1):
-            if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"{fix_kws}   [{index+1}/{num}]   {sfw}\n{url}", embed=None, view=view)
-            else:
-                await interaction.response.edit_message(content=None, embed=embed, view=view)
-
+        
         skip_first_bot_message = False
         async for message in interaction.channel.history(limit=3):
             if message.author == bot.user:
@@ -769,22 +797,9 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                         await message.edit(view=None)
                     break
                 else:
+                    # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
-        # Bot reply
-        mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"
-        his = get_bot_answer()
-        if his:
-            lang = lang_detect(his)
-            if "vi" in lang:
-                mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
-        bot_answer_save(mess)
-        rate = (0.2/((bot_mood+1)*2))*100
-        if random.random() < rate:
-            if nsfw:
-                case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
-            else:
-                case = f"Please say something about the illustation that {user_nick} just requested."
-            asyncio.create_task(bot_imgreact_answer(interaction, case))
+
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

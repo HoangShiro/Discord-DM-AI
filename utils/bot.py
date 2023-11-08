@@ -35,13 +35,13 @@ ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0
 
-rmv_bt = discord.ui.Button(label="⚜️ remove", custom_id="remove", style=discord.ButtonStyle.grey)
-irmv_bt = discord.ui.Button(label="⚜️ remove", custom_id="remove", style=discord.ButtonStyle.grey)
+rmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
+irmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
 bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
-link_bt = discord.ui.Button(custom_id="link", style=discord.ButtonStyle.link)
+link_bt = discord.ui.Button(label="〽️", custom_id="link", url="", style=discord.ButtonStyle.link)
 
 user_name = "Master"
 user_nick = "user"
@@ -712,7 +712,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         num_l = "❔"
         if not limit:
             num_l = 1
-
+        link = imgs[0]['post_url']
         embed = discord.Embed(title="", url=imgs[0]['file_url'], description=f"🏷️ [{fix_kws}]({imgs[0]['post_url']}) 💟 {imgs[0]['rating']}", color=discord.Color.blue())
         embed.add_field(name=f"{int_emoji(index+1)}🔹{num_l}", value="", inline=False)
         embed.set_image(url=imgs[0]['file_url'])
@@ -765,7 +765,11 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             bot_mood += 0.1
 
         async def link_bt_atv(interaction):
-            discord.ui.Button.url=link
+            try:
+                await interaction.response.send_message(f" ", delete_after = 0)
+            except:
+                pass
+            discord.ui.Button(label="〽️", custom_id="link", url=link, style=discord.ButtonStyle.link)
 
         view = View(timeout=None)
         view.add_item(irmv_bt)

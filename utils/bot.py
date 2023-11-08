@@ -690,7 +690,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             try:
                 se = booru.Safebooru()
                 fix_kws = await fix_src(se, keywords)
-                img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
+                img_urls = await se.search(query=fix_kws, block=block, limit=temp_limit, page=page)
                 img = booru.resolve(img_urls)
                 for image in img:
                     img_info = {
@@ -768,7 +768,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 block = img_block
             try:
                 se = booru.Gelbooru()
-                img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
+                img_urls = await se.search(query=fix_kws, block=block, limit=limit, page=page)
                 img = booru.resolve(img_urls)
                 for image in img:
                     img_info = {
@@ -785,7 +785,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 block = img_block
             try:
                 se = booru.Safebooru()
-                img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
+                img_urls = await se.search(query=fix_kws, block=block, limit=limit, page=page)
                 img = booru.resolve(img_urls)
                 for image in img:
                     img_info = {

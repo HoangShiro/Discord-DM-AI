@@ -36,7 +36,7 @@ channel_id = 0
 dm_channel_id = 0
 
 rmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
-irmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
+irmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.red)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
@@ -774,7 +774,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}
             bot_mood += 0.1
 
-        link_bt = discord.ui.Button(label="🔗", url=link, style=discord.ButtonStyle.grey)
+        link_bt = discord.ui.Button(label="🔗", url=link, style=discord.ButtonStyle.blurple)
         view = View(timeout=None)
         view.add_item(irmv_bt)
         view.add_item(bk_bt)

@@ -707,17 +707,19 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         if not img_urls:
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
-
-        embed = discord.Embed(description=f"🏷️ {fix_kws}\n🎨 {index+1}/?\n💟 {imgs[index]['rating']}", color=discord.Color.blue())
+        num_l = "❔"
+        if not limit:
+            num_l = 1
+        embed = discord.Embed(description=f"🏷️ {fix_kws}\n💟 {imgs[index]['rating']}\n{int_emoji(1)}🔹{num_l}", color=discord.Color.blue())
         embed.set_image(url=imgs[0]['file_url'])
 
         async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            url = img_url['file_url']
-            new_embed = discord.Embed(description=f"🏷️ {tags}\n🎨 {index+1}/{num}\n💟 {img_url['rating']}", url=url, color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"🏷️ {tags}\n💟 {img_url['rating']}\n{int_emoji(index+1)}🔹{int_emoji(num)}", color=discord.Color.blue())
             new_embed.set_image(url=img_url['file_url'])
+            url = img_url['file_url']
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(embed=new_embed, view=view)
+                await interaction.response.edit_message(content=f"🏷️ {tags}\n💟 {img_url['rating']}\n{int_emoji(index+1)}🔹{int_emoji(num)}\n🔗 {url}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 
@@ -884,6 +886,41 @@ async def ctn_bt_atv(interaction):
     except:
         pass
     asyncio.create_task(bot_continue_answer(interaction))
+
+def int_emoji(num):
+    emoji_digits = {
+        '0': '0️⃣',
+        '1': '1️⃣',
+        '2': '2️⃣',
+        '3': '3️⃣',
+        '4': '4️⃣',
+        '5': '5️⃣',
+        '6': '6️⃣',
+        '7': '7️⃣',
+        '8': '8️⃣',
+        '9': '9️⃣'
+    }
+
+    if num == 0:
+        return emoji_digits['0']
+
+    emoji_str = ""
+    is_negative = False
+
+    if num < 0:
+        is_negative = True
+        num = abs(num)
+
+    while num > 0:
+        digit = num % 10
+        emoji_str = emoji_digits[str(digit)] + emoji_str
+        num //= 10
+
+    if is_negative:
+        emoji_str = '➖' + emoji_str
+
+    return emoji_str
+
 
 # Correct search
 async def fix_src(engine, keywords):

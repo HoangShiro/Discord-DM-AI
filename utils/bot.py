@@ -148,8 +148,12 @@ with open('user_files/vals.json', 'w', encoding="utf-8") as file:
 
 emoji_rate_percent = emoji_rate * 100
 
-with open('user_files/img_lists', 'r', encoding="utf-8") as file:
-    message_states = json.load(file)
+try:
+    with open('user_files/img_lists', 'r', encoding="utf-8") as file:
+        message_states = json.load(file)
+except FileNotFoundError:
+    with open('user_files/img_lists', 'w', encoding="utf-8") as file:
+        json.dump(message_states, file)
 
 print(f"{ai_full_name} đang thức dậy!")
 print()

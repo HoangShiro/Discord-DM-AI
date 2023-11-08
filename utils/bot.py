@@ -718,10 +718,20 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
+            if img_url['rating'] == "general":
+                emoji = random.choice(emoji_happy)
+            elif img_url['rating'] == "questionable":
+                emoji = random.choice(emoji_hype)
+            elif img_url['rating'] == "sensitive":
+                emoji = random.choice(emoji_love)
+            elif img_url['rating'] == "explicit":
+                emoji = random.choice(emoji_kiss)
+            else:
+                emoji = random.choice(emoji_stare)
             link_bt.url = img_url['post_url']
             view.remove_item(link_bt)
             view.add_item(link_bt)
-            new_embed = discord.Embed(title="", url=img_url['file_url'], description=f"🏷️ [{fix_kws}]({img_url['post_url']}) 💟 {img_url['rating']}", color=discord.Color.blue())
+            new_embed = discord.Embed(title="", url=img_url['file_url'], description=f"🏷️ [{fix_kws}]({img_url['post_url']}) {emoji} {img_url['rating']}", color=discord.Color.blue())
             new_embed.add_field(name=f"{int_emoji(index+1)}🔹{int_emoji(num)}", value="", inline=False)
             new_embed.set_image(url=img_url['file_url'])
             url = img_url['file_url']
@@ -835,6 +845,9 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 case = f"Please say something about the illustation that {user_nick} just requested."
             asyncio.create_task(bot_imgreact_answer(interaction, case))
+        guild = bot.get_guild(server_id)
+        emojis = guild.emojis
+        emoji_split(emojis)
 
     else:
         randaw = noperm_answ()

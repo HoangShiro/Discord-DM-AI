@@ -1238,7 +1238,7 @@ async def msg_send(message, text):
             time.sleep(0.5)
             if message.author == bot.user:
                 if skip_first_bot_message:
-                    if message.content:
+                    if message.content and not message.content.startswith("🏷️"):
                         await message.edit(view=None)
                 else:
                     # Bỏ qua tin nhắn đầu tiên của bot.user

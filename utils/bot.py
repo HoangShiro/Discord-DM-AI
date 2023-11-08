@@ -268,7 +268,7 @@ async def on_message(message):
             now_msg = message
             async for message in message.channel.history(limit=3):
                 if message.author == bot.user:
-                    if message.content and not message.content.startswith(("🏷️")):
+                    if message.content and not message.content.startswith("🏷️"):
                         await message.edit(view=None)
                         break
             message = now_msg
@@ -1138,7 +1138,7 @@ async def bot_continue_answer(interaction):
             time.sleep(0.5)
             if message.author == bot.user:
                 if skip_first_bot_message:
-                    if message.content and not message.content.startswith(("🏷️")):
+                    if message.content and not message.content.startswith("🏷️"):
                         await message.edit(view=None)
                     break
                 else:
@@ -1539,7 +1539,7 @@ async def time_check():
     continue_bt.callback = ctn_bt_atv
     async for message in channel.history(limit=1):
         if message.author == bot.user:
-            if message.content and not message.content.startswith(("🏷️")):
+            if message.content and not message.content.startswith("🏷️"):
                 await message.edit(view=view)
                 break
 

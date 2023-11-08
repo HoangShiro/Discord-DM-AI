@@ -36,7 +36,7 @@ channel_id = 0
 dm_channel_id = 0
 
 rmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
-irmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.red)
+irmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
@@ -718,6 +718,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
+            emoji = "💟"
             if img_url['rating'] == "general":
                 emoji = random.choice(emoji_happy)
             elif img_url['rating'] == "questionable":
@@ -774,7 +775,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}
             bot_mood += 0.1
 
-        link_bt = discord.ui.Button(label="🔗", url=link, style=discord.ButtonStyle.blurple)
+        link_bt = discord.ui.Button(label="🔗", url=link, style=discord.ButtonStyle.grey)
         view = View(timeout=None)
         view.add_item(irmv_bt)
         view.add_item(bk_bt)

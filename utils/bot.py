@@ -739,7 +739,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             message_id = interaction.message.id
             print(message_states)
             print()
-            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": "", "img_urls": []})
+            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": str, "img_urls": []})
             print(img_urls_2)
             print()
             num = len(img_urls_2["img_urls"])
@@ -757,7 +757,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             nonlocal index
             global bot_mood
             message_id = interaction.message.id
-            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": "", "img_urls": []})
+            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": str, "img_urls": []})
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             tags = img_urls_2["tags"]

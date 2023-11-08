@@ -655,11 +655,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
     if interaction.user.id == user_id:
         import booru
         global img_block, message_states, bot_mood
-        
-        if nsfw:
-            sfw = "[NSFW]"
-        else:
-            sfw = ""
         if block is not None:
             vals_save('user_files/vals.json', 'img_block', block)
         if limit > 100:
@@ -667,6 +662,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         temp_limit = 1
         index = 0
         img_urls = ""
+        imgs = []
         fix_kws = keywords
         if nsfw:
             if block is None:
@@ -676,6 +672,13 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 fix_kws = await fix_src(se, keywords)
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
                 img_urls = booru.resolve(img_urls)
+                for image in img_urls:
+                    img_info = {
+                        'file_url': image['file_url'],
+                        'post_url': image['post_url'],
+                        'rating': image['rating']
+                    }
+                    imgs.append(img_info)
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))
@@ -688,7 +691,14 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 se = booru.Safebooru()
                 fix_kws = await fix_src(se, keywords)
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
-                img_urls = booru.resolve(img_urls)
+                img = booru.resolve(img_urls)
+                for image in img:
+                    img_info = {
+                        'file_url': image['file_url'],
+                        'post_url': image['post_url'],
+                        'rating': image['rating']
+                    }
+                    imgs.append(img_info)
             except Exception as e:
                 await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))
@@ -698,27 +708,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"
-        his = get_bot_answer()
-        if his:
-            lang = lang_detect(his)
-            if "vi" in lang:
-                mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
-        bot_answer_save(mess)
-        rate = (0.2/((bot_mood+1)*2))*100
-        if random.random() < rate:
-            if nsfw:
-                case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
-            else:
-                case = f"Please say something about the illustation that {user_nick} just requested."
-            asyncio.create_task(bot_imgreact_answer(interaction, case))
-
-        embed = discord.Embed(description=f"{fix_kws}   {index+1}/?   {sfw}\n{img_urls[0]}", color=discord.Color.blue())
-        embed.set_image(url=img_urls[0])
+        embed = discord.Embed(description=f"{fix_kws} [{index+1}/?] [{imgs[index]['rating']}]", color=discord.Color.blue())
+        embed.set_image(url=imgs[0]['file_url'])
 
         async def update_embed(interaction, index, img_urls_2, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{tags}   {index+1}/{num}   {sfw}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{tags} [{index+1}/{num}] {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls_2[index])
             url = img_urls_2[index]
             if url.endswith((".mp4", ".webp")):
@@ -729,8 +724,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         async def nt_bt_atv(interaction):
             nonlocal index
             global bot_mood
-            message_id = interaction.message.id
-            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": "", "img_urls": []})
+            msg_id = interaction.message.id
+            img_urls_2 = message_states.get(msg_id, {"index": 0, "tags": "", "img_urls": []})
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             tags = img_urls_2["tags"]
@@ -739,14 +734,14 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[message_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
+            message_states[msg_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
         async def bk_bt_atv(interaction):
             nonlocal index
             global bot_mood
-            message_id = interaction.message.id
-            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": "", "img_urls": []})
+            msg_id = interaction.message.id
+            img_urls_2 = message_states.get(msg_id, {"index": 0, "tags": "", "img_urls": []})
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             tags = img_urls_2["tags"]
@@ -755,7 +750,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[message_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
+            message_states[msg_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
         view = View(timeout=None)
@@ -786,8 +781,8 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             except Exception as e:
                 print("Error img search:", str(e))
         async for message in interaction.channel.history(limit=1):
-            message_id = message.id
-            message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
+            msg_id = message.id
+            message_states[msg_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
         
         skip_first_bot_message = False
         async for message in interaction.channel.history(limit=3):
@@ -799,6 +794,21 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 else:
                     # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
+
+        mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"
+        his = get_bot_answer()
+        if his:
+            lang = lang_detect(his)
+            if "vi" in lang:
+                mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
+        bot_answer_save(mess)
+        rate = (0.2/((bot_mood+1)*2))*100
+        if random.random() < rate:
+            if nsfw:
+                case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
+            else:
+                case = f"Please say something about the illustation that {user_nick} just requested."
+            asyncio.create_task(bot_imgreact_answer(interaction, case))
 
     else:
         randaw = noperm_answ()

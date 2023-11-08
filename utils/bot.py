@@ -708,16 +708,16 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        embed = discord.Embed(description=f"{fix_kws} [{index+1}/?] [{imgs[index]['rating']}]", color=discord.Color.blue())
+        embed = discord.Embed(description=f"🔡: {fix_kws}. 🎨: {index+1}/?. 💟: {imgs[index]['rating']}.", color=discord.Color.blue())
         embed.set_image(url=imgs[0]['file_url'])
 
         async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{tags} [{index+1}/{num}] [{img_url['rating']}]", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"🔡: {tags}. 🎨: {index+1}/{num}. 💟: {img_url['rating']}.", color=discord.Color.blue())
             new_embed.set_image(url=img_url['file_url'])
             url = img_url['file_url']
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"{tags}   {index+1}/{num}   [{img_url['rating']}]\n{url}", embed=None, view=view)
+                await interaction.response.edit_message(content=f"🔡: {tags}. 🎨: {index+1}/{num}. 💟: {img_url['rating']}.\n🔗: {url}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 

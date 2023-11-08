@@ -710,7 +710,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         num_l = "❔"
         if not limit:
             num_l = 1
-        embed = discord.Embed(description=f"🏷️ {fix_kws}\n💟 {imgs[index]['rating']}\n{int_emoji(1)}🔹{num_l}", color=discord.Color.blue())
+
+        embed=discord.Embed(title="", url=imgs['file_url'][0], description=f"🏷️ {fix_kws}", color=discord.Color.blue())
+        embed.add_field(name="", value=f"💟 {imgs['rating'][0]}", inline=False)
+        embed.add_field(name=int_emoji(1), value="", inline=True)
+        embed.add_field(name=num_l, value="", inline=True)
+        embed.set_footer(text=imgs['post_url'][0])
         embed.set_image(url=imgs[0]['file_url'])
 
         async def update_embed(interaction, index, img_url, num, tags):

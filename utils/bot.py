@@ -737,11 +737,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             nonlocal index
             global bot_mood
             message_id = interaction.message.id
-            print(message_states)
-            print()
-            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": str, "img_urls": []})
-            print(img_urls_2)
-            print()
+            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": "", "img_urls": []})
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             tags = img_urls_2["tags"]
@@ -750,14 +746,14 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
+            message_states[message_id] = {"index": index, "tags": "", "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
         async def bk_bt_atv(interaction):
             nonlocal index
             global bot_mood
             message_id = interaction.message.id
-            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": str, "img_urls": []})
+            img_urls_2 = message_states.get(message_id, {"index": 0, "tags": "", "img_urls": []})
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
             tags = img_urls_2["tags"]
@@ -766,7 +762,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             else:
                 index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
             await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
+            message_states[message_id] = {"index": index, "tags": "", "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
         view = View(timeout=None)

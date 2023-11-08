@@ -713,7 +713,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             num_l = 1
         link = imgs[0]['post_url']
         embed = discord.Embed(title="", url=imgs[0]['file_url'], description=f"🏷️ [{fix_kws}]({imgs[0]['post_url']})", color=discord.Color.blue())
-        embed.add_field(name=f"{int_emoji(index+1)}🔹{num_l}    💟 {imgs[0]['rating']}", value="", inline=False)
+        embed.add_field(name=f"{int_emoji(index+1)}🔹{num_l} • {imgs[0]['rating']}", value="", inline=False)
         embed.set_image(url=imgs[0]['file_url'])
 
         async def update_embed(interaction, index, img_url, num, tags):
@@ -733,11 +733,11 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             view.remove_item(link_bt)
             view.add_item(link_bt)
             new_embed = discord.Embed(title="", url=img_url['file_url'], description=f"🏷️ [{fix_kws}]({img_url['post_url']})", color=discord.Color.blue())
-            new_embed.add_field(name=f"{int_emoji(index+1)}🔹{int_emoji(num)}   {emoji} {img_url['rating']}", value="", inline=False)
+            new_embed.add_field(name=f"{int_emoji(index+1)}🔹{int_emoji(num)} • {emoji} {img_url['rating']}", value="", inline=False)
             new_embed.set_image(url=img_url['file_url'])
             url = img_url['file_url']
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"🏷️ [{tags}]({img_url['file_url']}) 💟 {img_url['rating']}\n\n{int_emoji(index+1)}🔹{int_emoji(num)}", embed=None, view=view)
+                await interaction.response.edit_message(content=f"🏷️ [{tags}]({img_url['file_url']})\n\n{int_emoji(index+1)}🔹{int_emoji(num)} • {emoji} {img_url['rating']}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 

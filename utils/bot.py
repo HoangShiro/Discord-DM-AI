@@ -711,13 +711,13 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         embed = discord.Embed(description=f"{fix_kws} [{index+1}/?] [{imgs[index]['rating']}]", color=discord.Color.blue())
         embed.set_image(url=imgs[0]['file_url'])
 
-        async def update_embed(interaction, index, img_urls_2, num, tags):
+        async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{tags} [{index+1}/{num}] {sfw}", color=discord.Color.blue())
-            new_embed.set_image(url=img_urls_2[index])
-            url = img_urls_2[index]
+            new_embed = discord.Embed(description=f"{tags} [{index+1}/{num}] [{img_url['rating']}]", color=discord.Color.blue())
+            new_embed.set_image(url=img_url['file_url'])
+            url = img_url['file_url']
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"{tags}   {index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
+                await interaction.response.edit_message(content=f"{tags}   {index+1}/{num}   [{img_url['rating']}]\n{url}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 
@@ -725,32 +725,34 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             nonlocal index
             global bot_mood
             msg_id = interaction.message.id
-            img_urls_2 = message_states.get(msg_id, {"index": 0, "tags": "", "img_urls": []})
-            num = len(img_urls_2["img_urls"])
-            index = img_urls_2["index"]
-            tags = img_urls_2["tags"]
-            if index < len(img_urls_2["img_urls"]) - 1:
+            imgs_2 = message_states.get(msg_id, {"index": 0, "tags": "", "imgs": []})
+            num = len(imgs_2["imgs"])
+            index = imgs_2["index"]
+            tags = imgs_2["tags"]
+            img_url = imgs_2["imgs"][index]
+            if index < len(imgs_2["imgs"]) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[msg_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
+            await update_embed(interaction, index, img_url, num, tags)
+            message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}
             bot_mood += 0.1
 
         async def bk_bt_atv(interaction):
             nonlocal index
             global bot_mood
             msg_id = interaction.message.id
-            img_urls_2 = message_states.get(msg_id, {"index": 0, "tags": "", "img_urls": []})
-            num = len(img_urls_2["img_urls"])
-            index = img_urls_2["index"]
-            tags = img_urls_2["tags"]
+            imgs_2 = message_states.get(msg_id, {"index": 0, "tags": "", "imgs": []})
+            num = len(imgs_2["imgs"])
+            index = imgs_2["index"]
+            tags = imgs_2["tags"]
+            img_url = imgs_2["imgs"][index]
             if index > 0:
                 index -= 1
             else:
-                index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
-            message_states[msg_id] = {"index": index, "tags": tags, "img_urls": img_urls_2["img_urls"]}
+                index = len(imgs_2["imgs"]) - 1  # Trở về link cuối nếu chạm giới hạn
+            await update_embed(interaction, index, img_url, num, tags)
+            message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}
             bot_mood += 0.1
 
         view = View(timeout=None)
@@ -767,7 +769,14 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             try:
                 se = booru.Gelbooru()
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
-                img_urls = booru.resolve(img_urls)
+                img = booru.resolve(img_urls)
+                for image in img:
+                    img_info = {
+                        'file_url': image['file_url'],
+                        'post_url': image['post_url'],
+                        'rating': image['rating']
+                    }
+                    imgs.append(img_info)
             except Exception as e:
                 print("Error img search:", str(e))
 
@@ -777,12 +786,19 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             try:
                 se = booru.Safebooru()
                 img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
-                img_urls = booru.resolve(img_urls)
+                img = booru.resolve(img_urls)
+                for image in img:
+                    img_info = {
+                        'file_url': image['file_url'],
+                        'post_url': image['post_url'],
+                        'rating': image['rating']
+                    }
+                    imgs.append(img_info)
             except Exception as e:
                 print("Error img search:", str(e))
         async for message in interaction.channel.history(limit=1):
             msg_id = message.id
-            message_states[msg_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
+            message_states[msg_id] = {"index": index, "tags": fix_kws, "imgs": imgs}
         
         skip_first_bot_message = False
         async for message in interaction.channel.history(limit=3):
@@ -792,7 +808,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                         await message.edit(view=None)
                     break
                 else:
-                    # Bỏ qua tin nhắn đầu tiên của bot.user
                     skip_first_bot_message = True
 
         mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"

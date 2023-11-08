@@ -718,13 +718,13 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         embed = discord.Embed(description=f"{fix_kws}   {index+1}/?   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
-        async def update_embed(interaction, index, img_urls_2, num):
+        async def update_embed(interaction, index, img_urls_2, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{fix_kws}   {index+1}/{num}   {sfw}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{tags}   {index+1}/{num}   {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls_2[index])
             url = img_urls_2[index]
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"{fix_kws}   {index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
+                await interaction.response.edit_message(content=f"{tags}   {index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 
@@ -735,11 +735,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
+            tags = img_urls_2["tags"]
             if index < len(img_urls_2["img_urls"]) - 1:
                 index += 1
             else:
                 index = 0  # Trở về link đầu nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2["img_urls"], num)
+            await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
             message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
@@ -750,11 +751,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             img_urls_2 = message_states.get(message_id, {"index": 0, "img_urls": []})
             num = len(img_urls_2["img_urls"])
             index = img_urls_2["index"]
+            tags = img_urls_2["tags"]
             if index > 0:
                 index -= 1
             else:
                 index = len(img_urls_2["img_urls"]) - 1  # Trở về link cuối nếu chạm giới hạn
-            await update_embed(interaction, index, img_urls_2["img_urls"], num)
+            await update_embed(interaction, index, img_urls_2["img_urls"], num, tags)
             message_states[message_id] = {"index": index, "img_urls": img_urls_2["img_urls"]}
             bot_mood += 0.1
 
@@ -787,7 +789,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 print("Error img search:", str(e))
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
-            message_states[message_id] = {"index": index, "img_urls": img_urls}
+            message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
         skip_first_bot_message = False
         async for message in interaction.channel.history(limit=3):
             if message.author == bot.user:

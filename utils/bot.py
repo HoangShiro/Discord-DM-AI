@@ -722,7 +722,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             new_embed.set_image(url=img_url['file_url'])
             url = img_url['file_url']
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"🏷️ [{tags}]({img_url['post_url']}) 💟 {img_url['rating']}\n\n{int_emoji(index+1)}🔹{int_emoji(num)}\n\n🔗 [See the link]({img_url['file_url']})", embed=None, view=view)
+                await interaction.response.edit_message(content=f"🏷️ {tags} 💟 {img_url['rating']}\n\n{int_emoji(index+1)}🔹{int_emoji(num)}\n\n🔗 [{img_url['file_url']}]({img_url['post_url']})", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 
@@ -1524,7 +1524,7 @@ async def time_check():
     channel_id = user.dm_channel.id
     channel = bot.get_channel(channel_id)
     
-    view = View(timeout=None)
+    """view = View(timeout=None)
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)
@@ -1535,7 +1535,7 @@ async def time_check():
         if message.author == bot.user:
             if message.content and not message.content.endswith((".mp4", ".webp")):
                 await message.edit(view=view)
-                break
+                break"""
 
     # Wake up check
     if day_check:

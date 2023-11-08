@@ -41,7 +41,7 @@ rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.Bu
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
 bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
-link_bt = discord.ui.Button(label="〽️", custom_id="link", url="", style=discord.ButtonStyle.link)
+link_bt = discord.ui.Button(label="〽️", url="", style=discord.ButtonStyle.link)
 
 user_name = "Master"
 user_nick = "user"
@@ -769,7 +769,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 await interaction.response.send_message(f" ", delete_after = 0)
             except:
                 pass
-            discord.ui.Button(label="〽️", custom_id="link", url=link, style=discord.ButtonStyle.link)
+            discord.ui.Button(label="〽️", url=link, style=discord.ButtonStyle.link)
 
         view = View(timeout=None)
         view.add_item(irmv_bt)

@@ -713,7 +713,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 case = f"Please say something about the illustation that {user_nick} just requested."
             asyncio.create_task(bot_imgreact_answer(interaction, case))
 
-        embed = discord.Embed(description=f"{fix_kws}   {index+1}/?   {sfw}",url=img_urls[0], color=discord.Color.blue())
+        embed = discord.Embed(description=f"{fix_kws}   {index+1}/?   {sfw}\n{img_urls[0]}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index, img_urls_2, num, tags):

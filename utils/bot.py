@@ -669,21 +669,17 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         temp_limit = 1
         index = 0
         img_urls = ""
+        fix_kws = keywords
         if nsfw:
             if block is None:
                 block = img_block
             try:
                 se = booru.Gelbooru()
-                img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
+                fix_kws = await fix_src(se, keywords)
+                img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                se = booru.Gelbooru()
-                tag = await se.find_tags(query=keywords)
-                tag = booru.resolve(tag)
-                if tag != []:
-                    await interaction.response.send_message(f"Không có art nè, ý là '{tag[0]}'?", ephemeral=True)
-                else:
-                    await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
+                await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))
                 return
         
@@ -692,16 +688,11 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 block = img_block
             try:
                 se = booru.Safebooru()
-                img_urls = await se.search_image(query=keywords, block=block, limit=temp_limit, page=page)
+                fix_kws = await fix_src(se, keywords)
+                img_urls = await se.search_image(query=fix_kws, block=block, limit=temp_limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                se = booru.Safebooru()
-                tag = await se.find_tags(query=keywords)
-                tag = booru.resolve(tag)
-                if tag != []:
-                    await interaction.response.send_message(f"Không có art nè, ý là '{tag[0]}'?", ephemeral=True)
-                else:
-                    await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
+                await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))
                 return
             
@@ -780,20 +771,19 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 block = img_block
             try:
                 se = booru.Gelbooru()
-                img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
+                img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
                 print("Error img search:", str(e))
-        
+                
         if not nsfw:
             if block is None:
                 block = img_block
             try:
                 se = booru.Safebooru()
-                img_urls = await se.search_image(query=keywords, block=block, limit=limit, page=page)
+                img_urls = await se.search_image(query=fix_kws, block=block, limit=limit, page=page)
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
-                await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
                 print("Error img search:", str(e))
         async for message in interaction.channel.history(limit=1):
             message_id = message.id
@@ -868,6 +858,27 @@ async def ctn_bt_atv(interaction):
     except:
         pass
     asyncio.create_task(bot_continue_answer(interaction))
+
+# Correct search
+async def fix_src(engine, keywords):
+    import booru
+    tags = keywords.split(",") if "," in keywords else keywords.split()
+    tasks = []
+    for tag in tags:
+        task = asyncio.create_task(engine.find_tags(query=tag))
+        tasks.append(task)
+    found_tags = []
+    results = await asyncio.gather(*tasks)
+    for tag_result in results:
+        tag_result = booru.resolve(tag_result)
+        if tag_result:
+            found_tags.append(tag_result[0])
+    if found_tags:
+        tags_str = " ".join(found_tags)
+    else:
+        tags_str = ""
+    
+    return tags_str
 
 # Save json
 def vals_save(file_name, variable_name, variable_value):

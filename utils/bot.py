@@ -700,12 +700,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             await interaction.response.send_message(f"Không có art nào với '{keywords}'", ephemeral=True)
             return
 
-        mess = f"*Sent illustartions of {keywords}'s content when {user_nick} asked.*"
+        mess = f"*Sent illustartions of {fix_kws}'s content when {user_nick} asked.*"
         his = get_bot_answer()
         if his:
             lang = lang_detect(his)
             if "vi" in lang:
-                mess = f"*Đã gửi cho {user_nick} illustartions: {keywords}.*"
+                mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
         bot_answer_save(mess)
         rate = (0.2/((bot_mood+1)*2))*100
         if random.random() < rate:
@@ -715,16 +715,16 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 case = f"Please say something about the illustation that {user_nick} just requested."
             asyncio.create_task(bot_imgreact_answer(interaction, case))
 
-        embed = discord.Embed(description=f"{keywords}   {index+1}/?   {sfw}", color=discord.Color.blue())
+        embed = discord.Embed(description=f"{fix_kws}   {index+1}/?   {sfw}", color=discord.Color.blue())
         embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index, img_urls_2, num):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
-            new_embed = discord.Embed(description=f"{keywords}   {index+1}/{num}   {sfw}", color=discord.Color.blue())
+            new_embed = discord.Embed(description=f"{fix_kws}   {index+1}/{num}   {sfw}", color=discord.Color.blue())
             new_embed.set_image(url=img_urls_2[index])
             url = img_urls_2[index]
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"{keywords}   {index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
+                await interaction.response.edit_message(content=f"{fix_kws}   {index+1}/{num}   {sfw}\n{url}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 
@@ -775,7 +775,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 img_urls = booru.resolve(img_urls)
             except Exception as e:
                 print("Error img search:", str(e))
-                
+
         if not nsfw:
             if block is None:
                 block = img_block

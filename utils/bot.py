@@ -713,9 +713,9 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
         async def update_embed(interaction, index, img_url, num, tags):
         # Tạo một Embed mới với URL hình ảnh mới từ img_urls
+            url = img_url['file_url']
             new_embed = discord.Embed(description=f"🏷️ {tags}\n🎨 {index+1}/{num}\n💟 {img_url['rating']}", url=url, color=discord.Color.blue())
             new_embed.set_image(url=img_url['file_url'])
-            url = img_url['file_url']
             if url.endswith((".mp4", ".webp")):
                 await interaction.response.edit_message(embed=new_embed, view=view)
             else:

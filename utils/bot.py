@@ -889,7 +889,7 @@ async def rmv_bt_atv(interaction):
     continue_bt.callback = ctn_bt_atv
     async for message in channel.history(limit=3):
         if message.author == bot.user:
-            if not message.content and not message.content.endswith((".mp4", ".webp")) and message.attachments:
+            if not message.content and not message.content.endswith("🏷️") and message.attachments:
                 await message.delete()
             elif message.content:
                 await message.edit(view=view)

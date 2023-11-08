@@ -665,7 +665,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         link = ""
         imgs = []
         fix_kws = keywords
-        if nsfw and isinstance(interaction.message.channel, discord.DMChannel):
+        if nsfw and isinstance(interaction.channel, discord.DMChannel):
             if block is None:
                 block = img_block
             try:
@@ -785,7 +785,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         nt_bt.callback = nt_bt_atv
         await interaction.response.send_message(embed=embed, view=view)
         bot_mood += 1
-        if nsfw and isinstance(interaction.message.channel, discord.DMChannel):
+        if nsfw and isinstance(interaction.channel, discord.DMChannel):
             if block is None:
                 block = img_block
             try:

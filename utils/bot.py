@@ -763,7 +763,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}
             bot_mood += 0.1
 
-        link_bt = discord.ui.Button(label=None, url=link, style=discord.ButtonStyle.link)
+        link_bt = discord.ui.Button(label=" ", url=link, style=discord.ButtonStyle.link)
         view = View(timeout=None)
         view.add_item(irmv_bt)
         view.add_item(link_bt)

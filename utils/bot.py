@@ -725,7 +725,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             new_embed.set_image(url=img_url['file_url'])
             url = img_url['file_url']
             if url.endswith((".mp4", ".webp")):
-                await interaction.response.edit_message(content=f"🏷️ [{tags}]({img_url['file_url']}) 💟 {img_url['rating']}\n\n{int_emoji(index+1)}🔹{int_emoji(num)}\n\n🔗 ({img_url['post_url']})", embed=None, view=view)
+                await interaction.response.edit_message(content=f"🏷️ [{tags}]({img_url['file_url']}) 💟 {img_url['rating']}\n\n{int_emoji(index+1)}🔹{int_emoji(num)}", embed=None, view=view)
             else:
                 await interaction.response.edit_message(content=None, embed=new_embed, view=view)
 
@@ -763,7 +763,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             message_states[msg_id] = {"index": index, "tags": tags, "imgs": imgs_2["imgs"]}
             bot_mood += 0.1
 
-        link_bt = discord.ui.Button(label=" ", url=link, style=discord.ButtonStyle.link)
+        link_bt = discord.ui.Button(label="🔗", url=link, style=discord.ButtonStyle.link)
         view = View(timeout=None)
         view.add_item(irmv_bt)
         view.add_item(link_bt)

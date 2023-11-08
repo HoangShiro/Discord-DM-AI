@@ -672,7 +672,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         emoji = random.choice(emojis)
 
         embed = discord.Embed(description=f"{ai_name} đang tìm art với từ khoá: {keywords}... {emoji}", color=discord.Color.blue())
-        embed.set_image(url=img_urls[0])
 
         async def update_embed(interaction, index, img_urls_2, num, tags):
             new_embed = discord.Embed(description=f"{tags}   [{index+1}/{num}]   {sfw}", color=discord.Color.blue())

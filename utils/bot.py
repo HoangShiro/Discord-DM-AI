@@ -750,10 +750,10 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             message_id = message.id
             message_states[message_id] = {"index": index, "tags": fix_kws, "img_urls": img_urls}
 
+        num = len(message_states[message_id]["img_urls"])
         embed = discord.Embed(description=f"{fix_kws}   [{index+1}/{num}]   {sfw}", color=discord.Color.blue())
         embed.set_image(url=message_states[message_id]["img_urls"][0])    
-        num = len(message_states[message_id]["img_urls"])
-        
+
         url = message_states[message_id]["img_urls"][0]
         if url.endswith((".mp4", ".webp")):
             await interaction.response.edit_message(content=f"{fix_kws}   [{index+1}/{num}]   {sfw}\n{url}", embed=None, view=view)

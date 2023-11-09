@@ -1466,7 +1466,7 @@ async def bot_status(mood_name):
 # Mood tự tụt khi không chat
 async def mood_drop():
     global bot_mood, intonation_scale, speed, pitch
-    if bot_mood > 300:
+    if bot_mood > 250:
         bot_mood -= 25
         old_pitch = pitch
         pitch = -0.05

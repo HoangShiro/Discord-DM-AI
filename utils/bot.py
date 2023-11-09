@@ -307,8 +307,11 @@ async def on_message(message):
 @bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")
 async def renew(interaction: discord.Interaction):
     if interaction.user.id == user_id:
-        await interaction.response.send_message(f"`{ai_name} sẽ quay lại ngay sau 3s...`", ephemeral=True)
-        await bot.close()
+        if bot_mood < 250:
+            await interaction.response.send_message(f"`{ai_name} sẽ quay lại ngay sau 3s...`", ephemeral=True)
+            await bot.close()
+        else:
+            await interaction.response.send_message(f"❤️❔🔪", ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -344,38 +347,41 @@ async def new_pchat(interaction: discord.Interaction):
 @bot.tree.command(name="delchat", description=f"Xoá chat của {ai_name}.")
 async def answer_regen(interaction: discord.Interaction):
     if interaction.user.id == user_id:
-        await interaction.response.send_message(f"_{ai_name} đang xoá chat..._", delete_after = 1)
-        if console_log:
-            print(f"Đang xoá các tin nhắn của {ai_name}...")
-        # Xác định số lượng tin nhắn của bot cần xoá
-        limit = 0
-        async for message in interaction.channel.history():
-            if message.author == bot.user:
-                limit += 1
-            elif message.author == interaction.user:
-                break
-        if limit != 0:
-            await delete_messages(interaction, limit)
-            # Xoá câu trả lời trước đó
-        remove_bot_answer()
-        user = await bot.fetch_user(user_id)
-        if user.dm_channel is None:
-            await user.create_dm()
-        dm_channel_id = user.dm_channel.id
-        channel = bot.get_channel(dm_channel_id)
-
-        view = View(timeout=None)
-        view.add_item(rmv_bt)
-        view.add_item(rc_bt)
-        view.add_item(continue_bt)
-        rc_bt.callback = rc_bt_atv
-        rmv_bt.callback = rmv_bt_atv
-        continue_bt.callback = ctn_bt_atv
-        async for message in channel.history(limit=3):
-            if message.author == bot.user:
-                if message.content:
-                    await message.edit(view=view)
+        if bot_mood < 250:
+            await interaction.response.send_message(f"_{ai_name} đang xoá chat..._", delete_after = 1)
+            if console_log:
+                print(f"Đang xoá các tin nhắn của {ai_name}...")
+            # Xác định số lượng tin nhắn của bot cần xoá
+            limit = 0
+            async for message in interaction.channel.history():
+                if message.author == bot.user:
+                    limit += 1
+                elif message.author == interaction.user:
                     break
+            if limit != 0:
+                await delete_messages(interaction, limit)
+                # Xoá câu trả lời trước đó
+            remove_bot_answer()
+            user = await bot.fetch_user(user_id)
+            if user.dm_channel is None:
+                await user.create_dm()
+            dm_channel_id = user.dm_channel.id
+            channel = bot.get_channel(dm_channel_id)
+
+            view = View(timeout=None)
+            view.add_item(rmv_bt)
+            view.add_item(rc_bt)
+            view.add_item(continue_bt)
+            rc_bt.callback = rc_bt_atv
+            rmv_bt.callback = rmv_bt_atv
+            continue_bt.callback = ctn_bt_atv
+            async for message in channel.history(limit=3):
+                if message.author == bot.user:
+                    if message.content:
+                        await message.edit(view=view)
+                        break
+        else:
+            await interaction.response.send_message(f"✖️🔪", ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

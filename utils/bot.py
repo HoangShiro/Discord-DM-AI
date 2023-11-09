@@ -1244,6 +1244,7 @@ async def splits_send(message, text):
 
 # Hàm gửi tin nhắn theo một lần
 async def msg_send(message, text):
+    global bot_mood
     if text:
         if tts_toggle:
             await ai_voice_create(text)
@@ -1252,8 +1253,13 @@ async def msg_send(message, text):
         sentences = await split_text(text)
         # Gộp các câu thành một đoạn văn bản
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
-
-
+        if bot_mood > 250:
+            if "sorry" in paragraph:
+                bot_mood -= 80
+            if "hurt" in paragraph:
+                bot_mood -= 250
+            if bot_mood < 0:
+                bot_mood = 1
         view = View(timeout=None)
         view.add_item(rmv_bt)
         view.add_item(rc_bt)

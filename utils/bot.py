@@ -742,7 +742,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
             link_bt.url = img_url['post_url']
             view.remove_item(link_bt)
             view.add_item(link_bt)
-            new_embed = discord.Embed(title="", url=img_url['file_url'], description=f"🏷️ [{fix_kws}]({img_url['post_url']})", color=discord.Color.blue())
+            new_embed = discord.Embed(title="", url=img_url['file_url'], description=f"🏷️ [{tags}]({img_url['post_url']})", color=discord.Color.blue())
             new_embed.add_field(name=f"{int_emoji(index+1)}🔹{int_emoji(num)}       {emoji} {img_url['rating']}", value="", inline=False)
             new_embed.set_image(url=img_url['file_url'])
             url = img_url['file_url']

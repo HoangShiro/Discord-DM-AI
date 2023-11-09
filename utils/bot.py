@@ -1333,7 +1333,7 @@ async def bot_tasks(message):
         pattern = r'-?\d+'
         matches = re.findall(pattern, answ)
         if matches:
-            mood = matches[0]
+            mood = int(matches[0])
         else:
             mood = 0
         if check_msg:

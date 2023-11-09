@@ -1254,9 +1254,9 @@ async def msg_send(message, text):
         # Gộp các câu thành một đoạn văn bản
         paragraph = "\n".join(sentence.strip() for sentence in sentences)
         if bot_mood > 250:
-            if "sorry" in paragraph:
+            if "sorry" in paragraph or "xin" in paragraph:
                 bot_mood -= 80
-            if "hurt" in paragraph:
+            if "hurt" in paragraph or "đau" in paragraph:
                 bot_mood -= 250
             if bot_mood < 0:
                 bot_mood = 1

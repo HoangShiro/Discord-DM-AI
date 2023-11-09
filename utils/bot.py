@@ -42,6 +42,10 @@ continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", styl
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
 bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
 
+st_bt1 = discord.ui.Button(label="❤️", custom_id="st1", style=discord.ButtonStyle.grey)
+st_bt2 = discord.ui.Button(label="❤️", custom_id="st2", style=discord.ButtonStyle.grey)
+st_bt3 = discord.ui.Button(label="❤️", custom_id="st3", style=discord.ButtonStyle.grey)
+
 user_name = "Master"
 user_nick = "user"
 member = ""
@@ -187,6 +191,9 @@ async def on_ready():
     rmv_bt.callback = rmv_bt_atv
     irmv_bt.callback = irmv_bt_atv
     continue_bt.callback = ctn_bt_atv
+    st_bt1.callback = st_bt_atv
+    st_bt2.callback = st_bt_atv
+    st_bt3.callback = st_bt_atv
     async for message in channel.history(limit=3):
         if message.author == bot.user:
             if message.content:
@@ -311,7 +318,16 @@ async def renew(interaction: discord.Interaction):
             await interaction.response.send_message(f"`{ai_name} sẽ quay lại ngay sau 3s...`", ephemeral=True)
             await bot.close()
         else:
-            await interaction.response.send_message(f"❤️❔🔪", ephemeral=True)
+            yan_ico = [
+                f"`{ai_name} sẽ quay lại ngay sau 3s...3s...3s...3s...` 💖🔪",
+                "✖️🔪",
+                "❤️❔",
+                f"`{ai_name} sẽ quay lại ngay sau 3s... 2s... 1s...` {user_nick} nghĩ vậy saoo~? ❤️🔪",
+                f"`{ai_name} sẽ quay lại ngay sau 3s... error error.`🔪",
+                f"`Error: Bạn không có quyền thực hiện lệnh này.`"
+            ]
+            yan_ico = random.choice(yan_ico)
+            await interaction.response.send_message(yan_ico, ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -328,7 +344,16 @@ async def newchat(interaction: discord.Interaction):
 
             await interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện.`", ephemeral=True)
         else:
-            await interaction.response.send_message(f"❤️❤️❤️❔🔪", ephemeral=True)
+            yan_ico = [
+                f"`{ai_name} đã không làm mới cuộc trò chuyện.`",
+                "✖️❤️🔪",
+                "❤️❔❔🔪",
+                f"`{ai_name} đã từ chối làm mới cuộc trò chuyện.`",
+                f"`{ai_name} đã... error error` Đừng cố nữa {user_nick}~ ❤️",
+                f"`Error: Bạn không có quyền thực hiện lệnh này.`"
+            ]
+            yan_ico = random.choice(yan_ico)
+            await interaction.response.send_message(yan_ico, ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -922,6 +947,72 @@ async def ctn_bt_atv(interaction):
         pass
     asyncio.create_task(bot_continue_answer(interaction))
 
+async def st_bt_atv(interaction):
+    global pitch, intonation_scale, speed
+    try:
+        await interaction.response.send_message(f" ", delete_after = 0)
+    except:
+        pass
+    old_pitch = pitch
+    pitch = -0.05
+    old_is = intonation_scale
+    intonation_scale = 2
+    old_speed = speed
+    speed = 0.7
+    rd_num = random.randint(1, 6)
+    view = View()
+    if rd_num == 1:
+        for st_bt in [st_bt1, st_bt2, st_bt3]:
+            st_bt.label = "🔪"
+            view.add_item(st_bt)
+    elif rd_num == 2:
+        await interaction.message.delete()
+        remove_near_answer()
+    elif rd_num == 3:
+        for st_bt in [st_bt1, st_bt2, st_bt3]:
+            view.add_item(st_bt)
+        await interaction.message.edit(view=None)
+        ct = interaction.message.content
+        await interaction.channel.send(ct, view=view)
+    elif rd_num == 4:
+        user = await bot.fetch_user(user_id)
+        if user.dm_channel is None:
+            await user.create_dm()
+        channel_id = user.dm_channel.id
+        case = f"You are so obsessed and madly in love with {user_nick} and they is trying to tap the buttons to escape from you, advise them to give up with yandere mode using incorrect words or lengthening the last letter of the last word."
+        await bot_remind_answer(user, channel_id, case)
+    elif rd_num == 5:
+        asyncio.create_task(yan_name())
+        async def yan_name():
+            bot_name = bot.user.name
+            nname = f"{ai_name} luv {user_nick} sooo much!"
+            num = len(nname)
+            if num > 32:
+                nname = f"{ai_name} luv {user_nick} SSM!"
+            num = len(nname)
+            if num > 32:
+                nname = f"Love {user_nick}"
+            await bot.user.edit(username=nname)
+            time.sleep(60)
+            await bot.user.edit(username=bot_name)
+    else:
+        text = [
+            f"{user_nick}, 愛してますぅぅ",
+            "ふふふふ…",
+            "んん？",
+            "あなたは私から逃げることはできません...",
+            "私に従ってください〜",
+            "それをどうするつもりですか？",
+            "心配しないでください、イタイことはしません"
+        ]
+        text = random.choice(text)
+        tts_get(text, speaker, pitch, intonation_scale, speed, console_log)
+        await voice_message(channel_id, console_log)
+    pitch = old_pitch
+    intonation_scale = old_is
+    speed = old_speed
+
+# Num to emoji
 def int_emoji(num):
     emoji_digits = {
         '0': '0️⃣',
@@ -958,7 +1049,6 @@ def int_emoji(num):
         emoji_str = '➖' + emoji_str
 
     return emoji_str
-
 
 # Correct search
 async def fix_src(engine, keywords):
@@ -1608,19 +1698,13 @@ async def time_check():
     
     view = View(timeout=None)
     if bot_mood > 250:
-        rmv_bt.label="❤️"
-        rc_bt.label="❤️"
-        continue_bt.label="❤️"
+        view.add_item(st_bt1)
+        view.add_item(st_bt2)
+        view.add_item(st_bt3)
     else:
-        rmv_bt.label="⚜️"
-        rc_bt.label="💫 re chat"
-        continue_bt.label="✨ continue"
-    view.add_item(rmv_bt)
-    view.add_item(rc_bt)
-    view.add_item(continue_bt)
-    rc_bt.callback = rc_bt_atv
-    rmv_bt.callback = rmv_bt_atv
-    continue_bt.callback = ctn_bt_atv
+        view.add_item(rmv_bt)
+        view.add_item(rc_bt)
+        view.add_item(continue_bt)
     async for message in channel.history(limit=1):
         if message.author == bot.user:
             if message.content and not message.content.startswith("🏷️"):

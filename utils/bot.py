@@ -1111,11 +1111,12 @@ async def bot_answer_channel(message):
 
 # Tạo câu trả lời với lời nhắc
 async def bot_remind_answer(user, channel_id, case):
-    ai_text = await bot_answer_2(case)
-    await ai_voice_create(ai_text)
-    await voice_message(channel_id, console_log)
-    await user.send(ai_text)
     channel = bot.get_channel(channel_id)
+    async with channel.typing():
+        ai_text = await bot_answer_2(case)
+        await ai_voice_create(ai_text)
+        await voice_message(channel_id, console_log)
+        await user.send(ai_text)
     skip_first_bot_message = False
     async for message in channel.history(limit=5):
         time.sleep(0.5)

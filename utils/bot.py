@@ -1415,8 +1415,8 @@ async def mood_change(mood):
     # Đảm bảo rằng new_mood không nhỏ hơn 0 và không lớn hơn 310
     if new_mood < 0:
         new_mood = 0
-    elif new_mood > 310:
-        new_mood = 310
+    elif new_mood > 400:
+        new_mood = 400
 
     bot_mood = new_mood
 
@@ -1466,14 +1466,14 @@ async def bot_status(mood_name):
 # Mood tự tụt khi không chat
 async def mood_drop():
     global bot_mood, intonation_scale, speed, pitch
-    if bot_mood > 200:
+    if bot_mood > 300:
         bot_mood -= 25
         old_pitch = pitch
         pitch = -0.05
         old_is = intonation_scale
-        intonation_scale = 0.5
+        intonation_scale = 2
         old_speed = speed
-        speed = 0.8
+        speed = 0.6
         user = await bot.fetch_user(user_id)
         if user.dm_channel is None:
             await user.create_dm()
@@ -1483,7 +1483,8 @@ async def mood_drop():
         pitch = old_pitch
         intonation_scale = old_is
         speed = old_speed
-
+    if bot_mood > 200:
+        bot_mood -= 10
     if bot_mood > 100:
         bot_mood -= 0.5
     if bot_mood > 90:

@@ -1479,7 +1479,7 @@ async def mood_drop():
         if user.dm_channel is None:
             await user.create_dm()
         channel_id = user.dm_channel.id
-        case = f"You are so obsessed and madly in love with {user_nick}, continue your above chat proactively and creatively with yandere mode by using incorrect words or lengthening the last letter of the last word."
+        case = f"You are so obsessed and madly in love with {user_nick}, continue your above chat proactively and creatively by question or by action if the above is already a question with yandere mode, using incorrect words or lengthening the last letter of the last word."
         await bot_remind_answer(user, channel_id, case)
         pitch = old_pitch
         intonation_scale = old_is

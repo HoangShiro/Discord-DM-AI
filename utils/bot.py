@@ -1588,6 +1588,14 @@ async def time_check():
     channel = bot.get_channel(channel_id)
     
     view = View(timeout=None)
+    if bot_mood > 250:
+        rmv_bt.label="❤️"
+        rc_bt.label="❤️"
+        continue_bt.label="❤️"
+    else:
+        rmv_bt.label="⚜️"
+        rc_bt.label="💫 re chat"
+        continue_bt.label="✨ continue"
     view.add_item(rmv_bt)
     view.add_item(rc_bt)
     view.add_item(continue_bt)

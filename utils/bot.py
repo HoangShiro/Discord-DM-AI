@@ -1325,6 +1325,7 @@ async def bot_tasks(message):
         emoji = "\U0001F496"
         case = 1
         answ = "mood: 0"
+        check_msg = get_bot_answer()
         try:
             answ = await openai_task(case)
         except Exception as e:
@@ -1335,6 +1336,11 @@ async def bot_tasks(message):
             mood = matches[0]
         else:
             mood = 0
+        if check_msg:
+            keyword = "love"
+            count = check_msg.count(keyword)
+            if count > 4:
+                mood += 310
         await mood_change(mood)
         # Schedule
         case = 2
@@ -1432,7 +1438,7 @@ def mood_name_change(bot_mood):
     elif bot_mood < 300:
         mood_name = f"Obsessive love with {user_nick} ♥️"
     else:
-        mood_name = f"Yan mode on ♥️♥️♥️"
+        mood_name = f"Yandere mode on ♥️♥️♥️"
 
     # Lưu lại mood vào prompt
     with open("user_files/prompt/current_mood.txt", "w", encoding="utf-8") as f:

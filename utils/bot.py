@@ -1116,7 +1116,7 @@ async def bot_remind_answer(user, channel_id, case):
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
     skip_first_bot_message = False
-    async for message in user.message.channel.history(limit=5):
+    async for message in user.dm_channel.history(limit=5):
         time.sleep(0.5)
         if message.author == bot.user:
             if skip_first_bot_message:
@@ -1465,15 +1465,25 @@ async def bot_status(mood_name):
 
 # Mood tự tụt khi không chat
 async def mood_drop():
-    global bot_mood
+    global bot_mood, intonation_scale, speed, pitch
     if bot_mood > 200:
         bot_mood -= 25
+        old_pitch = pitch
+        pitch = -0.05
+        old_is = intonation_scale
+        intonation_scale = 0.5
+        old_speed = speed
+        speed = 0.8
         user = await bot.fetch_user(user_id)
         if user.dm_channel is None:
             await user.create_dm()
         channel_id = user.dm_channel.id
         case = f"You are so obsessed and madly in love with {user_nick}, continue your above chat proactively and creatively with yandere mode by using incorrect words or lengthening the last letter of the last word."
         await bot_remind_answer(user, channel_id, case)
+        pitch = old_pitch
+        intonation_scale = old_is
+        speed = old_speed
+
     if bot_mood > 100:
         bot_mood -= 0.5
     if bot_mood > 90:

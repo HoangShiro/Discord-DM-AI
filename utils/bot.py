@@ -1415,8 +1415,8 @@ async def mood_change(mood):
     # Đảm bảo rằng new_mood không nhỏ hơn 0 và không lớn hơn 310
     if new_mood < 0:
         new_mood = 0
-    elif new_mood > 400:
-        new_mood = 400
+    elif new_mood > 500:
+        new_mood = 500
 
     bot_mood = new_mood
 

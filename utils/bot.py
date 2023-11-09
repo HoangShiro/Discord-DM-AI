@@ -1395,11 +1395,11 @@ async def mood_change(mood):
     global bot_mood
     new_mood = bot_mood + int(mood)
 
-    # Đảm bảo rằng new_mood không nhỏ hơn 0 và không lớn hơn 100
+    # Đảm bảo rằng new_mood không nhỏ hơn 0 và không lớn hơn 310
     if new_mood < 0:
         new_mood = 0
-    elif new_mood > 100:
-        new_mood = 100
+    elif new_mood > 310:
+        new_mood = 310
 
     bot_mood = new_mood
 

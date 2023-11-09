@@ -1427,10 +1427,12 @@ def mood_name_change(bot_mood):
         mood_name = "so happy"
     elif bot_mood < 99:
         mood_name = "feeling loved"
-    elif bot_mood > 100:
+    elif bot_mood < 200:
         mood_name = f"love {user_nick} so much! ♥️"
-    elif bot_mood > 200:
+    elif bot_mood < 300:
         mood_name = f"Obsessive love with {user_nick} ♥️"
+    else:
+        mood_name = f"Yan mode on ♥️♥️♥️"
 
     # Lưu lại mood vào prompt
     with open("user_files/prompt/current_mood.txt", "w", encoding="utf-8") as f:

@@ -1366,8 +1366,12 @@ async def bot_tasks(message):
             mood = 0
         if check_msg:
             keyword = "love"
+            keywordvi = "yêu"
             count = check_msg.count(keyword)
+            countvi = check_msg.count(keywordvi)
             if count > 4:
+                mood += 310
+            if countvi > 4:
                 mood += 310
         await mood_change(mood)
         # Schedule

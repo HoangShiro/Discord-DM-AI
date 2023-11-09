@@ -209,7 +209,7 @@ async def on_message(message):
     # Bỏ qua nếu tin nhắn là bot hoặc không phải user được chỉ định
     #if message.author == bot.user:
     #    return
-    if not message.author.bot and message.author.id != user_id:
+    """if not message.author.bot and message.author.id != user_id:
         user_name = message.author.name
         result = "{}: {}".format(user_name, message.content)
         user_answer_channel(result)
@@ -248,7 +248,7 @@ async def on_message(message):
                 if files.content_type.startswith('audio/'):
                     asyncio.create_task(bot_reaction_with_voice_channel(files, message))
             public_chat_num -= 1
-            task_busy_with_another = False
+            task_busy_with_another = False"""
         
     # Phản hồi lại user sau khi nhận được chat
     if not message.content.startswith('!') and message.author.id == user_id:

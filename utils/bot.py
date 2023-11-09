@@ -1115,7 +1115,7 @@ async def bot_remind_answer(user, channel_id, case):
     await ai_voice_create(ai_text)
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
-    channel = user.guild.get_channel(channel_id)
+    channel = bot.get_channel(channel_id)
     skip_first_bot_message = False
     async for message in channel.history(limit=5):
         time.sleep(0.5)
@@ -1474,7 +1474,7 @@ async def mood_drop():
         old_is = intonation_scale
         intonation_scale = 2
         old_speed = speed
-        speed = 0.6
+        speed = 0.7
         user = await bot.fetch_user(user_id)
         if user.dm_channel is None:
             await user.create_dm()

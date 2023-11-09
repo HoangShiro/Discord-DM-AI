@@ -1115,6 +1115,17 @@ async def bot_remind_answer(user, channel_id, case):
     await ai_voice_create(ai_text)
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
+    skip_first_bot_message = False
+    async for message in user.channel.history(limit=5):
+        time.sleep(0.5)
+        if message.author == bot.user:
+            if skip_first_bot_message:
+                if message.content and not message.content.startswith("🏷️"):
+                    await message.edit(view=None)
+                break
+            else:
+                # Bỏ qua tin nhắn đầu tiên của bot.user
+                skip_first_bot_message = True
 
 # Tạo lại câu trả lời cho bot
 async def bot_regen_answer(interaction):
@@ -1455,6 +1466,14 @@ async def bot_status(mood_name):
 # Mood tự tụt khi không chat
 async def mood_drop():
     global bot_mood
+    if bot_mood > 200:
+        bot_mood -= 25
+        user = await bot.fetch_user(user_id)
+        if user.dm_channel is None:
+            await user.create_dm()
+        channel_id = user.dm_channel.id
+        case = f"You are so obsessed and madly in love with {user_nick}, continue your above chat proactively and creatively with yandere mode by using incorrect words or lengthening the last letter of the last word."
+        await bot_remind_answer(user, channel_id, case)
     if bot_mood > 100:
         bot_mood -= 0.5
     if bot_mood > 90:

@@ -318,11 +318,14 @@ async def renew(interaction: discord.Interaction):
 async def newchat(interaction: discord.Interaction):
     global bot_mood
     if interaction.user.id == user_id:
-        clear_conversation_history()
-        bot_mood = 50
-        vals_save('user_files/vals.json', 'bot_mood', bot_mood)
+        if bot_mood < 250:
+            clear_conversation_history()
+            bot_mood = 50
+            vals_save('user_files/vals.json', 'bot_mood', bot_mood)
 
-        await interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện.`", ephemeral=True)
+            await interaction.response.send_message(f"`{ai_name} đã làm mới cuộc trò chuyện.`", ephemeral=True)
+        else:
+            await interaction.response.send_message(f"❤️❤️❤️❔🔪", ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

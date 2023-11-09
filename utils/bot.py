@@ -1116,7 +1116,7 @@ async def bot_remind_answer(user, channel_id, case):
     await voice_message(channel_id, console_log)
     await user.send(ai_text)
     skip_first_bot_message = False
-    async for message in user.channel.history(limit=5):
+    async for message in user.message.channel.history(limit=5):
         time.sleep(0.5)
         if message.author == bot.user:
             if skip_first_bot_message:

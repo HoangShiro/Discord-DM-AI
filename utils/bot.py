@@ -1403,13 +1403,13 @@ async def msg_send(message, text):
         if "`Error error`" in paragraph:
             pass
         else:
-            rate = (0.2/(bot_mood*2))*100
+            """rate = (0.2/(bot_mood*2))*100
             if random.random() < rate:
                 await message.channel.send(paragraph)
                 case = "Continue your short answer above proactively and creatively by yourself, follow the line closely, maybe with actions. If the above is a question, don't ask it again."
                 asyncio.create_task(bot_imgreact_answer(message, case))
-            else:
-                await message.channel.send(paragraph, view=view)
+            else:"""
+            await message.channel.send(paragraph, view=view)
         skip_first_bot_message = False
         async for message in message.channel.history(limit=6):
             time.sleep(0.5)

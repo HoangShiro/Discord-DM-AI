@@ -1017,19 +1017,20 @@ async def st_bt_atv(interaction):
         case = f"You are so obsessed and madly in love with {user_nick} and they is trying to tap the buttons to escape from you, advise them to give up with yandere mode using incorrect words or lengthening the last letter of the last word."
         await bot_remind_answer(user, channel_id, case)
     elif rd_num == 5:
-        asyncio.create_task(yan_name())
-        async def yan_name():
-            bot_name = bot.user.name
-            nname = f"{ai_name} luv {user_nick} sooo much!"
-            num = len(nname)
-            if num > 32:
-                nname = f"{ai_name} luv {user_nick} SSM!"
-            num = len(nname)
-            if num > 32:
-                nname = f"Love {user_nick}"
-            await bot.user.edit(username=nname)
-            time.sleep(60)
-            await bot.user.edit(username=bot_name)
+        if count[0]:
+            asyncio.create_task(yan_name())
+            async def yan_name():
+                bot_name = bot.user.name
+                nname = f"{ai_name} luv {user_nick} sooo much!"
+                num = len(nname)
+                if num > 32:
+                    nname = f"{ai_name} luv {user_nick} SSM!"
+                num = len(nname)
+                if num > 32:
+                    nname = f"Love {user_nick}"
+                await bot.user.edit(username=nname)
+                await asyncio.sleep(1801)
+                await bot.user.edit(username=bot_name)
     else:
         text = [
             f"{user_nick}, 愛してますぅぅ",

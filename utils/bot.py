@@ -1541,7 +1541,7 @@ async def mood_change(mood):
 # Cập nhật mood
 def mood_name_change(bot_mood):
     mood_name = "normal"
-    if bot_mood == 0:
+    if bot_mood < 5:
         mood_name = angry.replace("{user_name}", user_nick)
     elif bot_mood < 10:
         mood_name = sad.replace("{user_name}", user_nick)

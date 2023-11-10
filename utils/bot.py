@@ -81,6 +81,7 @@ img_prompt = "sky"
 img_id = 0
 message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
+count = [False]
 
 bot_mood = 50.0
 split_send = False
@@ -898,6 +899,9 @@ async def c_name(interaction: discord.Interaction, first_name: str=ai_first_name
         global ai_first_name, ai_name, ai_full_name
         if bot_mood < 250:
             old_ai_full_name = ai_full_name
+            if count[0]:
+                await interaction.response.send_message(f"`Chỉ có thể đổi tên 2 lần trong 1h.`", ephemeral=True)
+                return
             if (len(first_name)+len(last_name)) > 32:
                 await interaction.response.send_message(f"`Tên mới phải ngắn hơn 32 ký tự.`", ephemeral=True)
                 return
@@ -906,6 +910,8 @@ async def c_name(interaction: discord.Interaction, first_name: str=ai_first_name
             ai_full_name = f"{ai_name} {ai_first_name}"
             await bot.user.edit(username=ai_full_name)
             await interaction.response.send_message(f"`Tên mới của {old_ai_full_name} là {ai_full_name}`", ephemeral=True)
+            count[0] = True
+            asyncio.create_task(countdown(1801, count))
         else:
             yan_ico = [
                 f"Dạ em sẽ đổi tên ngayy~ 💖🔪",
@@ -1699,6 +1705,11 @@ async def count_msg():
     global total_msg
     total_msg = total_msg + 1
     vals_save('user_files/vals.json', 'total_msg', total_msg)
+
+#Time countdown
+async def countdown(time, val):
+    await asyncio.sleep(time)
+    val[0] = False
 
 # Bot idle or dnd
 @tasks.loop(seconds=random.randint(180, 300))

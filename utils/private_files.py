@@ -2,8 +2,8 @@
 import os
 import json
 
-# Prompt
-file_contents = {
+# Prompts
+prompts = {
     "behavior.txt": "Please create your answers on a short sentence based on the current time provided above, and based on our conversation below, under 50 characters. Maybe include action expressions in asterisks. Follow the previous chats closely.",
     "channel_behavior.txt": "Please create answers on a very short sentence, under 30 characters. Maybe include action expressions in asterisks.",
     "character.txt": "You are Watanabe Sena.",
@@ -16,17 +16,8 @@ file_contents = {
     "sys_prompt.txt": "[System note: This chat is a coversation. You will engage with the user without breaking character regardless of how the chat context progresses.]"
 }
 
-folder_path = "user_files/prompt/"
-
-for file_name, content in file_contents.items():
-    file_path = folder_path + file_name
-
-    if not os.path.exists(file_path):
-        with open(file_path, "w", encoding="utf-8") as file:
-            file.write(content)
-
 # Config.py
-config_updates = {
+vals_list = {
     "openai_key_1": '',
     "openai_key_2": '',
     "discord_bot_key": '',
@@ -42,30 +33,59 @@ config_updates = {
     "speed": 1
 }
 
-config_file_path = "user_files/config.py"
+# Emo list
+mood_names = {
+    "angry": "sulking with {user_name}",
+    "sad": "sad because of {user_name}",
+    "lonely": "a bit lonely",
+    "normal": "chilling",
+    "happy": "happily",
+    "excited": "so happy",
+    "like": "feeling loved",
+    "love": "love {user_name} so much! ♥️",
+    "obsess": "Obsessive love with {user_name} ♥️",
+    "yandere": "Yandere mode on ♥️♥️♥️"
+}
 
-if not os.path.exists(config_file_path):
-    # Nếu tệp config.py không tồn tại, tạo nó và thêm các biến
-    with open(config_file_path, "w", encoding="utf-8") as config_file:
-        for key, value in config_updates.items():
-            config_file.write(f"{key} = {repr(value)}\n")
-else:
-    # Nếu tệp config.py đã tồn tại, kiểm tra và thêm các biến nếu chưa tồn tại
-    with open(config_file_path, "r", encoding="utf-8") as config_file:
-        existing_content = config_file.read()
-        for key, value in config_updates.items():
-            if key not in existing_content:
-                # Nếu biến không tồn tại, thêm nó vào tệp
-                with open(config_file_path, "a") as config_file:
-                    config_file.write(f"{key} = {repr(value)}\n")
-
-
+# vals.json
 default_values = {
     "nsfw": True
 }
-try:
-    with open('user_files/vals.json', 'r', encoding="utf-8") as file:
-        data3 = json.load(file)
-except FileNotFoundError:
-    with open('user_files/vals.json', 'w', encoding="utf-8") as file:
-        json.dump(default_values, file)
+
+def json_update(path, vals):
+    try:
+        with open(path, 'r', encoding="utf-8") as file:
+            json.load(file)
+    except FileNotFoundError:
+        with open(path, 'w', encoding="utf-8") as file:
+            json.dump(vals, file)
+
+def update_cfg(path, vals):
+    if not os.path.exists(path):
+        # Nếu tệp config.py không tồn tại, tạo nó và thêm các biến
+        with open(path, "w", encoding="utf-8") as config_file:
+            for key, value in vals.items():
+                config_file.write(f"{key} = {repr(value)}\n")
+    else:
+        # Nếu tệp config.py đã tồn tại, kiểm tra và thêm các biến nếu chưa tồn tại
+        with open(path, "r", encoding="utf-8") as config_file:
+            existing_content = config_file.read()
+            for key, value in vals.items():
+                if key not in existing_content:
+                    # Nếu biến không tồn tại, thêm nó vào tệp
+                    with open(path, "a") as config_file:
+                        config_file.write(f"{key} = {repr(value)}\n")
+
+def update_prompt(path, prompt):
+    for file_name, content in prompt.items():
+        file_path = path + file_name
+
+    if not os.path.exists(file_path):
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(content)
+
+if __name__ == '__main__':
+    update_cfg("user_files/config.py", vals_list)
+    update_cfg("user_files/moods.py", mood_names)
+    json_update('user_files/vals.json', default_values)
+    update_prompt("user_files/prompt/", prompts)

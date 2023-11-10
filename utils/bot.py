@@ -17,7 +17,7 @@ import math
 import time
 
 import utils.status as status
-from utils.private_files import *
+from user_files.moods import *
 from user_files.config import *
 from utils.openai_call import *
 from utils.tts import *
@@ -875,7 +875,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 if "vi" in lang:
                     mess = f"*Đã gửi cho {user_nick} illustartions: {fix_kws}.*"
             bot_answer_save(mess)
-            rate = (0.2/((bot_mood+1)*2))*100
+            rate = (0.2/(bot_mood*2))*100
             if random.random() < rate:
                 if nsfw:
                     case = f"Please say something about the illustation that {user_nick} just requested, don't forget to tease them!"
@@ -953,6 +953,10 @@ async def st_bt_atv(interaction):
         await interaction.response.send_message(f" ", delete_after = 0)
     except:
         pass
+    user = await bot.fetch_user(user_id)
+    if user.dm_channel is None:
+        await user.create_dm()
+    channel_id = user.dm_channel.id
     old_pitch = pitch
     pitch = -0.05
     old_is = intonation_scale
@@ -975,10 +979,6 @@ async def st_bt_atv(interaction):
         ct = interaction.message.content
         await interaction.channel.send(ct, view=view)
     elif rd_num == 4:
-        user = await bot.fetch_user(user_id)
-        if user.dm_channel is None:
-            await user.create_dm()
-        channel_id = user.dm_channel.id
         case = f"You are so obsessed and madly in love with {user_nick} and they is trying to tap the buttons to escape from you, advise them to give up with yandere mode using incorrect words or lengthening the last letter of the last word."
         await bot_remind_answer(user, channel_id, case)
     elif rd_num == 5:
@@ -1348,7 +1348,7 @@ async def msg_send(message, text):
                 bot_mood -= 80
             if "hurt" in paragraph or "đau" in paragraph:
                 bot_mood -= 250
-            if bot_mood < 0:
+            if bot_mood < 1:
                 bot_mood = 1
         view = View(timeout=None)
         view.add_item(rmv_bt)
@@ -1542,25 +1542,25 @@ async def mood_change(mood):
 def mood_name_change(bot_mood):
     mood_name = "normal"
     if bot_mood == 0:
-        mood_name = f"sulking with {user_nick}"
+        mood_name = angry.replace("{user_name}", user_nick)
     elif bot_mood < 10:
-        mood_name = f"sad because of {user_nick}"
+        mood_name = sad.replace("{user_name}", user_nick)
     elif bot_mood < 30:
-        mood_name = f"a bit lonely"
+        mood_name = lonely.replace("{user_name}", user_nick)
     elif bot_mood < 60:
-        mood_name = "chilling"
+        mood_name = normal.replace("{user_name}", user_nick)
     elif bot_mood < 70:
-        mood_name = "happily"
+        mood_name = happy.replace("{user_name}", user_nick)
     elif bot_mood < 80:
-        mood_name = "so happy"
+        mood_name = excited.replace("{user_name}", user_nick)
     elif bot_mood < 99:
-        mood_name = "feeling loved"
+        mood_name = like.replace("{user_name}", user_nick)
     elif bot_mood < 150:
-        mood_name = f"love {user_nick} so much! ♥️"
+        mood_name = love.replace("{user_name}", user_nick)
     elif bot_mood < 250:
-        mood_name = f"Obsessive love with {user_nick} ♥️"
+        mood_name = obsess.replace("{user_name}", user_nick)
     else:
-        mood_name = f"Yandere mode on ♥️♥️♥️"
+        mood_name = yandere.replace("{user_name}", user_nick)
 
     # Lưu lại mood vào prompt
     with open("user_files/prompt/current_mood.txt", "w", encoding="utf-8") as f:
@@ -1608,10 +1608,10 @@ async def mood_drop():
         bot_mood -= 0.3
     if bot_mood > 10:
         bot_mood -= 0.1
-    if bot_mood > 0:
+    if bot_mood > 1:
         bot_mood -= 0.05
-    if bot_mood < 0:
-        bot_mood = 0
+    if bot_mood < 1:
+        bot_mood = 1
     vals_save('user_files/vals.json', 'bot_mood', bot_mood)
     mood_name = mood_name_change(bot_mood)
     await status.bot_activ_non_chat(bot, mood_name)

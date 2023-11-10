@@ -1,5 +1,6 @@
 import subprocess
 import asyncio
+from utils.private_files import *
 
 github_repo = "https://github.com/HoangShiro/Discord-DM-AI.git"
 
@@ -22,6 +23,12 @@ def start():
 
 if __name__ == '__main__':
     update_bot()
+
+    update_cfg("user_files/config.py", vals_list)
+    update_cfg("user_files/moods.py", mood_names)
+    json_update('user_files/vals.json', default_values)
+    update_prompt("user_files/prompt/", prompts)
+
     try:
         start()
     except Exception as e:

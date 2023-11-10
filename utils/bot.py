@@ -891,6 +891,35 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
+# Bot name change
+@bot.tree.command(name="cname", description=f"Đổi tên cho {ai_name}.")
+async def c_name(interaction: discord.Interaction, first_name: str=ai_first_name, last_name: str=ai_name):
+    if interaction.user.id == user_id:
+        global ai_first_name, ai_name, ai_full_name
+        if bot_mood < 250:
+            old_ai_full_name = ai_full_name
+            if (len(first_name)+len(last_name)) > 32:
+                await interaction.response.send_message(f"`Tên mới phải ngắn hơn 32 ký tự.`", ephemeral=True)
+                return
+            ai_name = last_name
+            ai_first_name = first_name
+            ai_full_name = f"{ai_name} {ai_first_name}"
+            await bot.user.edit(username=ai_full_name)
+            await interaction.response.send_message(f"`Tên mới của {old_ai_full_name} là {ai_full_name}`", ephemeral=True)
+        else:
+            yan_ico = [
+                f"Dạ em sẽ đổi tên ngayy~ 💖🔪",
+                "✖️🔪",
+                "❤️❔",
+                f"Tên mới của em là~~ Em-yêu-{user_nick}!! ❤️🔪",
+                f"🔪",
+                f"{user_nick} tên hiện tại của {ai_name} rất đẹp saoooo?"
+            ]
+            yan_ico = random.choice(yan_ico)
+            await interaction.response.send_message(yan_ico, ephemeral=True)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Button call
 async def irmv_bt_atv(interaction):

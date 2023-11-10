@@ -1720,6 +1720,17 @@ async def countdown(time):
     await asyncio.sleep(time)
     count = False
 
+#Take bot name from prompt
+async def ai_name_get():
+    ct = await ct_get("user_files/prompt/character.txt")
+    
+
+#Take prompt file
+async def ct_get(path):
+    with open(path, "r", encoding="utf-8") as f:
+        ct = f.read()
+    return ct
+
 # Bot idle or dnd
 @tasks.loop(seconds=random.randint(180, 300))
 async def bot_idle():

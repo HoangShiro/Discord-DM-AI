@@ -81,7 +81,7 @@ img_prompt = "sky"
 img_id = 0
 message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
-count = [False]
+count = False
 
 bot_mood = 50.0
 split_send = False
@@ -159,6 +159,7 @@ print()
 # Bot Greeting
 @bot.event
 async def on_ready():
+    global alarms, ai_full_name
     print(f"{bot.user.name} đã kết nối tới Discord!")
     # Đồng bộ hoá commands
     try:
@@ -174,9 +175,10 @@ async def on_ready():
     asyncio.create_task(time_check())
     time_check.start()
 
-    global alarms
     await member_info()
     alarms = load_alarms_from_json()
+
+    ai_full_name = bot.user.name
 
     user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
@@ -894,12 +896,12 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
 # Bot name change
 @bot.tree.command(name="cname", description=f"Đổi tên cho {ai_name}.")
-async def c_name(interaction: discord.Interaction, first_name: str=ai_first_name, last_name: str=ai_name):
+async def c_name(interaction: discord.Interaction, last_name: str=ai_name, first_name: str=ai_first_name):
     if interaction.user.id == user_id:
-        global ai_first_name, ai_name, ai_full_name
+        global ai_first_name, ai_name, ai_full_name, count
         if bot_mood < 250:
             old_ai_full_name = ai_full_name
-            if count[0]:
+            if count:
                 await interaction.response.send_message(f"`Chỉ có thể đổi tên 2 lần trong 1h.`", ephemeral=True)
                 return
             if (len(first_name)+len(last_name)) > 32:
@@ -910,8 +912,7 @@ async def c_name(interaction: discord.Interaction, first_name: str=ai_first_name
             ai_full_name = f"{ai_name} {ai_first_name}"
             await bot.user.edit(username=ai_full_name)
             await interaction.response.send_message(f"`Tên mới của {old_ai_full_name} là {ai_full_name}`", ephemeral=True)
-            count[0] = True
-            asyncio.create_task(countdown(1801, count))
+            asyncio.create_task(countdown(1801))
         else:
             yan_ico = [
                 f"Dạ em sẽ đổi tên ngayy~ 💖🔪",
@@ -983,7 +984,7 @@ async def ctn_bt_atv(interaction):
     asyncio.create_task(bot_continue_answer(interaction))
 
 async def st_bt_atv(interaction):
-    global pitch, intonation_scale, speed
+    global pitch, intonation_scale, speed, count
     try:
         await interaction.response.send_message(f" ", delete_after = 0)
     except:
@@ -1017,9 +1018,10 @@ async def st_bt_atv(interaction):
         case = f"You are so obsessed and madly in love with {user_nick} and they is trying to tap the buttons to escape from you, advise them to give up with yandere mode using incorrect words or lengthening the last letter of the last word."
         await bot_remind_answer(user, channel_id, case)
     elif rd_num == 5:
-        if count[0]:
+        if not count:
             asyncio.create_task(yan_name())
             async def yan_name():
+                global count
                 bot_name = bot.user.name
                 nname = f"{ai_name} luv {user_nick} sooo much!"
                 num = len(nname)
@@ -1029,8 +1031,12 @@ async def st_bt_atv(interaction):
                 if num > 32:
                     nname = f"Love {user_nick}"
                 await bot.user.edit(username=nname)
+                count = True
                 await asyncio.sleep(1801)
                 await bot.user.edit(username=bot_name)
+                count = True
+                await asyncio.sleep(1801)
+                count = False
     else:
         text = [
             f"{user_nick}, 愛してますぅぅ",
@@ -1400,7 +1406,7 @@ async def msg_send(message, text):
             rate = (0.2/(bot_mood*2))*100
             if random.random() < rate:
                 await message.channel.send(paragraph)
-                case = "Continue your answer above proactively and creatively by yourself, follow the line closely, maybe with actions. If the above is a question, don't ask it again."
+                case = "Continue your short answer above proactively and creatively by yourself, follow the line closely, maybe with actions. If the above is a question, don't ask it again."
                 asyncio.create_task(bot_imgreact_answer(message, case))
             else:
                 await message.channel.send(paragraph, view=view)
@@ -1708,9 +1714,11 @@ async def count_msg():
     vals_save('user_files/vals.json', 'total_msg', total_msg)
 
 #Time countdown
-async def countdown(time, val):
+async def countdown(time):
+    global count
+    count = True
     await asyncio.sleep(time)
-    val[0] = False
+    count = False
 
 # Bot idle or dnd
 @tasks.loop(seconds=random.randint(180, 300))

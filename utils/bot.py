@@ -934,7 +934,7 @@ async def c_name(interaction: discord.Interaction, last_name: str=ai_name, first
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Bot restart
-@bot.tree.command(name="avatar", description=f"Đổi avatar của {ai_name}.")
+@bot.tree.command(name="cavatar", description=f"Đổi avatar của {ai_name}.")
 async def avatar_c(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         if bot_mood < 250:

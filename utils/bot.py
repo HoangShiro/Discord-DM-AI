@@ -30,9 +30,6 @@ logging.getLogger('discord.gateway').setLevel(logging.ERROR)
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
-ai_name = "Sena"
-ai_first_name = 'Watanabe'
-
 bot = commands.Bot(command_prefix="!", intents=intents)
 ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
@@ -917,6 +914,8 @@ async def c_name(interaction: discord.Interaction, last_name: str=ai_name, first
                 return
             pt_up("user_files/prompt/character.txt", ai_name, first_name)
             pt_up("user_files/prompt/character.txt", ai_first_name, last_name)
+            pt_up("user_files/config.py", ai_name, first_name)
+            pt_up("user_files/config.py", ai_first_name, last_name)
             ai_name = first_name
             ai_first_name = last_name
             ai_full_name = f"{ai_name} {ai_first_name}"
@@ -1916,10 +1915,6 @@ async def time_check():
     alarm_check = True
 
 def bot_run():
-    global ai_name, ai_first_name
-    ct = ct_get("user_files/prompt/character.txt")
-    char_name = extract_names(ct)
-    ai_name, ai_first_name = split_name(char_name)
     bot.run(discord_bot_key)
 
 if __name__ == '__main__':

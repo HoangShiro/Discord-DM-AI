@@ -158,6 +158,7 @@ emoji_rate_percent = emoji_rate * 100
 @bot.event
 async def on_ready():
     global alarms, ai_full_name
+    await ai_name_update()
     # Đồng bộ hoá commands
     try:
         synced = await bot.tree.sync()
@@ -174,8 +175,6 @@ async def on_ready():
 
     await member_info()
     alarms = load_alarms_from_json()
-
-    await ai_name_update()
 
     user = await bot.fetch_user(user_id)
     if user.dm_channel is None:
@@ -913,8 +912,10 @@ async def c_name(interaction: discord.Interaction, last_name: str=ai_name, first
             if (len(first_name)+len(last_name)) > 32:
                 await interaction.response.send_message(f"`Tên mới phải ngắn hơn 32 ký tự.`", ephemeral=True)
                 return
-            ai_name = last_name
-            ai_first_name = first_name
+            pt_up("user_files/prompt/character.txt", ai_name, first_name)
+            pt_up("user_files/prompt/character.txt", ai_first_name, last_name)
+            ai_name = first_name
+            ai_first_name = last_name
             ai_full_name = f"{ai_name} {ai_first_name}"
             await bot.user.edit(username=ai_full_name)
             await interaction.response.send_message(f"`Tên mới của {old_ai_full_name} là {ai_full_name}`", ephemeral=True)
@@ -1808,6 +1809,18 @@ async def ct_get(path):
     with open(path, "r", encoding="utf-8") as f:
         ct = f.read()
     return ct
+
+# Prompt update
+def pt_up(path, ct, new_ct):
+    with open(path, 'r+', encoding='utf-8') as file:
+        data = file.read()
+        pattern = rf"{ct}"
+        match = re.search(pattern, data)
+        if match:
+            new_data = re.sub(pattern, f"{new_ct}", data)
+            file.seek(0)
+            file.write(new_data)
+            file.truncate()
 
 # Bot idle or dnd
 @tasks.loop(seconds=random.randint(180, 300))

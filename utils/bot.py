@@ -265,9 +265,9 @@ async def on_message(message):
                 if message.attachments:
                     attachment = message.attachments[0]
                     image_data = await attachment.read()
-                    await client.user.edit(avatar=image_data)
+                    await bot.user.edit(avatar=image_data)
                 elif message.content.startswith("https://") or message.content.startswith("http://"):
-                    await client.user.edit(avatar=message.content)
+                    await bot.user.edit(avatar=message.content)
                 ava_ch = False
                 return
             # Nếu đang reply thì bỏ qua

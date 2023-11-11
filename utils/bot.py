@@ -1756,7 +1756,7 @@ async def countdown(time):
 # Ai name Update
 async def ai_name_update():
     global ai_name, ai_first_name
-    ct = await ct_get("user_files/prompt/character.txt")
+    ct = ct_get("user_files/prompt/character.txt")
     char_name = extract_names(ct)
     bot_name = bot.user.name
     if char_name == bot_name:
@@ -1809,7 +1809,7 @@ def extract_names(text):
     return fi
 
 # Hàm để đọc nội dung từ tệp
-async def ct_get(path):
+def ct_get(path):
     with open(path, "r", encoding="utf-8") as f:
         ct = f.read()
     return ct
@@ -1916,6 +1916,10 @@ async def time_check():
     alarm_check = True
 
 def bot_run():
+    global ai_name, ai_first_name
+    ct = ct_get("user_files/prompt/character.txt")
+    char_name = extract_names(ct)
+    ai_name, ai_first_name = split_name(char_name)
     bot.run(discord_bot_key)
 
 if __name__ == '__main__':

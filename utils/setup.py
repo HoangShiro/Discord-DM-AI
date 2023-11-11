@@ -15,8 +15,6 @@ config_updates = {
     "vv_key": "",
     "user_id": "",
     "server_id": "",
-    "ai_name": "",
-    "ai_first_name": "",
     "speaker": "",
     "pitch": "",
     "intonation_scale": "",
@@ -49,8 +47,6 @@ def save_config_info():
     vv_key = vv_key_entry.get()
     user_id = user_id_entry.get()
     server_id = server_id_entry.get()
-    ai_name = ai_name_entry.get()
-    ai_first_name = ai_first_name_entry.get()
     speaker = speaker_entry.get()
     pitch = pitch_entry.get()
     intonation_scale = intonation_scale_entry.get()
@@ -63,8 +59,6 @@ def save_config_info():
     config_updates["vv_key"] = vv_key
     config_updates["user_id"] = int(user_id)
     config_updates["server_id"] = int(server_id)
-    config_updates["ai_name"] = ai_name
-    config_updates["ai_first_name"] = ai_first_name
 
     if not speaker:
         speaker = 46
@@ -169,12 +163,6 @@ def load_config_values():
 
     server_id_entry.delete(0, "end")
     server_id_entry.insert(0, config_values.get("server_id", ""))
-
-    ai_name_entry.delete(0, "end")
-    ai_name_entry.insert(0, config_values.get("ai_name", ""))
-
-    ai_first_name_entry.delete(0, "end")
-    ai_first_name_entry.insert(0, config_values.get("ai_first_name", ""))
 
     speaker_entry.delete(0, "end")
     speaker_entry.insert(0, config_values.get("speaker", ""))
@@ -371,14 +359,6 @@ def button_mode():
       server_id_label.configure(text_color=text_color_night)
       server_id_entry.configure(fg_color= input_color_day, text_color= input_text_day)
 
-      #AI Name
-      ai_name_label.configure(text_color=text_color_night)
-      ai_name_entry.configure(fg_color= input_color_day, text_color= input_text_day)
-
-      #AI First Name
-      ai_first_name_label.configure(text_color=text_color_night)
-      ai_first_name_entry.configure(fg_color= input_color_day, text_color= input_text_day)
-
       #VoiceVox API Key
       vv_key_label.configure(text_color=text_color_night)
       vv_key_entry.configure(fg_color= input_color_day, text_color= input_text_day)
@@ -446,14 +426,6 @@ def button_mode():
       #Server ID
       server_id_label.configure(text_color=text_color_day)
       server_id_entry.configure(fg_color= input_color_night, text_color= text_color_day)
-
-      #AI Name
-      ai_name_label.configure(text_color=text_color_day)
-      ai_name_entry.configure(fg_color= input_color_night, text_color= text_color_day)
-
-      #AI First Name
-      ai_first_name_label.configure(text_color=text_color_day)
-      ai_first_name_entry.configure(fg_color= input_color_night, text_color= text_color_day)
 
       #VoiceVox API Key
       vv_key_label.configure(text_color=text_color_day)
@@ -572,25 +544,6 @@ server_id_entry = des.CTkEntry(required_info, border_width=0, placeholder_text="
 server_id_entry.grid(row=11, column=3, columnspan=4,
                               padx=20, pady=10,
                               sticky="ew")
-
-ai_name_label = des.CTkLabel(required_info, text="Character last name")
-ai_name_label.grid(row=12, column=0, 
-                              padx=20, pady=10,
-                              sticky="ew")
-ai_name_entry = des.CTkEntry(required_info, border_width=0)
-ai_name_entry.grid(row=12, column=1,
-                              padx=20, pady=10,
-                              sticky="ew")
-
-ai_first_name_label = des.CTkLabel(required_info, text="Character first name:")
-ai_first_name_label.grid(row=12, column=2, 
-                              padx=20, pady=10,
-                              sticky="ew")
-ai_first_name_entry = des.CTkEntry(required_info, border_width=0)
-ai_first_name_entry.grid(row=12, column=3, columnspan=4,
-                              padx=20, pady=10,
-                              sticky="ew")
-
 
 
 character_voice = tk.LabelFrame(second_frame, text="Character's voice setting (optional)")

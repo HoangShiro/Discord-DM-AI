@@ -31,6 +31,8 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
 bot = commands.Bot(command_prefix="!", intents=intents)
+ai_name = "AI"
+ai_first_name = "Character"
 ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0
@@ -1713,19 +1715,68 @@ async def count_msg():
     total_msg = total_msg + 1
     vals_save('user_files/vals.json', 'total_msg', total_msg)
 
-#Time countdown
+# Time countdown
 async def countdown(time):
     global count
     count = True
     await asyncio.sleep(time)
     count = False
 
-#Take bot name from prompt
-async def ai_name_get():
+# Ai name Update
+async def ai_name_update():
+    global ai_name, ai_first_name
     ct = await ct_get("user_files/prompt/character.txt")
-    
+    char_name = extract_names(ct)
+    bot_name = await bot.user.name
+    if char_name == bot_name:
+        return
+    else:
+        await bot.user.edit(username=char_name)
+        ai_name, ai_first_name = split_name(char_name)
+        asyncio.create_task(countdown(1801))
+    return char_name
 
-#Take prompt file
+# Ai name split
+def split_name(full_name):
+    first_name = ""
+    last_name = ""
+    for i, char in enumerate(full_name):
+        if i > 0 and char.isspace() and full_name[i - 1].isalnum():
+            break
+
+    first_name = full_name[:i].strip()
+    last_name = full_name[i:].strip()
+
+    return first_name, last_name
+
+# Hàm để trích xuất họ và tên từ văn bản
+def extract_names(text):
+    cw = ""
+    for i, char in enumerate(text):
+        cw = cw + char
+        if char == ".":
+            break
+    cw = re.findall(r'\b[A-Z][a-z]*\b', text)
+    if cw[0] == "Your" or cw[0] == "You":
+        if len(cw) >= 3:
+            fi = cw[1:3]
+        elif len(cw) >= 2:
+            fi = cw[1:2]
+        elif len(cw) >= 1:
+            fi = cw[0:1]
+        else:
+            fi = ""
+    else:
+        if len(cw) >= 2:
+            fi = cw[0:2]
+        elif len(cw) >= 1:
+            fi = cw[0:1]
+        else:
+            fi = ""
+    fi = " ".join(fi)
+    return fi
+
+# Hàm để đọc nội dung từ tệp
 async def ct_get(path):
     with open(path, "r", encoding="utf-8") as f:
         ct = f.read()

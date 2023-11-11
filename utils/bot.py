@@ -30,6 +30,9 @@ logging.getLogger('discord.gateway').setLevel(logging.ERROR)
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
+ai_name = 'Sena'
+ai_first_name = 'Watanabe'
+
 bot = commands.Bot(command_prefix="!", intents=intents)
 ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0

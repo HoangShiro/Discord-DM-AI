@@ -31,8 +31,6 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
 bot = commands.Bot(command_prefix="!", intents=intents)
-ai_name = "AI"
-ai_first_name = "Character"
 ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0
@@ -155,21 +153,17 @@ with open('user_files/vals.json', 'w', encoding="utf-8") as file:
 
 emoji_rate_percent = emoji_rate * 100
 
-print(f"{ai_full_name} đang thức dậy!")
-print()
-
 # Bot Greeting
 @bot.event
 async def on_ready():
     global alarms, ai_full_name
-    print(f"{bot.user.name} đã kết nối tới Discord!")
     # Đồng bộ hoá commands
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(e)
-
+    print(f"{bot.user.name} đã kết nối tới Discord!")
     # Chạy status
     asyncio.create_task(bot_idle())
     bot_idle.start()
@@ -180,7 +174,7 @@ async def on_ready():
     await member_info()
     alarms = load_alarms_from_json()
 
-    ai_full_name = bot.user.name
+    await ai_name_update()
 
     user = await bot.fetch_user(user_id)
     if user.dm_channel is None:

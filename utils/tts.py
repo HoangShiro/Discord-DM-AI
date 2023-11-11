@@ -56,7 +56,7 @@ def tts_get(text, speaker, pitch, intonation_scale, speed, console_log):
         with open('user_files/ai_voice_msg.ogg', 'wb') as f:
             f.write(response.content)
         if console_log:
-            print(f"Voice của {ai_name} đã được tải về thành công.")
+            print(f"Voice đã được tải về thành công.")
     else:
         print(f"Lỗi khi tạo voice, mã lỗi: {response.status_code}")
 

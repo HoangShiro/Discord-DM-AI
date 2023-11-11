@@ -901,7 +901,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
 
 # Bot name change
 @bot.tree.command(name="cname", description=f"Đổi tên cho {ai_name}.")
-async def c_name(interaction: discord.Interaction, last_name: str=ai_name, first_name: str=ai_first_name):
+async def c_name(interaction: discord.Interaction, last_name: str, first_name: str):
     if interaction.user.id == user_id:
         global ai_first_name, ai_name, ai_full_name, count
         if bot_mood < 250:

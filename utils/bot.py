@@ -82,6 +82,7 @@ img_id = 0
 message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
 count = False
+ava_ch = False
 
 bot_mood = 50.0
 split_send = False
@@ -211,7 +212,7 @@ async def on_typing(channel, user, when):
 # AI Chat
 @bot.event
 async def on_message(message):
-    global channel_id, task_busy_with_user, task_busy_with_another, public_chat_num, chat_wait, dm_channel_id
+    global channel_id, task_busy_with_user, task_busy_with_another, public_chat_num, chat_wait, dm_channel_id, ava_ch
     # Bỏ qua nếu tin nhắn là bot hoặc không phải user được chỉ định
     #if message.author == bot.user:
     #    return
@@ -255,11 +256,19 @@ async def on_message(message):
                     asyncio.create_task(bot_reaction_with_voice_channel(files, message))
             public_chat_num -= 1
             task_busy_with_another = False"""
-        
+    
     # Phản hồi lại user sau khi nhận được chat
     if not message.content.startswith('!') and message.author.id == user_id:
         # Chỉ phản hồi khi là DM channel
         if isinstance(message.channel, discord.DMChannel):
+            if ava_ch:
+                if message.attachments:
+                    attachment = message.attachments[0]
+                    bot.user.avatar = attachment.url
+                elif message.content.startswith("https://") or message.content.startswith("http://"):
+                    bot.user.avatar = message.content
+                ava_ch = False
+                return
             # Nếu đang reply thì bỏ qua
             if task_busy_with_user:
                 return
@@ -917,6 +926,29 @@ async def c_name(interaction: discord.Interaction, last_name: str=ai_name, first
                 f"Tên mới của em là~~ Em-yêu-{user_nick}!! ❤️🔪",
                 f"🔪",
                 f"{user_nick} tên hiện tại của {ai_name} rất đẹp saoooo?"
+            ]
+            yan_ico = random.choice(yan_ico)
+            await interaction.response.send_message(yan_ico, ephemeral=True)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
+# Bot restart
+@bot.tree.command(name="avatar", description=f"Đổi avatar của {ai_name}.")
+async def avatar_c(interaction: discord.Interaction):
+    if interaction.user.id == user_id:
+        if bot_mood < 250:
+            global ava_ch
+            ava_ch = True
+            await interaction.response.send_message(f"`Gửi cho {ai_name} avatar muốn đổi đi`", ephemeral=True)
+        else:
+            yan_ico = [
+                f"Dạ em sẽ set avatar mới ngayy~ 💖🔪",
+                "✖️🔪",
+                "❤️❔",
+                f"Tại sao phải thay? Avatar hiện tại rất đẹp đúng ko? ❤️🔪",
+                f"🔪",
+                f"{user_nick} vừa nhắc tới {ai_name}?"
             ]
             yan_ico = random.choice(yan_ico)
             await interaction.response.send_message(yan_ico, ephemeral=True)

@@ -1,7 +1,7 @@
 import json
 import re
 from utils.promptMaker_self import getPrompt, getPrompt_task, getPrompt_channel
-from user_files.config import openai_key_1, openai_key_2, ai_name
+from user_files.config import openai_key_1, openai_key_2
 from openai import AsyncOpenAI, OpenAI
 import aiohttp
 from translate import Translator
@@ -166,8 +166,6 @@ def openai_answer_channel():
     )
     message = response.choices[0].message.content
 
-    message = re.sub(rf"{ai_name}:", "", message).strip()
-
     channel_history.append({'role': 'assistant', 'content': message})
 
     with open('user_files/channel_history.json', "w", encoding="utf-8") as f2:
@@ -220,7 +218,7 @@ async def openai_audio(audio_url):
             else:
                 result = "*I said something but you didn't hear clearly*"
                 if tar_lang == "vi":
-                    result = f"*vừa nói gì đó nhưng {ai_name} không nghe thấy.*"
+                    result = f"*vừa nói gì đó nhưng bạn không nghe thấy.*"
                 if tar_lang == "ja":
                     result = "*何か言ったけどはっきり聞こえなかった*"
             

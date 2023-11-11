@@ -1721,7 +1721,7 @@ async def ai_name_update():
     global ai_name, ai_first_name
     ct = await ct_get("user_files/prompt/character.txt")
     char_name = extract_names(ct)
-    bot_name = await bot.user.name
+    bot_name = bot.user.name
     if char_name == bot_name:
         return
     else:

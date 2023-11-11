@@ -1757,6 +1757,7 @@ async def ai_name_update():
     char_name = extract_names(ct)
     bot_name = bot.user.name
     if char_name == bot_name:
+        ai_name, ai_first_name = split_name(char_name)
         return
     else:
         await bot.user.edit(username=char_name)

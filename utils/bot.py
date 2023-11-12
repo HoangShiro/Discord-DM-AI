@@ -691,7 +691,9 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         else:
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
             embed.add_field(name=f"Không thể tạo art: {image_url}", value="", inline=False)
-            embed.set_image(url="images/moeta-crying.gif")
+            file_path = "images/moeta-crying.gif"
+            file = discord.File(file_path, filename='moeta-crying.gif')
+            embed.set_image(url=f'attachment://{file.filename}')
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):
             img_id = message.id

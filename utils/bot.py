@@ -664,7 +664,7 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 
 # Image Gen
 @bot.tree.command(name="igen", description=f"Tạo art")
-async def image_gen(interaction: discord.Interaction, prompt: str):
+async def image_gen(interaction: discord.Interaction, prompt: str, HD: bool = False, Portrait: bool = False, Scene: bool = False):
     if interaction.user.id == user_id:
         global img_prompt, img_id, bot_mood
         img_prompt = prompt

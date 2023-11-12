@@ -679,11 +679,13 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         except Exception as e:
             if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
                 error_message = e.response.json()['error']['message']
-                print(f"Error while gen art: {error_message}")
-                image_url = error_message
+                error_code = e.response.json()['error']['code']
+                print(f"Error while gen art: {error_code} - {error_message}")
+                error_message = error_message[:250]
+                if error_code == "content_policy_violation":
+                    error_code == "Một số từ trong prompt không an toàn... つ﹏⊂"
             else:
                 print(f"Error while gen art: {e}")
-                image_url = e
         if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
@@ -696,7 +698,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
             ]
             eimg = random.choice(eimg)
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
-            embed.add_field(name=f"❌ {image_url}.. つ﹏⊂", value="", inline=False)
+            embed.add_field(name=f"❌ {error_code}", value=f"_{error_message}_", inline=False)
             embed.set_image(url=eimg)
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):

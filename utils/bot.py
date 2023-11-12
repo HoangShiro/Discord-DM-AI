@@ -1547,8 +1547,8 @@ async def ai_voice_create(ai_text):
         try:
             oa_tts(ai_text, auto_speaker, pitch)
         except Exception as e:
-            print("Voice En error: {0}".format(e))
-            await bot_error_notice('Voice En gen error')
+            print("Voice auto error: {0}".format(e))
+            await bot_error_notice('Voice auto gen error')
 
 # Phân loại emoji
 def emoji_split(emojis):

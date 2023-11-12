@@ -664,7 +664,7 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 
 # Image Gen
 @bot.tree.command(name="igen", description=f"Tạo art")
-async def image_gen(interaction: discord.Interaction, prompt: str, HD: bool = False, Portrait: bool = False, Scene: bool = False):
+async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = False, portrait: bool = False, scene: bool = False):
     if interaction.user.id == user_id:
         global img_prompt, img_id, bot_mood
         img_prompt = prompt
@@ -683,7 +683,13 @@ async def image_gen(interaction: discord.Interaction, prompt: str, HD: bool = Fa
                 mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
         bot_answer_save(mess)
         try:
-            image_url = await openai_images(prompt)
+            if hd:
+                quality = "hd"
+            if portrait:
+                size = "1024x1792"
+            if scene:
+                size = "1792x1024"
+            image_url = await openai_images(prompt, quality, size)
         except Exception as e:
             if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
                 error_message = e.response.json()['error']['message']

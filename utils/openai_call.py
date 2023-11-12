@@ -225,14 +225,14 @@ async def openai_audio(audio_url):
             return result
 
 # Image gen
-async def openai_images(prompt):
+async def openai_images(prompt, quality, size):
     client = AsyncOpenAI(api_key=openai_key_2, timeout=60)
     response = await client.images.generate(
         prompt=prompt,
         model="dall-e-3",
-        quality="standard",
+        quality=quality,
         response_format="url",
-        size="1024x1024"
+        size=size
     )
     image_url = response.data[0].url
     return image_url

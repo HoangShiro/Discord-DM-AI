@@ -6,7 +6,6 @@ from openai import AsyncOpenAI, OpenAI
 import aiohttp
 from translate import Translator
 from utils.translate import lang_detect
-import discord
 
 total_characters = 0
 total_characters_channel = 0
@@ -228,23 +227,14 @@ async def openai_audio(audio_url):
 # Image gen
 async def openai_images(prompt):
     client = AsyncOpenAI(api_key=openai_key_2, timeout=60)
-    try:
-        response = await client.images.generate(
-            prompt=prompt,
-            model="dall-e-3",
-            quality="standard",
-            response_format="url",
-            size="1024x1024"
-        )
-        image_url = response.data[0].url
-    except Exception as e:
-        print(f"Error while gen art: {e}")
-        # Nếu e là BadRequestError, bạn có thể kiểm tra và xử lý nó
-        if isinstance(e, discord.errors.BadRequestError):
-            error_code = e.code
-            error_message = e.message
-            image_url = error_message
-            print(f"Error while gen art: {error_message}")
+    response = await client.images.generate(
+        prompt=prompt,
+        model="dall-e-3",
+        quality="standard",
+        response_format="url",
+        size="1024x1024"
+    )
+    image_url = response.data[0].url
     return image_url
 
 # Hàm xoá cuộc trò chuyện

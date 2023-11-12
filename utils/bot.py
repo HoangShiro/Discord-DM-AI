@@ -276,6 +276,7 @@ async def on_message(message):
                 view.add_item(irmv_bt)
                 await message.channel.send(embed=embed, view=view)
                 return
+            
             # Nếu đang reply thì bỏ qua
             if task_busy_with_user:
                 return

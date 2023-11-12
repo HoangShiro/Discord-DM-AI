@@ -35,12 +35,12 @@ ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0
 
-rmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
-irmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
-rc_bt = discord.ui.Button(label="🔄️", custom_id="rc", style=discord.ButtonStyle.grey)
-continue_bt = discord.ui.Button(label="▶️", custom_id="continue", style=discord.ButtonStyle.grey)
-nt_bt = discord.ui.Button(label="➡️", custom_id="next", style=discord.ButtonStyle.green)
-bk_bt = discord.ui.Button(label="⬅️", custom_id="back", style=discord.ButtonStyle.green)
+rmv_bt = discord.ui.Button(label="−", custom_id="remove", style=discord.ButtonStyle.grey)
+irmv_bt = discord.ui.Button(label="−", custom_id="remove", style=discord.ButtonStyle.grey)
+rc_bt = discord.ui.Button(label="↻", custom_id="rc", style=discord.ButtonStyle.grey)
+continue_bt = discord.ui.Button(label="↪", custom_id="continue", style=discord.ButtonStyle.grey)
+nt_bt = discord.ui.Button(label="▶", custom_id="next", style=discord.ButtonStyle.green)
+bk_bt = discord.ui.Button(label="◀", custom_id="back", style=discord.ButtonStyle.green)
 
 st_bt1 = discord.ui.Button(label="❤️", custom_id="st1", style=discord.ButtonStyle.grey)
 st_bt2 = discord.ui.Button(label="❤️", custom_id="st2", style=discord.ButtonStyle.grey)

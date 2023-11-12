@@ -268,6 +268,13 @@ async def on_message(message):
                 elif message.content.startswith("https://") or message.content.startswith("http://"):
                     await bot.user.edit(avatar=message.content)
                 ava_ch = False
+                avatar_url = str(bot.user.avatar_url)
+    
+                embed = discord.Embed(title=f"Avatar mới của {ai_name}", color=discord.Color.blue())
+                embed.set_image(url=avatar_url)
+                view = View(timeout=None)
+                view.add_item(irmv_bt)
+                await message.channel.send(embed=embed, view=view)
                 return
             # Nếu đang reply thì bỏ qua
             if task_busy_with_user:

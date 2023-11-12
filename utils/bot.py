@@ -268,7 +268,7 @@ async def on_message(message):
                 elif message.content.startswith("https://") or message.content.startswith("http://"):
                     await bot.user.edit(avatar=message.content)
                 ava_ch = False
-                avatar_url = str(bot.user.avatar_url)
+                avatar_url = str(bot.user.avatar.url)
     
                 embed = discord.Embed(title=f"Avatar mới của {ai_name}", color=discord.Color.blue())
                 embed.set_image(url=avatar_url)

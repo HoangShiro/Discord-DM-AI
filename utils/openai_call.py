@@ -237,16 +237,14 @@ async def openai_images(prompt):
             size="1024x1024"
         )
         image_url = response.data[0].url
-    except discord.app_commands.errors.CommandInvokeError as e:
-        inner_exception = e.original
-        if isinstance(inner_exception, discord.errors.HTTPException):
-            error_code = inner_exception.response.status
-            error_message = inner_exception.response.json()['error']['message']
-            print(f"Error code: {error_code} - {error_message}")
+    except Exception as e:
+        print(f"Error while gen art: {e}")
+        # Nếu e là BadRequestError, bạn có thể kiểm tra và xử lý nó
+        if isinstance(e, discord.errors.BadRequestError):
+            error_code = e.code
+            error_message = e.message
             image_url = error_message
-        else:
-            print(f"Unexpected error: {inner_exception}")
-            image_url = inner_exception
+            print(f"Error while gen art: {error_message}")
     return image_url
 
 # Hàm xoá cuộc trò chuyện

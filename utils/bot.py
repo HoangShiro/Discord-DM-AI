@@ -679,10 +679,6 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         except Exception as e:
             print(f"Error while gen art: {e}")
             # Nếu e là BadRequestError, bạn có thể kiểm tra và xử lý nó
-            if isinstance(e, discord.errors.BadRequestError):
-                error_message = e.message
-                image_url = error_message
-                print(f"Error while gen art: {error_message}")
         if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())

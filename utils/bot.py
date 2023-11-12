@@ -689,11 +689,15 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
             embed.set_image(url=image_url)
         else:
+            eimg = [
+                "https://safebooru.org//images/4262/6985078225c8f12e9054220ab6717df7c1755077.png",
+                "https://safebooru.org//images/3760/35bfbabb44813b36749c96a17b0a1fb1f59eeb8e.jpg",
+                "https://safebooru.org//images/3362/c3e6557a11032bcb4aed7840285f98feee136094.png"
+            ]
+            eimg = random.choice(eimg)
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
-            embed.add_field(name=f"Không thể tạo art: {image_url}", value="", inline=False)
-            file_path = "images/moeta-crying.gif"
-            file = discord.File(file_path, filename='moeta-crying.gif')
-            embed.set_image(url=f'attachment://{file.filename}')
+            embed.add_field(name=f"Error: {image_url}", value="", inline=False)
+            embed.set_image(url=eimg)
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):
             img_id = message.id

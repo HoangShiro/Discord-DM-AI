@@ -4,7 +4,6 @@ from utils.katakana import *
 import re
 import requests
 import os
-from pathlib import Path
 from openai import OpenAI
 from pydub import AudioSegment
 
@@ -69,7 +68,7 @@ def oa_tts(text, speaker, pitch):
     if not text:
         text = "うーん？"
     client = OpenAI(api_key=openai_key_2, timeout=60)
-    path = Path(__file__).parent / "user_files/ai_voice_msg.wav"
+    path = "user_files/ai_voice_msg.wav"
     response = client.audio.speech.create(
     model="tts-1",
     voice="nova",

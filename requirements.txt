@@ -1,5 +1,5 @@
 discord
-openai
+openai==1.2.3
 pytz
 translate
 langdetect

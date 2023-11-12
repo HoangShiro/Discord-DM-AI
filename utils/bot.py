@@ -1547,13 +1547,13 @@ async def ai_voice_create(ai_text):
         lang = "en"
         translated = text_translate(ai_text, lang)
         try:
-            tts_get_en(ai_text, en_speaker, pitch)
+            tts_get_en(ai_text, en_speaker, en_pitch)
         except Exception as e:
             print("Voice En error: {0}".format(e))
             await bot_error_notice('Voice En gen error')
     else:
         try:
-            oa_tts(ai_text, auto_speaker, pitch)
+            oa_tts(ai_text, auto_speaker, au_pitch)
         except Exception as e:
             print("Voice auto error: {0}".format(e))
             await bot_error_notice('Voice auto gen error')

@@ -696,7 +696,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
             ]
             eimg = random.choice(eimg)
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
-            embed.add_field(name=f"Error: {image_url}", value="", inline=False)
+            embed.add_field(name=f"❌ {image_url}", value="", inline=False)
             embed.set_image(url=eimg)
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):

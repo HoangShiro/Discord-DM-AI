@@ -683,7 +683,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
                 print(f"Error while gen art: {error_code} - {error_message}")
                 error_message = error_message[:250]
                 if "content_policy_violation" in error_code:
-                    error_code == "Prompt không an toàn... つ﹏⊂"
+                    error_code = "Prompt không an toàn... つ﹏⊂"
             else:
                 print(f"Error while gen art: {e}")
             image_url = error_message

@@ -99,6 +99,8 @@ voice_mode = 'ja'
 en_speaker = 'en_18'
 beha_down = False
 auto_speaker = 'nova'
+en_pitch = 1
+au_pitch = 1
 
 default_values = {
     "bot_mood": 50.0,
@@ -124,7 +126,9 @@ default_values = {
     "speed": 1,
     "beha_down": False,
     "img_block": "",
-    "auto_speaker": 'nova'
+    "auto_speaker": 'nova',
+    "en_pitch": 1,
+    "au_pitch": 1
 }
 
 # Kiểm tra xem tệp JSON có tồn tại không
@@ -589,7 +593,7 @@ async def voice_chat(interaction: discord.Interaction, language: str = None):
 # Thiết lập voice chat
 @bot.tree.command(name="vconfig", description=f"Voice chat config: Spr:{en_speaker}, P:{pitch}, I:{intonation_scale}, Spd{speed}.")
 async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: float = None, vintonation: float = None, vspeed: float = None):
-    global auto_speaker, en_speaker, speaker, pitch, intonation_scale, speed
+    global auto_speaker, en_speaker, speaker, en_pitch, au_pitch, pitch, intonation_scale, speed
     if interaction.user.id == user_id:
         if voice_mode == "en":
             if 1 > speaker > 117:
@@ -598,14 +602,18 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
             name = "en_"
             en_speaker = name + str(vspeaker)
             vals_save('user_files/vals.json', 'en_speaker', en_speaker)
-
+            if vpitch is not None:
+                en_pitch = vpitch
+                vals_save('user_files/vals.json', 'en_pitch', en_pitch)
         if voice_mode == "ja":
             if vspeaker > 75:
                 await interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 75.`", ephemeral=True)
                 return
             speaker = vspeaker
             vals_save('user_files/vals.json', 'speaker', speaker)
-
+            if vpitch is not None:
+                pitch = vpitch
+                vals_save('user_files/vals.json', 'pitch', pitch)
         if voice_mode == "auto":
             if vspeaker > 5:
                 await interaction.response.send_message("`Voice không tồn tại, chọn voice từ 0 -> 5.`", ephemeral=True)
@@ -623,17 +631,17 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
             else:
                 auto_speaker = 'shimmer'
             vals_save('user_files/vals.json', 'auto_speaker', auto_speaker)
-
-        if vpitch is not None:
-            pitch = vpitch
-            vals_save('user_files/vals.json', 'pitch', pitch)
+            if vpitch is not None:
+                au_pitch = vpitch
+                vals_save('user_files/vals.json', 'au_pitch', au_pitch)
+        
         if vintonation is not None:
             intonation_scale = vintonation
             vals_save('user_files/vals.json', 'intonation_scale', intonation_scale)
         if vspeed is not None:
             speed = vspeed
             vals_save('user_files/vals.json', 'speed', speed)
-        await interaction.response.send_message(f"`Đã lưu thiết lập voice {voice_mode}. Speaker:{vspeaker}, pitch:{pitch}, intonation:{intonation_scale}, speed:{speed}.`", ephemeral=True)
+        await interaction.response.send_message(f"`Đã lưu thiết lập voice {voice_mode}. Speaker:{vspeaker}, pitch:{vpitch}, intonation:{intonation_scale}, speed:{speed}.`", ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

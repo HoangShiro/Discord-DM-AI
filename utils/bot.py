@@ -675,9 +675,14 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
                 mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
         bot_answer_save(mess)
         image_url = await openai_images(prompt)
+        if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
-        embed = discord.Embed(description=f"{prompt}", color=discord.Color.blue())
-        embed.set_image(url=image_url)
+            embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
+            embed.set_image(url=image_url)
+        else:
+            embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
+            embed.add_field(name=f"Không thể tạo art: {image_url}", value="", inline=False)
+            embed.set_image(url="images/moeta-crying.gif")
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):
             img_id = message.id

@@ -6,6 +6,7 @@ from openai import AsyncOpenAI, OpenAI
 import aiohttp
 from translate import Translator
 from utils.translate import lang_detect
+import discord
 
 total_characters = 0
 total_characters_channel = 0
@@ -227,14 +228,25 @@ async def openai_audio(audio_url):
 # Image gen
 async def openai_images(prompt):
     client = AsyncOpenAI(api_key=openai_key_2, timeout=60)
-    response = await client.images.generate(
-        prompt=prompt,
-        model="dall-e-3",
-        quality="standard",
-        response_format="url",
-        size="1024x1024"
-    )
-    image_url = response.data[0].url
+    try:
+        response = await client.images.generate(
+            prompt=prompt,
+            model="dall-e-3",
+            quality="standard",
+            response_format="url",
+            size="1024x1024"
+        )
+        image_url = response.data[0].url
+    except discord.app_commands.errors.CommandInvokeError as e:
+        inner_exception = e.original
+        if isinstance(inner_exception, discord.errors.HTTPException):
+            error_code = inner_exception.response.status
+            error_message = inner_exception.response.json()['error']['message']
+            print(f"Error code: {error_code} - {error_message}")
+            image_url = error_message
+        else:
+            print(f"Unexpected error: {inner_exception}")
+            image_url = inner_exception
     return image_url
 
 # Hàm xoá cuộc trò chuyện

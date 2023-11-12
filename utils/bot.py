@@ -35,8 +35,8 @@ ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0
 
-rmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
-irmv_bt = discord.ui.Button(label="⚜️", custom_id="remove", style=discord.ButtonStyle.grey)
+rmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
+irmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)

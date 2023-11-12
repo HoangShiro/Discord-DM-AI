@@ -4,6 +4,7 @@ pytz
 translate
 langdetect
 jaconv
+pydub
 customtkinter
 packaging
 booru

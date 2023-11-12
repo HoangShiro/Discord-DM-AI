@@ -98,6 +98,7 @@ public_chat_num = 2
 voice_mode = 'ja'
 en_speaker = 'en_18'
 beha_down = False
+auto_speaker = 'nova'
 
 default_values = {
     "bot_mood": 50.0,
@@ -122,7 +123,8 @@ default_values = {
     "intonation_scale": 1,
     "speed": 1,
     "beha_down": False,
-    "img_block": ""
+    "img_block": "",
+    "auto_speaker": 'nova'
 }
 
 # Kiểm tra xem tệp JSON có tồn tại không
@@ -569,10 +571,14 @@ async def voice_chat(interaction: discord.Interaction, language: str = None):
                 en_speaker = speaker
             else:
                 await interaction.response.send_message(f"`Hãy nhập VoiceVox api-key trước khi bật nó.`", ephemeral=True)
-        else:
+        elif re.search('en', language.lower()):
             tts_toggle = True
             text = f"{ai_name} sẽ gửi voice chat bằng English"
             voice_mode = "en"
+        else:
+            tts_toggle = True
+            text = f"{ai_name} sẽ tự nhận dạng ngôn ngữ và gửi voice chat"
+            voice_mode = "auto"
         await interaction.response.send_message(f"`{text}`", ephemeral=True)
         vals_save('user_files/vals.json', 'tts_toggle', tts_toggle)
         vals_save('user_files/vals.json', 'voice_mode', voice_mode)
@@ -583,7 +589,7 @@ async def voice_chat(interaction: discord.Interaction, language: str = None):
 # Thiết lập voice chat
 @bot.tree.command(name="vconfig", description=f"Voice chat config: Spr:{en_speaker}, P:{pitch}, I:{intonation_scale}, Spd{speed}.")
 async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: float = None, vintonation: float = None, vspeed: float = None):
-    global en_speaker, speaker, pitch, intonation_scale, speed
+    global auto_speaker, en_speaker, speaker, pitch, intonation_scale, speed
     if interaction.user.id == user_id:
         if voice_mode == "en":
             if 1 > speaker > 117:
@@ -597,29 +603,37 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
             if vspeaker > 75:
                 await interaction.response.send_message("`Voice Japanese không tồn tại, chọn voice từ 0 -> 75.`", ephemeral=True)
                 return
-            
             speaker = vspeaker
             vals_save('user_files/vals.json', 'speaker', speaker)
-            if vpitch is not None:
-                if -0.15 > vpitch > 0.15:
-                    await interaction.response.send_message("`Pitch(cao độ) không hợp lệ, chọn pitch từ -0.15 -> 0.15.`", ephemeral=True)
-                    return
-                pitch = vpitch
-                vals_save('user_files/vals.json', 'pitch', pitch)
-            if vintonation is not None:
-                if 0 > vintonation > 2:
-                    await interaction.response.send_message("`Intonation(diễn cảm) không hợp lệ, chọn intonation từ 0 -> 2.`", ephemeral=True)
-                    return
-                intonation_scale = vintonation
-                vals_save('user_files/vals.json', 'intonation_scale', intonation_scale)
-            if vspeed is not None:
-                if 0.5 > vspeed > 2:
-                    await interaction.response.send_message("`Speed(tốc độ) không hợp lệ, chọn speed từ 0.5 -> 2.`", ephemeral=True)
-                    return
-                speed = vspeed
-                vals_save('user_files/vals.json', 'speed', speed)
 
-        await interaction.response.send_message(f"`Đã lưu thiết lập voice. Speaker:{vspeaker}, pitch:{pitch}, intonation:{intonation_scale}, speed:{speed}.`", ephemeral=True)
+        if voice_mode == "auto":
+            if vspeaker > 5:
+                await interaction.response.send_message("`Voice không tồn tại, chọn voice từ 0 -> 5.`", ephemeral=True)
+                return
+            if vspeaker == 0:
+                auto_speaker = 'nova'
+            elif vspeaker == 1:
+                auto_speaker = 'alloy'
+            elif vspeaker == 2:
+                auto_speaker = 'echo'
+            elif vspeaker == 3:
+                auto_speaker = 'fable'
+            elif vspeaker == 4:
+                auto_speaker = 'onyx'
+            else:
+                auto_speaker = 'shimmer'
+            vals_save('user_files/vals.json', 'auto_speaker', auto_speaker)
+
+        if vpitch is not None:
+            pitch = vpitch
+            vals_save('user_files/vals.json', 'pitch', pitch)
+        if vintonation is not None:
+            intonation_scale = vintonation
+            vals_save('user_files/vals.json', 'intonation_scale', intonation_scale)
+        if vspeed is not None:
+            speed = vspeed
+            vals_save('user_files/vals.json', 'speed', speed)
+        await interaction.response.send_message(f"`Đã lưu thiết lập voice {voice_mode}. Speaker:{vspeaker}, pitch:{pitch}, intonation:{intonation_scale}, speed:{speed}.`", ephemeral=True)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -1521,11 +1535,17 @@ async def ai_voice_create(ai_text):
         lang = "ja"
         translated = text_translate(ai_text, lang)
         tts_get(translated, speaker, pitch, intonation_scale, speed, console_log)
-    else:
+    elif voice_mode == "en":
         lang = "en"
         translated = text_translate(ai_text, lang)
         try:
-            tts_get_en(ai_text, en_speaker)
+            tts_get_en(ai_text, en_speaker, pitch)
+        except Exception as e:
+            print("Voice En error: {0}".format(e))
+            await bot_error_notice('Voice En gen error')
+    else:
+        try:
+            oa_tts(ai_text, auto_speaker, pitch)
         except Exception as e:
             print("Voice En error: {0}".format(e))
             await bot_error_notice('Voice En gen error')

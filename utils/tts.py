@@ -4,11 +4,12 @@ from utils.katakana import *
 import re
 import requests
 import os
+from pathlib import Path
+from openai import OpenAI
+from pydub import AudioSegment
 
-
-def tts_get_en(tts, speaker):
+def tts_get_en(tts, speaker, pitch):
     import torch
-    from pydub import AudioSegment
     lang = "en"
     model = "v3_en"
     if not speaker:
@@ -38,7 +39,10 @@ def tts_get_en(tts, speaker):
     input_wav_file = 'user_files/test.wav'
     output_ogg_file = 'user_files/ai_voice_msg.ogg'
     audio = AudioSegment.from_wav(input_wav_file)
-    audio.export(output_ogg_file, format="ogg")
+    pitching = audio._spawn(audio.raw_data, overrides={
+        "frame_rate": int(audio.frame_rate * (2 ** (pitch / 12.0)))
+    })
+    pitching.export(output_ogg_file, format="ogg")
 
 def tts_get(text, speaker, pitch, intonation_scale, speed, console_log):
     text_fill = remove_act(text)
@@ -60,19 +64,32 @@ def tts_get(text, speaker, pitch, intonation_scale, speed, console_log):
     else:
         print(f"Lỗi khi tạo voice, mã lỗi: {response.status_code}")
 
+def oa_tts(text, speaker, pitch):
+    text = remove_act(text)
+    if not text:
+        text = "うーん？"
+    client = OpenAI(api_key=openai_key_2, timeout=60)
+    path = Path(__file__).parent / "user_files/ai_voice_msg.wav"
+    response = client.audio.speech.create(
+    model="tts-1",
+    voice="nova",
+    input=text
+    )
+
+    ipath = 'user_files/ai_voice_msg.wav'
+    opath = 'user_files/ai_voice_msg.ogg'
+    response.stream_to_file(path)
+    sound = AudioSegment.from_file(ipath)
+    pitching = sound._spawn(sound.raw_data, overrides={
+        "frame_rate": int(sound.frame_rate * (2 ** (pitch / 12.0)))
+    })
+    pitching.export(opath, format="ogg")
+
 def remove_act(text):
-    # Xoá các phần trong cặp hoa thị
     text = re.sub(r'\*([^*]+)\*', '', text)
-
-    # Xoá các phần trong cặp ngoặc tròn
     text = re.sub(r'\([^)]+\)', '', text)
-
-    # Xoá các phần trong cặp ngoặc nhọn
     text = re.sub(r'<[^>]+>', '', text)
-
-    # Xoá đường link
     text = re.sub(r'https?://\S+', '', text)
-
     return text
 
 if __name__ == "__main__":

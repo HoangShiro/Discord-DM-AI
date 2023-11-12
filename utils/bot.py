@@ -682,13 +682,15 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
             if "vi" in lang:
                 mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
         bot_answer_save(mess)
+        quality = "standard"
+        size = "1024x1024"
+        if hd:
+            quality = "hd"
+        if portrait:
+            size = "1024x1792"
+        if scene:
+            size = "1792x1024"
         try:
-            if hd:
-                quality = "hd"
-            if portrait:
-                size = "1024x1792"
-            if scene:
-                size = "1792x1024"
             image_url = await openai_images(prompt, quality, size)
         except Exception as e:
             if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
@@ -704,6 +706,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
         if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
+            embed.add_field(name="", value=f"🌸 {quality}       🖼️ {size}", inline=False)
             embed.set_image(url=image_url)
         else:
             eimg = [

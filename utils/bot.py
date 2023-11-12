@@ -710,7 +710,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
         if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
-            embed.add_field(name="", value=f"🌸 {quality}       🖼️ {size}", inline=False)
+            embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
             embed.set_image(url=image_url)
         else:
             eimg = [

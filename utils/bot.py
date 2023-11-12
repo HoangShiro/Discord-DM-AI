@@ -677,8 +677,13 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
         try:
             image_url = await openai_images(prompt)
         except Exception as e:
-            print(f"Error while gen art: {e}")
-            # Nếu e là BadRequestError, bạn có thể kiểm tra và xử lý nó
+            if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
+                error_message = e.response.json()['error']['message']
+                print(f"Error while gen art: {error_message}")
+                image_url = error_message
+            else:
+                print(f"Error while gen art: {e}")
+                image_url = e
         if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())

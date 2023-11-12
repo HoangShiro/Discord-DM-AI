@@ -696,7 +696,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
             ]
             eimg = random.choice(eimg)
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
-            embed.add_field(name=f"❌ {image_url}", value="", inline=False)
+            embed.add_field(name=f"❌ {image_url} つ﹏⊂", value="", inline=False)
             embed.set_image(url=eimg)
         # Gửi embed lên kênh
         async for message in interaction.channel.history(limit=1):
@@ -707,6 +707,8 @@ async def image_gen(interaction: discord.Interaction, prompt: str):
             rate = (0.2/(bot_mood*2))*100
             if random.random() < rate:
                 case = f"Please say something about the beautiful illustation that {user_nick} just requested."
+                if "vi" in lang:
+                    case = f"Hãy nói gì đó về tấm hình đẹp mà {user_nick} vừa yêu cầu."
                 asyncio.create_task(bot_imgreact_answer(interaction, case))
     else:
         randaw = noperm_answ()

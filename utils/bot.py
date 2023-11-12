@@ -703,6 +703,10 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
             else:
                 print(f"Error while gen art: {e}")
             image_url = error_message
+        if quality == "hd":
+            quality = "High Quality"
+        if quality == "standard":
+            quality = "Standard"
         if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())

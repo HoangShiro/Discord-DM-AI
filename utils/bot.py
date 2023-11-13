@@ -722,6 +722,8 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
                 error_message = error_message[:250]
                 if "content_policy_violation" in error_code:
                     error_code = "Prompt không an toàn... つ﹏⊂"
+                elif "rate_limit_exceeded" in error_code:
+                    error_code = "Đạt giới hạn trong 1 phút... ≧﹏≦"
             else:
                 print(f"Error while gen art: {e}")
             image_url = error_message

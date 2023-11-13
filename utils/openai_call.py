@@ -235,6 +235,8 @@ async def openai_images(prompt, quality, size):
         size=size
     )
     image_url = response.data[0].url
+    revised_prompt = response.data[0].revised_prompt
+    print(revised_prompt)
     return image_url
 
 # Hàm xoá cuộc trò chuyện

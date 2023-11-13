@@ -38,9 +38,9 @@ dm_channel_id = 0
 rmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
 irmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
-rg_bt = discord.ui.Button(label="💫", custom_id="rg", style=discord.ButtonStyle.green)
+rg_bt = discord.ui.Button(label="💫", custom_id="rg", style=discord.ButtonStyle.blurple)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
-rgs_bt = discord.ui.Button(label="✨ similar", custom_id="rgs", style=discord.ButtonStyle.blurple)
+rgs_bt = discord.ui.Button(label="✨ similar", custom_id="rgs", style=discord.ButtonStyle.green)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
 bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
 
@@ -1113,20 +1113,26 @@ async def st_bt_atv(interaction):
     speed = old_speed
 
 async def rg_bt_atv(interaction):
-    img_prompts = igen_lists.get(interaction.message.id)
-    prompt = img_prompts['prompt']
-    quality = img_prompts['quality']
-    size = img_prompts['size']
-    await img_gen(interaction, prompt, quality, size)
-    return
+    if interaction.user.id == user_id:
+        img_prompts = igen_lists.get(interaction.message.id)
+        prompt = img_prompts['prompt']
+        quality = img_prompts['quality']
+        size = img_prompts['size']
+        await img_gen(interaction, prompt, quality, size)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 async def rgs_bt_atv(interaction):
-    img_prompts = igen_lists.get(interaction.message.id)
-    prompt = img_prompts['r_prompt']
-    quality = img_prompts['quality']
-    size = img_prompts['size']
-    await img_gen(interaction, prompt, quality, size)
-    return
+    if interaction.user.id == user_id:
+        img_prompts = igen_lists.get(interaction.message.id)
+        prompt = img_prompts['r_prompt']
+        quality = img_prompts['quality']
+        size = img_prompts['size']
+        await img_gen(interaction, prompt, quality, size)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 async def img_gen(interaction, prompt, quality, size):
     global bot_mood, igen_lists

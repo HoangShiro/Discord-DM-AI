@@ -1112,8 +1112,9 @@ async def img_gen(interaction):
     embed = discord.Embed(title=f"{ai_name} đang tạo art... {emoji}", color=discord.Color.blue())
     view = View(timeout=None)
     view.add_item(irmv_bt)
-    msg = await interaction.followup.send(embed=embed, view=view)
-    img_id = msg.id
+    await interaction.response.send_message(embed=embed, view=view)
+    async for message in interaction.channel.history(limit=1):
+        img_id = message.id
     mess = f"*Sent {user_nick} an image: {img_prompt}*"
     his = get_bot_answer()
     if his:
@@ -1165,8 +1166,11 @@ async def img_gen(interaction):
         embed.add_field(name=f"❌ {error_code}", value=f"_{error_message}_", inline=False)
         embed.set_image(url=eimg)
     # Gửi embed lên kênh
-    view.add_item(rg_bt)
-    await interaction.followup.edit_message(embed=embed, view=view)
+    async for message in interaction.channel.history(limit=10):
+        if message.id == img_id:
+            view.add_item(rg_bt)
+            await message.edit(embed=embed, view=view)
+            break
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):
         rate = (0.2/(bot_mood*2))*100

@@ -693,15 +693,23 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 
 # Image Gen
 @bot.tree.command(name="igen", description=f"Tạo art")
-async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, hq: bool = False, portrait: bool = False, scene: bool = False):
+async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, hq: bool = ihq, portrait: bool = iportrait, scene: bool = iscene):
     if interaction.user.id == user_id:
         global img_prompt, ihq, iportrait, iscene
         img_prompt = prompt
         ihq = hq
         iportrait = portrait
         iscene = scene
-        vals_save('user_files/vals.json', 'img_prompt', img_prompt)
-        await img_gen(interaction, img_prompt)
+        quality = "standard"
+        size = "1024x1024"
+        if hq:
+            quality = "hd"
+        if portrait:
+            size = "1024x1792"
+        if scene:
+            size = "1792x1024"
+        vals_save('user_files/vals.json', 'img_prompt', prompt)
+        await img_gen(interaction, prompt, quality, size)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -1104,41 +1112,42 @@ async def st_bt_atv(interaction):
     speed = old_speed
 
 async def rg_bt_atv(interaction):
-    await img_gen(interaction, img_prompt)
+    img_prompts = igen_lists.get(interaction.message.id)
+    prompt = img_prompts['prompt']
+    quality = img_prompts['quality']
+    size = img_prompts['size']
+    await img_gen(interaction, prompt, quality, size)
     return
 
-async def img_gen(interaction, img_prompt):
+async def rgf_bt_atv(interaction):
+    img_prompts = igen_lists.get(interaction.message.id)
+    prompt = img_prompts['prompt']
+    quality = img_prompts['quality']
+    size = img_prompts['size']
+    await img_gen(interaction, prompt, quality, size)
+    return
+
+async def img_gen(interaction, prompt, quality, size):
     global bot_mood, igen_lists
-    if interaction.message:
-        img_prompts = igen_lists.get(interaction.message.id)
-        img_prompt = img_prompts['img_prompt']
     guild = bot.get_guild(server_id)
     emojis = guild.emojis
     emoji = random.choice(emojis)
-    embed = discord.Embed(title=f"{ai_name} đang tạo art cho {user_nick}... {emoji}", description=f"🏷️ {img_prompt}", color=discord.Color.blue())
+    embed = discord.Embed(title=f"{ai_name} đang tạo art cho {user_nick}... {emoji}", description=f"🏷️ {prompt}", color=discord.Color.blue())
     view = View(timeout=None)
     view.add_item(irmv_bt)
     await interaction.response.send_message(embed=embed, view=view)
     async for message in interaction.channel.history(limit=1):
         img_id = message.id
-    mess = f"*Sent {user_nick} an image: {img_prompt}*"
+    mess = f"*Sent {user_nick} an image: {prompt}*"
     his = get_bot_answer()
     if his:
         lang = lang_detect(his)
         if "vi" in lang:
-            mess = f"*Gửi cho {user_nick} hình ảnh: {img_prompt}"
+            mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
     bot_answer_save(mess)
-    quality = "standard"
-    size = "1024x1024"
-    if ihq:
-        quality = "hd"
-    if iportrait:
-        size = "1024x1792"
-    if iscene:
-        size = "1792x1024"
-    r_prompt = img_prompt
+    r_prompt = prompt
     try:
-        image_url, r_prompt = await openai_images(img_prompt, quality, size)
+        image_url, r_prompt = await openai_images(prompt, quality, size)
         asyncio.create_task(dl_img(image_url, img_id))
     except Exception as e:
         if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
@@ -1153,14 +1162,14 @@ async def img_gen(interaction, img_prompt):
         else:
             print(f"Error while gen art: {e}")
         image_url = error_message
+    igen_lists[img_id] = {"prompt": prompt, "r_prompt": r_prompt, "quality": quality, "size": size}
     if quality == "hd":
         quality = "High Quality"
     if quality == "standard":
         quality = "Standard"
-    igen_lists[img_id] = {"img_prompt": img_prompt, "r_prompt": r_prompt}
     if image_url.startswith("https"):
     # Tạo một Embed để gửi hình ảnh
-        embed = discord.Embed(description=f"🏷️ {img_prompt}", color=discord.Color.blue())
+        embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
         embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
         embed.set_image(url=image_url)
         embed.set_footer(text=r_prompt)
@@ -1171,7 +1180,7 @@ async def img_gen(interaction, img_prompt):
             "https://safebooru.org//images/3362/c3e6557a11032bcb4aed7840285f98feee136094.png"
         ]
         eimg = random.choice(eimg)
-        embed = discord.Embed(description=f"🏷️ {img_prompt}", color=discord.Color.blue())
+        embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
         embed.add_field(name=f"❌ {error_code}", value=f"_{error_message}_", inline=False)
         embed.set_image(url=eimg)
     # Gửi embed lên kênh

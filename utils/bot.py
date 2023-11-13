@@ -1112,7 +1112,8 @@ async def img_gen(interaction):
     embed = discord.Embed(title=f"{ai_name} đang tạo art... {emoji}", color=discord.Color.blue())
     view = View(timeout=None)
     view.add_item(irmv_bt)
-    img_id = interaction.message.id = await interaction.response.send_message(embed=embed, view=view)
+    msg = await interaction.response.send_message(embed=embed, view=view)
+    img_id = msg.id
     mess = f"*Sent {user_nick} an image: {img_prompt}*"
     his = get_bot_answer()
     if his:

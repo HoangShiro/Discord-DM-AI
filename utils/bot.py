@@ -686,7 +686,7 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 
 # Image Gen
 @bot.tree.command(name="igen", description=f"Tạo art")
-async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = False, portrait: bool = False, scene: bool = False):
+async def image_gen(interaction: discord.Interaction, prompt: str, hq: bool = False, portrait: bool = False, scene: bool = False):
     if interaction.user.id == user_id:
         global img_prompt, img_id, bot_mood
         img_prompt = prompt
@@ -706,7 +706,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
         bot_answer_save(mess)
         quality = "standard"
         size = "1024x1024"
-        if hd:
+        if hq:
             quality = "hd"
         if portrait:
             size = "1024x1792"
@@ -733,7 +733,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
             quality = "Standard"
         if image_url.startswith("https"):
         # Tạo một Embed để gửi hình ảnh
-            embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
+            embed = discord.Embed(description=f"🏷️ [{prompt}]({r_prompt})", color=discord.Color.blue())
             embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
             embed.set_image(url=image_url)
             embed.set_footer(text=r_prompt)

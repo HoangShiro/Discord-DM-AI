@@ -79,6 +79,7 @@ task_busy_with_another = False
 stt_lang = "auto"
 chat_wait = False
 call_limit = False
+igen_lists = {}
 img_prompt = "sky"
 ihq = False
 iportrait = False
@@ -132,7 +133,8 @@ default_values = {
     "img_block": "",
     "auto_speaker": 'nova',
     "en_pitch": 1,
-    "au_pitch": 1
+    "au_pitch": 1,
+    "img_prompt": "sky"
 }
 
 # Kiểm tra xem tệp JSON có tồn tại không
@@ -698,6 +700,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, 
         ihq = hq
         iportrait = portrait
         iscene = scene
+        vals_save('user_files/vals.json', 'img_prompt', img_prompt)
         await img_gen(interaction)
     else:
         randaw = noperm_answ()
@@ -1105,11 +1108,13 @@ async def rg_bt_atv(interaction):
     return
 
 async def img_gen(interaction):
-    global bot_mood
+    global bot_mood, igen_lists
+    if interaction.message.id:
+        img_prompt = igen_lists.get(interaction.message.id, {"img_prompt": ""})
     guild = bot.get_guild(server_id)
     emojis = guild.emojis
     emoji = random.choice(emojis)
-    embed = discord.Embed(title=f"{ai_name} đang tạo art... {emoji}", color=discord.Color.blue())
+    embed = discord.Embed(title=f"{ai_name} đang tạo art cho {user_nick}... {emoji}", description=f"🏷️ {img_prompt}", color=discord.Color.blue())
     view = View(timeout=None)
     view.add_item(irmv_bt)
     await interaction.response.send_message(embed=embed, view=view)
@@ -1130,6 +1135,7 @@ async def img_gen(interaction):
         size = "1024x1792"
     if iscene:
         size = "1792x1024"
+    r_prompt = img_prompt
     try:
         image_url, r_prompt = await openai_images(img_prompt, quality, size)
         asyncio.create_task(dl_img(image_url, img_id))
@@ -1150,6 +1156,7 @@ async def img_gen(interaction):
         quality = "High Quality"
     if quality == "standard":
         quality = "Standard"
+    igen_lists[img_id] = {"img_prompt": img_prompt, "r_prompt": r_prompt}
     if image_url.startswith("https"):
     # Tạo một Embed để gửi hình ảnh
         embed = discord.Embed(description=f"🏷️ {img_prompt}", color=discord.Color.blue())

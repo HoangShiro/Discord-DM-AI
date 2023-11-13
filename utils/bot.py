@@ -1132,6 +1132,7 @@ async def img_gen(interaction):
         size = "1792x1024"
     try:
         image_url, r_prompt = await openai_images(img_prompt, quality, size)
+        await dl_img(image_url, img_id)
     except Exception as e:
         if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
             error_message = e.response.json()['error']['message']
@@ -1151,9 +1152,10 @@ async def img_gen(interaction):
         quality = "Standard"
     if image_url.startswith("https"):
     # Tạo một Embed để gửi hình ảnh
+        file = discord.File(f"user_files/gen_imgs/{img_id}.png", filename=f"{img_id}.png")
         embed = discord.Embed(description=f"🏷️ {img_prompt}", color=discord.Color.blue())
         embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
-        embed.set_image(url=image_url)
+        embed.set_image(url=f"attachment://{img_id}.png")
         embed.set_footer(text=r_prompt)
     else:
         eimg = [
@@ -1179,6 +1181,24 @@ async def img_gen(interaction):
             if "vi" in lang:
                 case = f"Hãy nói gì đó về tấm hình đẹp mà {user_nick} vừa yêu cầu."
             asyncio.create_task(bot_imgreact_answer(interaction, case))
+
+async def dl_img(url, img_id):
+    # Tạo thư mục nếu chưa tồn tại
+    folder_path = "user_files/gen_imgs"
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # Tạo đường dẫn lưu ảnh
+    file_name = os.path.join(folder_path, f"{img_id}.png")
+
+    # Tải ảnh từ URL
+    response = requests.get(url)
+    if response.status_code == 200:
+        # Lưu ảnh vào thư mục
+        with open(file_name, 'wb') as file:
+            file.write(response.content)
+    else:
+        print(f"Lỗi {response.status_code} khi tải ảnh từ URL.")
 
 # Num to emoji
 def int_emoji(num):

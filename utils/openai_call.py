@@ -231,12 +231,12 @@ async def openai_images(prompt, quality, size):
         prompt=prompt,
         model="dall-e-3",
         quality=quality,
-        response_format="url",
+        response_format="b64_json",
         size=size
     )
-    image_url = response.data[0].url
-    revised_prompt = response.data[0].revised_prompt
-    return image_url, revised_prompt
+    img = response.data[0].b64_json
+    r_prompt = response.data[0].revised_prompt
+    return img, r_prompt
 
 # Hàm xoá cuộc trò chuyện
 def clear_conversation_history():

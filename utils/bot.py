@@ -15,6 +15,7 @@ import datetime
 import pytz
 import math
 import time
+import base64
 
 import utils.status as status
 from user_files.moods import *
@@ -1155,9 +1156,9 @@ async def img_gen(interaction, prompt, quality, size):
     r_prompt = prompt
     view.add_item(rg_bt)
     try:
-        image_url, r_prompt = await openai_images(prompt, quality, size)
+        img, r_prompt = await openai_images(prompt, quality, size)
         view.add_item(rgs_bt)
-        asyncio.create_task(dl_img(image_url, img_id))
+        asyncio.create_task(b64_png(img, img_id))
     except Exception as e:
         if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
             error_message = e.response.json()['error']['message']
@@ -1170,17 +1171,17 @@ async def img_gen(interaction, prompt, quality, size):
                 error_code = "Đạt giới hạn trong 1 phút... ≧﹏≦"
         else:
             print(f"Error while gen art: {e}")
-        image_url = error_message
+        img = error_message
     igen_lists[img_id] = {"prompt": prompt, "r_prompt": r_prompt, "quality": quality, "size": size}
     if quality == "hd":
         quality = "High Quality"
     if quality == "standard":
         quality = "Standard"
-    if image_url.startswith("https"):
+    if img.startswith("https"):
     # Tạo một Embed để gửi hình ảnh
         embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
         embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
-        embed.set_image(url=image_url)
+        embed.set_image(url=f"data:image/jpg;base64,{img}")
     else:
         eimg = [
             "https://safebooru.org//images/4262/6985078225c8f12e9054220ab6717df7c1755077.png",
@@ -1205,23 +1206,30 @@ async def img_gen(interaction, prompt, quality, size):
                 case = f"Hãy nói gì đó về tấm hình đẹp mà {user_nick} vừa yêu cầu."
             asyncio.create_task(bot_imgreact_answer(interaction, case))
 
+# Image save from url
 async def dl_img(url, img_id):
-    # Tạo thư mục nếu chưa tồn tại
     folder_path = "user_files/gen_imgs"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    # Tạo đường dẫn lưu ảnh
     file_name = os.path.join(folder_path, f"{img_id}.png")
 
-    # Tải ảnh từ URL
     response = requests.get(url)
     if response.status_code == 200:
-        # Lưu ảnh vào thư mục
         with open(file_name, 'wb') as file:
             file.write(response.content)
     else:
         print(f"Lỗi {response.status_code} khi tải ảnh từ URL.")
+
+# Image save from base64
+async def b64_png(b64, id):
+    path = f"user_files/gen_imgs/{id}.png"
+    try:
+        img_data = base64.b64decode(b64)
+        with open(path, 'wb') as file:
+            file.write(img_data)
+    except Exception as e:
+        print(f"Error saving image: {e}")
 
 # Num to emoji
 def int_emoji(num):

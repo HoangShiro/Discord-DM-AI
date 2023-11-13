@@ -988,11 +988,11 @@ async def avatar_c(interaction: discord.Interaction):
 
 # Button call
 async def irmv_bt_atv(interaction):
-    try:
-        await interaction.response.send_message(f" ", delete_after = 0)
-    except:
-        pass
-    await interaction.message.delete()
+    if interaction.user.id == user_id:
+        await interaction.message.delete()
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 async def rmv_bt_atv(interaction):
     try:

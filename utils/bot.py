@@ -693,7 +693,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hq: bool = Fa
         guild = bot.get_guild(server_id)
         emojis = guild.emojis
         emoji = random.choice(emojis)
-        embed = discord.Embed(title=f"Image đang được tạo... {emoji}", color=discord.Color.blue())
+        embed = discord.Embed(title=f"{ai_name} đang tạo art... {emoji}", color=discord.Color.blue())
         view = View(timeout=None)
         view.add_item(irmv_bt)
         await interaction.response.send_message(embed=embed, view=view)

@@ -1132,7 +1132,7 @@ async def img_gen(interaction):
         size = "1792x1024"
     try:
         image_url, r_prompt = await openai_images(img_prompt, quality, size)
-        await dl_img(image_url, img_id)
+        asyncio.create_task(dl_img(image_url, img_id))
     except Exception as e:
         if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
             error_message = e.response.json()['error']['message']
@@ -1152,10 +1152,9 @@ async def img_gen(interaction):
         quality = "Standard"
     if image_url.startswith("https"):
     # Tạo một Embed để gửi hình ảnh
-        file = discord.File(f"user_files/gen_imgs/{img_id}.png", filename=f"{img_id}.png")
         embed = discord.Embed(description=f"🏷️ {img_prompt}", color=discord.Color.blue())
         embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
-        embed.set_image(url=f"attachment://{img_id}.png")
+        embed.set_image(url=image_url)
         embed.set_footer(text=r_prompt)
     else:
         eimg = [
@@ -1171,7 +1170,7 @@ async def img_gen(interaction):
     async for message in interaction.channel.history(limit=10):
         if message.id == img_id:
             view.add_item(rg_bt)
-            await message.edit(embed=embed, view=view, file=file)
+            await message.edit(embed=embed, view=view)
             break
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):

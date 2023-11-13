@@ -38,7 +38,9 @@ dm_channel_id = 0
 rmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
 irmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.ButtonStyle.grey)
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
+rg_bt = discord.ui.Button(label="💫", custom_id="rg", style=discord.ButtonStyle.green)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
+i4_bt = discord.ui.Button(label="🏷️", custom_id="i4", style=discord.ButtonStyle.blurple)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
 bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
 
@@ -78,7 +80,9 @@ stt_lang = "auto"
 chat_wait = False
 call_limit = False
 img_prompt = "sky"
-img_id = 0
+ihq = False
+iportrait = False
+iscene = False
 message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
 count = False
@@ -196,6 +200,7 @@ async def on_ready():
     rmv_bt.callback = rmv_bt_atv
     irmv_bt.callback = irmv_bt_atv
     continue_bt.callback = ctn_bt_atv
+    rg_bt.callback = rg_bt_atv
     st_bt1.callback = st_bt_atv
     st_bt2.callback = st_bt_atv
     st_bt3.callback = st_bt_atv
@@ -686,79 +691,14 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
 
 # Image Gen
 @bot.tree.command(name="igen", description=f"Tạo art")
-async def image_gen(interaction: discord.Interaction, prompt: str, hq: bool = False, portrait: bool = False, scene: bool = False):
+async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, hq: bool = False, portrait: bool = False, scene: bool = False):
     if interaction.user.id == user_id:
-        global img_prompt, img_id, bot_mood
+        global img_prompt, ihq, iportrait, iscene
         img_prompt = prompt
-        guild = bot.get_guild(server_id)
-        emojis = guild.emojis
-        emoji = random.choice(emojis)
-        embed = discord.Embed(title=f"{ai_name} đang tạo art... {emoji}", color=discord.Color.blue())
-        view = View(timeout=None)
-        view.add_item(irmv_bt)
-        await interaction.response.send_message(embed=embed, view=view)
-        mess = f"*Sent {user_nick} an image: {prompt}*"
-        his = get_bot_answer()
-        if his:
-            lang = lang_detect(his)
-            if "vi" in lang:
-                mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
-        bot_answer_save(mess)
-        quality = "standard"
-        size = "1024x1024"
-        if hq:
-            quality = "hd"
-        if portrait:
-            size = "1024x1792"
-        if scene:
-            size = "1792x1024"
-        try:
-            image_url, r_prompt = await openai_images(prompt, quality, size)
-        except Exception as e:
-            if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
-                error_message = e.response.json()['error']['message']
-                error_code = e.response.json()['error']['code']
-                print(f"Error while gen art: {error_code} - {error_message}")
-                error_message = error_message[:250]
-                if "content_policy_violation" in error_code:
-                    error_code = "Prompt không an toàn... つ﹏⊂"
-                elif "rate_limit_exceeded" in error_code:
-                    error_code = "Đạt giới hạn trong 1 phút... ≧﹏≦"
-            else:
-                print(f"Error while gen art: {e}")
-            image_url = error_message
-        if quality == "hd":
-            quality = "High Quality"
-        if quality == "standard":
-            quality = "Standard"
-        if image_url.startswith("https"):
-        # Tạo một Embed để gửi hình ảnh
-            embed = discord.Embed(description=f"🏷️ [{prompt}]({r_prompt})", color=discord.Color.blue())
-            embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
-            embed.set_image(url=image_url)
-            embed.set_footer(text=r_prompt)
-        else:
-            eimg = [
-                "https://safebooru.org//images/4262/6985078225c8f12e9054220ab6717df7c1755077.png",
-                "https://safebooru.org//images/3760/35bfbabb44813b36749c96a17b0a1fb1f59eeb8e.jpg",
-                "https://safebooru.org//images/3362/c3e6557a11032bcb4aed7840285f98feee136094.png"
-            ]
-            eimg = random.choice(eimg)
-            embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
-            embed.add_field(name=f"❌ {error_code}", value=f"_{error_message}_", inline=False)
-            embed.set_image(url=eimg)
-        # Gửi embed lên kênh
-        async for message in interaction.channel.history(limit=1):
-            img_id = message.id
-            await message.edit(embed=embed)
-        bot_mood +=1
-        if isinstance(interaction.channel, discord.DMChannel):
-            rate = (0.2/(bot_mood*2))*100
-            if random.random() < rate:
-                case = f"Please say something about the beautiful illustation that {user_nick} just requested."
-                if "vi" in lang:
-                    case = f"Hãy nói gì đó về tấm hình đẹp mà {user_nick} vừa yêu cầu."
-                asyncio.create_task(bot_imgreact_answer(interaction, case))
+        ihq = hq
+        iportrait = portrait
+        iscene = scene
+        await img_gen(interaction)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -1159,6 +1099,85 @@ async def st_bt_atv(interaction):
     pitch = old_pitch
     intonation_scale = old_is
     speed = old_speed
+
+async def rg_bt_atv(interaction):
+    await img_gen(interaction)
+    return
+
+async def img_gen(interaction):
+    global bot_mood
+    guild = bot.get_guild(server_id)
+    emojis = guild.emojis
+    emoji = random.choice(emojis)
+    embed = discord.Embed(title=f"{ai_name} đang tạo art... {emoji}", color=discord.Color.blue())
+    view = View(timeout=None)
+    view.add_item(irmv_bt)
+    await interaction.response.send_message(embed=embed, view=view)
+    img_id = interaction.message.id
+    mess = f"*Sent {user_nick} an image: {img_prompt}*"
+    his = get_bot_answer()
+    if his:
+        lang = lang_detect(his)
+        if "vi" in lang:
+            mess = f"*Gửi cho {user_nick} hình ảnh: {img_prompt}"
+    bot_answer_save(mess)
+    quality = "standard"
+    size = "1024x1024"
+    if ihq:
+        quality = "hd"
+    if iportrait:
+        size = "1024x1792"
+    if iscene:
+        size = "1792x1024"
+    try:
+        image_url, r_prompt = await openai_images(img_prompt, quality, size)
+    except Exception as e:
+        if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
+            error_message = e.response.json()['error']['message']
+            error_code = e.response.json()['error']['code']
+            print(f"Error while gen art: {error_code} - {error_message}")
+            error_message = error_message[:250]
+            if "content_policy_violation" in error_code:
+                error_code = "Prompt không an toàn... つ﹏⊂"
+            elif "rate_limit_exceeded" in error_code:
+                error_code = "Đạt giới hạn trong 1 phút... ≧﹏≦"
+        else:
+            print(f"Error while gen art: {e}")
+        image_url = error_message
+    if quality == "hd":
+        quality = "High Quality"
+    if quality == "standard":
+        quality = "Standard"
+    if image_url.startswith("https"):
+    # Tạo một Embed để gửi hình ảnh
+        embed = discord.Embed(description=f"🏷️ {img_prompt}", color=discord.Color.blue())
+        embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
+        embed.set_image(url=image_url)
+        embed.set_footer(text=r_prompt)
+    else:
+        eimg = [
+            "https://safebooru.org//images/4262/6985078225c8f12e9054220ab6717df7c1755077.png",
+            "https://safebooru.org//images/3760/35bfbabb44813b36749c96a17b0a1fb1f59eeb8e.jpg",
+            "https://safebooru.org//images/3362/c3e6557a11032bcb4aed7840285f98feee136094.png"
+        ]
+        eimg = random.choice(eimg)
+        embed = discord.Embed(description=f"🏷️ {img_prompt}", color=discord.Color.blue())
+        embed.add_field(name=f"❌ {error_code}", value=f"_{error_message}_", inline=False)
+        embed.set_image(url=eimg)
+    # Gửi embed lên kênh
+    async for message in interaction.channel.history(limit=10):
+        if message.id == img_id:
+            view.add_item(rg_bt)
+            await message.edit(embed=embed)
+            break
+    bot_mood +=1
+    if isinstance(interaction.channel, discord.DMChannel):
+        rate = (0.2/(bot_mood*2))*100
+        if random.random() < rate:
+            case = f"Please say something about the beautiful illustation that {user_nick} just requested."
+            if "vi" in lang:
+                case = f"Hãy nói gì đó về tấm hình đẹp mà {user_nick} vừa yêu cầu."
+            asyncio.create_task(bot_imgreact_answer(interaction, case))
 
 # Num to emoji
 def int_emoji(num):

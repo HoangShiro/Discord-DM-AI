@@ -1171,13 +1171,12 @@ async def img_gen(interaction, prompt, quality, size):
                 error_code = "Đạt giới hạn trong 1 phút... ≧﹏≦"
         else:
             print(f"Error while gen art: {e}")
-        img = error_message
     igen_lists[img_id] = {"prompt": prompt, "r_prompt": r_prompt, "quality": quality, "size": size}
     if quality == "hd":
         quality = "High Quality"
     if quality == "standard":
         quality = "Standard"
-    if img.startswith("https"):
+    if img:
     # Tạo một Embed để gửi hình ảnh
         embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
         embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)

@@ -701,7 +701,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, 
         iportrait = portrait
         iscene = scene
         vals_save('user_files/vals.json', 'img_prompt', img_prompt)
-        await img_gen(interaction)
+        await img_gen(interaction, img_prompt)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
@@ -1104,10 +1104,10 @@ async def st_bt_atv(interaction):
     speed = old_speed
 
 async def rg_bt_atv(interaction):
-    await img_gen(interaction)
+    await img_gen(interaction, img_prompt)
     return
 
-async def img_gen(interaction):
+async def img_gen(interaction, img_prompt):
     global bot_mood, igen_lists
     if interaction.message:
         img_prompt = igen_lists.get(interaction.message.id, {"img_prompt": ""})

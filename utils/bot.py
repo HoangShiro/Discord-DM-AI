@@ -1110,7 +1110,8 @@ async def rg_bt_atv(interaction):
 async def img_gen(interaction, img_prompt):
     global bot_mood, igen_lists
     if interaction.message:
-        img_prompt = igen_lists.get(interaction.message.id, {"img_prompt": ""})
+        img_prompts = igen_lists.get(interaction.message.id)
+        img_prompt = img_prompts['img_prompt']
     guild = bot.get_guild(server_id)
     emojis = guild.emojis
     emoji = random.choice(emojis)

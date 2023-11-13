@@ -40,7 +40,7 @@ irmv_bt = discord.ui.Button(label="➖", custom_id="remove", style=discord.Butto
 rc_bt = discord.ui.Button(label="💫 re chat", custom_id="rc", style=discord.ButtonStyle.grey)
 rg_bt = discord.ui.Button(label="💫", custom_id="rg", style=discord.ButtonStyle.green)
 continue_bt = discord.ui.Button(label="✨ continue", custom_id="continue", style=discord.ButtonStyle.grey)
-i4_bt = discord.ui.Button(label="🏷️", custom_id="i4", style=discord.ButtonStyle.blurple)
+rgs_bt = discord.ui.Button(label="✨ similar", custom_id="rgs", style=discord.ButtonStyle.blurple)
 nt_bt = discord.ui.Button(label="🔆 next", custom_id="next", style=discord.ButtonStyle.green)
 bk_bt = discord.ui.Button(label="🔅 back", custom_id="back", style=discord.ButtonStyle.green)
 
@@ -203,6 +203,7 @@ async def on_ready():
     irmv_bt.callback = irmv_bt_atv
     continue_bt.callback = ctn_bt_atv
     rg_bt.callback = rg_bt_atv
+    rgs_bt.callback = rgs_bt_atv
     st_bt1.callback = st_bt_atv
     st_bt2.callback = st_bt_atv
     st_bt3.callback = st_bt_atv
@@ -1119,9 +1120,9 @@ async def rg_bt_atv(interaction):
     await img_gen(interaction, prompt, quality, size)
     return
 
-async def rgf_bt_atv(interaction):
+async def rgs_bt_atv(interaction):
     img_prompts = igen_lists.get(interaction.message.id)
-    prompt = img_prompts['prompt']
+    prompt = img_prompts['r_prompt']
     quality = img_prompts['quality']
     size = img_prompts['size']
     await img_gen(interaction, prompt, quality, size)
@@ -1146,8 +1147,10 @@ async def img_gen(interaction, prompt, quality, size):
             mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
     bot_answer_save(mess)
     r_prompt = prompt
+    view.add_item(rg_bt)
     try:
         image_url, r_prompt = await openai_images(prompt, quality, size)
+        view.add_item(rgs_bt)
         asyncio.create_task(dl_img(image_url, img_id))
     except Exception as e:
         if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
@@ -1172,7 +1175,6 @@ async def img_gen(interaction, prompt, quality, size):
         embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
         embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
         embed.set_image(url=image_url)
-        embed.set_footer(text=r_prompt)
     else:
         eimg = [
             "https://safebooru.org//images/4262/6985078225c8f12e9054220ab6717df7c1755077.png",
@@ -1186,7 +1188,6 @@ async def img_gen(interaction, prompt, quality, size):
     # Gửi embed lên kênh
     async for message in interaction.channel.history(limit=10):
         if message.id == img_id:
-            view.add_item(rg_bt)
             await message.edit(embed=embed, view=view)
             break
     bot_mood +=1

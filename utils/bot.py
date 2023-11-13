@@ -1171,7 +1171,7 @@ async def img_gen(interaction):
     async for message in interaction.channel.history(limit=10):
         if message.id == img_id:
             view.add_item(rg_bt)
-            await message.edit(embed=embed, view=view)
+            await message.edit(embed=embed, view=view, file=file)
             break
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):

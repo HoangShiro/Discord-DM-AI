@@ -1155,6 +1155,7 @@ async def img_gen(interaction, prompt, quality, size):
     bot_answer_save(mess)
     r_prompt = prompt
     view.add_item(rg_bt)
+    img = None
     try:
         img, r_prompt = await openai_images(prompt, quality, size)
         view.add_item(rgs_bt)

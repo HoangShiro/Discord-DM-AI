@@ -713,7 +713,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
         if scene:
             size = "1792x1024"
         try:
-            image_url = await openai_images(prompt, quality, size)
+            image_url, r_prompt = await openai_images(prompt, quality, size)
         except Exception as e:
             if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
                 error_message = e.response.json()['error']['message']
@@ -736,6 +736,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str, hd: bool = Fa
             embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
             embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
             embed.set_image(url=image_url)
+            embed.set_footer(text=r_prompt)
         else:
             eimg = [
                 "https://safebooru.org//images/4262/6985078225c8f12e9054220ab6717df7c1755077.png",

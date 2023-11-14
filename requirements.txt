@@ -8,3 +8,4 @@ pydub
 customtkinter
 packaging
 booru
+nltk

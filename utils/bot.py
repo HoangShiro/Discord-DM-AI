@@ -728,11 +728,12 @@ async def test(interaction: discord.Interaction):
         view = View(timeout=None)
         view.add_item(irmv_bt)
         await interaction.channel.send(embed=embed, view=view)
+        await asyncio.sleep(3)
         file_path = 'user_files/gen_imgs/1173738265363357759.png'
         image_file = discord.File(file_path, filename="1173738265363357759.png")
         embed = discord.Embed(title="Image Title", description="Description of the image")
         embed.set_image(url=f"attachment://{image_file.filename}")
-        await interaction.response.edit_message(embed=embed, attachments=image_file)
+        await interaction.message.edit(embed=embed, attachments=image_file)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

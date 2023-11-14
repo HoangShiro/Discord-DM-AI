@@ -336,7 +336,7 @@ async def on_message(message):
                     if re.search(r'cảnh|scene', text, re.IGNORECASE):
                         size = "1792x1024"
                     return quality, size
-                if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE):
+                if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE) and not igen_flw:
                     quality, size = await igen_choice(result)
                     lang = "en"
                     translated = text_translate(result, lang)
@@ -2058,7 +2058,7 @@ def extract_nouns(text):
 def process_nouns(nouns):
     words_to_remove = [f"{ai_name}", "you", "me", "create", "image", "'m", "sorry",
                         "inaccuracy", "let", "do", "request", "please", "wait", "moment", 
-                        "creating", "photo", "hmm", "make", "<3", "pic"]
+                        "creating", "photo", "hmm", "make", "<3", "pic", "*", "rub"]
     replacement_dict = {
         "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
     }

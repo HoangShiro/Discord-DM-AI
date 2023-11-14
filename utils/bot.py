@@ -737,7 +737,7 @@ async def test(interaction: discord.Interaction):
         embed.set_image(url=f"attachment://{image_file.filename}")
         async for message in interaction.channel.history(limit=10):
             if message.id == img_id:
-                message.edit(embed=embed, attachments=image_file)
+                await message.edit(embed=embed, attachments=image_file)
                 break
     else:
         randaw = noperm_answ()

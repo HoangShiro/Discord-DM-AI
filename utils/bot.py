@@ -89,6 +89,7 @@ message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
 count = False
 ava_ch = False
+char_appr = "a girl"
 
 bot_mood = 50.0
 split_send = False
@@ -213,6 +214,10 @@ async def on_ready():
             if message.content:
                 await message.edit(view=view)
                 break
+            
+    # Get char appr
+    asyncio.create_task(char_appr_get())
+
     print()
 
 # Check typing
@@ -1984,6 +1989,15 @@ def pt_up(path, ct, new_ct):
             file.write(new_data)
             file.truncate()
 
+# Character Appearance update
+async def char_appr_get():
+    global char_appr
+    try:
+        char_appr = await openai_task(2)
+    except Exception as e:
+        e = str(e)
+        print("Error while get character appearance: ", e)
+    
 # Bot idle or dnd
 @tasks.loop(seconds=random.randint(180, 300))
 async def bot_idle():

@@ -155,7 +155,11 @@ def getPrompt_task(case):
         recent_history = history[-2:]
         for message in recent_history:
             prompt.append(message)
-
+    if case == 2:
+        char_info = getIdentity("user_files/prompt/character.txt")
+        pt = "Returns ONLY ONE sentence that is the description of the character's appearance in the description above, in English. Replace character name to 'a girl', eliminate personal pronouns. Remove sensitive words like 'thighs' and 'chest'"
+        prompt.append({"role": "user", "content": char_info})
+        prompt.append({"role": "system", "content": pt})
     else:
         if nsfw_toggle:
             nsfw_text = getIdentity("user_files/prompt/nsfw.txt")

@@ -2014,9 +2014,9 @@ def process_nouns(nouns):
     replacement_dict = {
         "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
     }
-    style = "anime style"
+    style = ", anime style"
     nouns = [replacement_dict.get(noun.lower(), noun) for noun in nouns if noun.lower() not in words_to_remove]
-    nouns.append(f",", style)
+    nouns.append(style)
     return nouns
 
 # Character Appearance update

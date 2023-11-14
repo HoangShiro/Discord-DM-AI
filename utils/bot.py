@@ -141,6 +141,7 @@ default_values = {
     "en_pitch": 1,
     "au_pitch": 1,
     "img_prompt": "sky",
+    "img_dprt": "sea",
     "igen_flw": False
 }
 

@@ -2013,7 +2013,7 @@ def extract_nouns(text):
     return nn
 
 def process_nouns(nouns):
-    words_to_remove = [f"{ai_name}", "you", "me", "create", "image"]
+    words_to_remove = [f"{ai_name}", "you", "me", "create", "image", "photo"]
     replacement_dict = {
         "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
     }

@@ -353,7 +353,7 @@ async def on_message(message):
                         asyncio.create_task(img_gen(message, img_prompt, quality, size))
                         return
                     # Gen giống như art đã gen
-                    elif re.search(r'next|more|nữa|tiếp|giống|similar|tự|như|like|same', result, re.IGNORECASE):
+                    elif re.search(r'next|more|tiếp|giống|similar|tự|như|like|same', result, re.IGNORECASE):
                         quality, size = await igen_choice(result)
                         asyncio.create_task(img_gen(message, img_dprt, quality, size))
                         return
@@ -1250,8 +1250,9 @@ async def img_gen(interaction, prompt, quality, size):
             await message.edit(embed=embed, view=view)
             break
     if img:
+        if not igen_flw:
+            img_dprt = r_prompt
         igen_flw = True
-        img_dprt = r_prompt
         await dl_img(img, img_id)
         file_path = f'user_files/gen_imgs/{img_id}.png'
         image_file = discord.File(file_path, filename=f"{img_id}.png")

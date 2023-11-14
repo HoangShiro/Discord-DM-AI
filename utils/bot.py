@@ -327,7 +327,7 @@ async def on_message(message):
                 if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE):
                     lang = "en"
                     translated = text_translate(result, lang)
-                    prompt = process_nouns(translated)
+                    prompt = process_nouns(str(translated))
                     quality = "standard"
                     size = "1024x1024"
                     asyncio.create_task(img_gen(message, prompt, quality, size))
@@ -2009,8 +2009,8 @@ def extract_nouns(text):
     text = process_nouns(words)
     tagged_words = pos_tag(text)
     nouns = [word for word, pos in tagged_words if pos.startswith('NN')]
-    nouns = " ".join(nouns)
-    return nouns
+    nn = " ".join(nouns)
+    return nn
 
 def process_nouns(nouns):
     words_to_remove = [f"{ai_name}", "you", "me", "create", "image"]

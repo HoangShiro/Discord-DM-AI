@@ -727,7 +727,9 @@ async def test(interaction: discord.Interaction):
         embed = discord.Embed(title=f"{ai_name} đang tạo art cho {user_nick}... {emoji}", description=f"🏷️ {prompt}", color=discord.Color.blue())
         view = View(timeout=None)
         view.add_item(irmv_bt)
-        await interaction.response.send_message(embed=embed, view=view)
+        file_path = 'user_files/gen_imgs/1173758479668879400.png'
+        image_file = discord.File(file_path, filename="1173758479668879400.png")
+        await interaction.response.send_message(embed=embed, view=view, attachments=image_file)
         async for message in interaction.channel.history(limit=1):
             img_id = message.id
         await asyncio.sleep(3)

@@ -727,13 +727,18 @@ async def test(interaction: discord.Interaction):
         embed = discord.Embed(title=f"{ai_name} đang tạo art cho {user_nick}... {emoji}", description=f"🏷️ {prompt}", color=discord.Color.blue())
         view = View(timeout=None)
         view.add_item(irmv_bt)
-        await interaction.channel.send(embed=embed, view=view)
+        await interaction.response.send_message(embed=embed, view=view)
+        async for message in interaction.channel.history(limit=1):
+            img_id = message.id
         await asyncio.sleep(3)
         file_path = 'user_files/gen_imgs/1173738265363357759.png'
         image_file = discord.File(file_path, filename="1173738265363357759.png")
         embed = discord.Embed(title="Image Title", description="Description of the image")
         embed.set_image(url=f"attachment://{image_file.filename}")
-        await interaction.message.edit(embed=embed, attachments=image_file)
+        async for message in interaction.channel.history(limit=10):
+            if message.id == img_id:
+                message.edit(embed=embed, attachments=image_file)
+                break
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

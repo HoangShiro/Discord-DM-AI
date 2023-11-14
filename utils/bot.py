@@ -86,8 +86,10 @@ igen_lists = {}
 img_prompt = "sky"
 img_dprt = "sea"
 ihq = False
+iquality = "standard"
 iportrait = False
 iscene = False
+isize = "1024x1024"
 message_states = {}
 img_block = "futanari furry bestiality yaoi hairy"
 count = False
@@ -240,7 +242,7 @@ async def on_typing(channel, user, when):
 # AI Chat
 @bot.event
 async def on_message(message):
-    global channel_id, task_busy_with_user, task_busy_with_another, public_chat_num, chat_wait, dm_channel_id, ava_ch, igen_flw, img_prompt
+    global channel_id, task_busy_with_user, task_busy_with_another, public_chat_num, chat_wait, dm_channel_id, ava_ch, igen_flw, img_prompt, iquality, isize
     # Bỏ qua nếu tin nhắn là bot hoặc không phải user được chỉ định
     #if message.author == bot.user:
     #    return
@@ -329,18 +331,24 @@ async def on_message(message):
 
                 # Xử lý để gen ảnh
                 async def igen_choice(text):
-                    quality = "standard"
-                    size = "1024x1024"
+                    quality = None
+                    size = None
                     if re.search(r'quality|sharp|chất|hq|hd', text, re.IGNORECASE):
                         quality = "hd"
                     if re.search(r'dung|portrait', text, re.IGNORECASE):
                         size = "1024x1792"
                     if re.search(r'cảnh|scene', text, re.IGNORECASE):
                         size = "1792x1024"
+                    if not quality:
+                        quality = iquality
+                    if not size:
+                        size = isize
                     return quality, size
                 if not igen_flw:
                     if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE) and not re.search(r'lại|nữa', result, re.IGNORECASE):
                         quality, size = await igen_choice(result)
+                        iquality = quality
+                        isize = size
                         lang = "en"
                         translated = text_translate(result, lang)
                         prompt = extract_nouns(translated)
@@ -355,7 +363,6 @@ async def on_message(message):
                 else:
                     # Gen thêm lần nữa
                     if re.search(r'lại|again|lần', result, re.IGNORECASE):
-                        quality, size = await igen_choice(result)
                         asyncio.create_task(img_gen(message, img_prompt, quality, size))
                         return
                     # Gen giống như art đã gen
@@ -373,6 +380,8 @@ async def on_message(message):
                         return
                     elif re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE):
                         quality, size = await igen_choice(result)
+                        iquality = quality
+                        isize = size
                         lang = "en"
                         translated = text_translate(result, lang)
                         prompt = extract_nouns(translated)

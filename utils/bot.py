@@ -32,7 +32,7 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
 #bot = commands.Bot(command_prefix="!", intents=intents)
-bot = app_commands.CommandTree(intents=intents)
+bot = app_commands.CommandTree(client)
 ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0

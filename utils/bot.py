@@ -1189,7 +1189,6 @@ async def img_gen(interaction, prompt, quality, size):
     try:
         img, r_prompt = await openai_images(prompt, quality, size)
         view.add_item(rgs_bt)
-        asyncio.create_task(dl_img(img, img_id))
     except Exception as e:
         if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
             error_message = e.response.json()['error']['message']
@@ -1227,6 +1226,11 @@ async def img_gen(interaction, prompt, quality, size):
         if message.id == img_id:
             await message.edit(embed=embed, view=view)
             break
+    await dl_img(img, img_id)
+    file_path = f'user_files/gen_imgs/{img_id}.png'
+    image_file = discord.File(file_path, filename=f"{img_id}.png")
+    embed.set_image(url=f"attachment://{image_file.filename}")
+    await message.edit(embed=embed, view=view, attachments=[image_file])
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):
         rate = (0.2/(bot_mood*2))*100

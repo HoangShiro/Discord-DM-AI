@@ -110,6 +110,7 @@ beha_down = False
 auto_speaker = 'nova'
 en_pitch = 1
 au_pitch = 1
+igen_flw = False
 
 default_values = {
     "bot_mood": 50.0,
@@ -138,7 +139,8 @@ default_values = {
     "auto_speaker": 'nova',
     "en_pitch": 1,
     "au_pitch": 1,
-    "img_prompt": "sky"
+    "img_prompt": "sky",
+    "igen_flw": False
 }
 
 # Kiểm tra xem tệp JSON có tồn tại không
@@ -236,7 +238,7 @@ async def on_typing(channel, user, when):
 # AI Chat
 @bot.event
 async def on_message(message):
-    global channel_id, task_busy_with_user, task_busy_with_another, public_chat_num, chat_wait, dm_channel_id, ava_ch
+    global channel_id, task_busy_with_user, task_busy_with_another, public_chat_num, chat_wait, dm_channel_id, ava_ch, igen_flw, img_prompt
     # Bỏ qua nếu tin nhắn là bot hoặc không phải user được chỉ định
     #if message.author == bot.user:
     #    return
@@ -324,13 +326,41 @@ async def on_message(message):
                 asyncio.create_task(answer_send(message, result))
 
                 # Xử lý để gen ảnh
+                async def igen_choice(text):
+                    quality = "standard"
+                    size = "1024x1024"
+                    if re.search(r'quality|sharp|chất|hq|hd', text, re.IGNORECASE):
+                        quality = "hd"
+                    if re.search(r'dung|portrait', text, re.IGNORECASE):
+                        size = "1024x1792"
+                    if re.search(r'cảnh|scene', text, re.IGNORECASE):
+                        size = "1792x1024"
+                    return quality, size
                 if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE):
+                    quality, size = await igen_choice(result)
                     lang = "en"
                     translated = text_translate(result, lang)
                     prompt = extract_nouns(translated)
-                    quality = "standard"
-                    size = "1024x1024"
+                    img_prompt = prompt
                     asyncio.create_task(img_gen(message, prompt, quality, size))
+                    return
+                if igen_flw:
+                    # Gen thêm lần nữa
+                    if re.search(r'lại|again|lần|next|more', result, re.IGNORECASE):
+                        quality, size = await igen_choice(result)
+                        asyncio.create_task(img_gen(message, img_prompt, quality, size))
+                        return
+                    # Sửa lại prompt và gen thêm
+                    elif re.search(r'sửa|fix|chuyển|change|đổi|thay|thêm|add|to|qua', result, re.IGNORECASE):
+                        quality, size = await igen_choice(result)
+                        lang = "en"
+                        translated = text_translate(result, lang)
+                        prompt = extract_nouns(translated)
+                        asyncio.create_task(img_regen(message, quality, size, prompt))
+                        return
+                    else:
+                        igen_flw = False
+                    
             # Trường hợp là tệp đính kèm:
             elif message.attachments:
                 file_names = []
@@ -1154,7 +1184,7 @@ async def rgs_bt_atv(interaction):
 
 # Image gen dall e 3
 async def img_gen(interaction, prompt, quality, size):
-    global bot_mood, igen_lists
+    global bot_mood, igen_lists, igen_flw
     guild = bot.get_guild(server_id)
     emojis = guild.emojis
     emoji = random.choice(emojis)
@@ -1213,11 +1243,13 @@ async def img_gen(interaction, prompt, quality, size):
             await message.edit(embed=embed, view=view)
             break
     if img:
+        igen_flw = True
         await dl_img(img, img_id)
         file_path = f'user_files/gen_imgs/{img_id}.png'
         image_file = discord.File(file_path, filename=f"{img_id}.png")
         embed.set_image(url=f"attachment://{image_file.filename}")
         await message.edit(embed=embed, view=view, attachments=[image_file])
+        vals_save('user_files/vals.json', 'igen_flw', igen_flw)
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):
         mess = f"*Sent {user_nick} an image: {prompt}*"
@@ -1233,6 +1265,17 @@ async def img_gen(interaction, prompt, quality, size):
             if "vi" in lang:
                 case = f"Hãy nói gì đó về tấm hình đẹp mà {user_nick} vừa yêu cầu."
             asyncio.create_task(bot_imgreact_answer(interaction, case))
+
+# Correct prompt and gen art again
+async def img_regen(message, quality, size, rq):
+    case = f"3[{img_prompt}][{rq}]"
+    try:
+        prompt = await openai_task(case)
+    except Exception as e:
+        e = str(e)
+        print("Error while correct img prompt: ", e)
+        return
+    asyncio.create_task(img_gen(message, prompt, quality, size))
 
 # Image save from url
 async def dl_img(url, img_id):
@@ -2014,7 +2057,8 @@ def extract_nouns(text):
 
 def process_nouns(nouns):
     words_to_remove = [f"{ai_name}", "you", "me", "create", "image", "'m", "sorry",
-                        "inaccuracy", "let", "do", "request", "please", "wait", "moment", "creating", "photo"]
+                        "inaccuracy", "let", "do", "request", "please", "wait", "moment", 
+                        "creating", "photo", "hmm", "make", "<3", "pic"]
     replacement_dict = {
         "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
     }

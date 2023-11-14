@@ -345,6 +345,7 @@ async def on_message(message):
                         translated = text_translate(result, lang)
                         prompt = extract_nouns(translated)
                         img_prompt = prompt
+                        vals_save('user_files/vals.json', 'img_prompt', img_prompt)
                         asyncio.create_task(img_gen(message, prompt, quality, size))
                         return
                     elif re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE) and re.search(r'lại|nữa', result, re.IGNORECASE):
@@ -1258,14 +1259,15 @@ async def img_gen(interaction, prompt, quality, size):
     if img:
         if not igen_flw:
             img_dprt = r_prompt
+            vals_save('user_files/vals.json', 'img_dprt', img_dprt)
         await dl_img(img, img_id)
         file_path = f'user_files/gen_imgs/{img_id}.png'
         image_file = discord.File(file_path, filename=f"{img_id}.png")
         embed.set_image(url=f"attachment://{image_file.filename}")
         await message.edit(embed=embed, view=view, attachments=[image_file])
-        vals_save('user_files/vals.json', 'igen_flw', igen_flw)
     if img or eimg:
         igen_flw = True
+        vals_save('user_files/vals.json', 'igen_flw', igen_flw)
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):
         mess = f"*Sent {user_nick} an image: {prompt}*"

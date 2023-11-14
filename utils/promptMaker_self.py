@@ -5,6 +5,11 @@ import pytz
 
 sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
+def get_schat(path):
+    with open(path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    return lines
+
 def getIdentity(identityPath):  
     with open(identityPath, "r", encoding="utf-8") as f:
         identityContext = f.read()
@@ -50,15 +55,20 @@ def getPrompt():
     current_time = ("Current time:", current_time)
     current_mood = getIdentity("user_files/prompt/current_mood.txt")
     behavior = getIdentity("user_files/prompt/behavior.txt")
-
+    chat_samp = get_schat("user_files/prompt/chat_samp.txt")
+    chat_s = []
+    if chat_samp:
+        for i in range(0, len(chat_samp), 2):
+            role, content = chat_samp[i].strip().split(': ')
+            chat_s.append({"role": role, "content": content})
     if not beha_down:
-        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
+        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}\n{chat_s}"
         prompt.append({"role": "system", "content": iden})
         for message in history[:-1]:
             prompt.append(message)
         prompt.append(history[-1])
     else:
-        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}"
+        iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{chat_s}"
         prompt.append({"role": "system", "content": iden})
         for message in history[:-1]:
             prompt.append(message)
@@ -149,15 +159,21 @@ def getPrompt_task(case):
         current_time = ("Current time:", current_time)
         current_mood = getIdentity("user_files/prompt/current_mood.txt")
         behavior = getIdentity("user_files/prompt/behavior.txt")
+        chat_samp = get_schat("user_files/prompt/chat_samp.txt")
+        chat_s = []
+        if chat_samp:
+            for i in range(0, len(chat_samp), 2):
+                role, content = chat_samp[i].strip().split(': ')
+                chat_s.append({"role": role, "content": content})
         if not beha_down:
-            iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}"
+            iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}\n{chat_s}"
             prompt.append({"role": "system", "content": iden})
             for message in history[:-1]:
                 prompt.append(message)
             prompt.append(history[-1])
             prompt.append({"role": "system", "content": case})
         else:
-            iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}"
+            iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{chat_s}"
             prompt.append({"role": "system", "content": iden})
             for message in history[:-1]:
                 prompt.append(message)

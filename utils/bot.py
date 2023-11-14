@@ -2008,12 +2008,13 @@ def extract_nouns(text):
     words = word_tokenize(text)
     text = process_nouns(words)
     tagged_words = pos_tag(text)
-    nouns = [word for word, pos in tagged_words if pos.startswith('NN')]
-    nn = " ".join(nouns)
+    ws = [word for word, tag in tagged_words if tag.startswith('JJ') or tag.startswith('VB') or tag.startswith('NN')]
+    nn = " ".join(ws)
     return nn
 
 def process_nouns(nouns):
-    words_to_remove = [f"{ai_name}", "you", "me", "create", "image", "photo"]
+    words_to_remove = [f"{ai_name}", "you", "me", "create", "image", "'m", "sorry",
+                        "inaccuracy", "let", "do", "request", "please", "wait", "moment", "creating", "photo"]
     replacement_dict = {
         "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
     }

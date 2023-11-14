@@ -1159,7 +1159,7 @@ async def img_gen(interaction, prompt, quality, size):
     try:
         img, r_prompt = await openai_images(prompt, quality, size)
         view.add_item(rgs_bt)
-        asyncio.create_task(b64_png(img, img_id))
+        asyncio.create_task(dl_img(img, img_id))
     except Exception as e:
         if hasattr(e, 'response') and hasattr(e.response, 'json') and 'error' in e.response.json():
             error_message = e.response.json()['error']['message']
@@ -1181,7 +1181,7 @@ async def img_gen(interaction, prompt, quality, size):
     # Tạo một Embed để gửi hình ảnh
         embed = discord.Embed(description=f"🏷️ {prompt}", color=discord.Color.blue())
         embed.add_field(name=f"🌸 {quality}       🖼️ {size}", value="", inline=False)
-        embed.set_image(url=f"data:image/png;base64,{img}")
+        embed.set_image(url=img)
     else:
         eimg = [
             "https://safebooru.org//images/4262/6985078225c8f12e9054220ab6717df7c1755077.png",

@@ -31,8 +31,7 @@ logging.getLogger('discord.gateway').setLevel(logging.ERROR)
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
-#bot = commands.Bot(command_prefix="!", intents=intents)
-bot = app_commands.CommandTree(client)
+bot = commands.Bot(command_prefix="!", intents=intents)
 ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0
@@ -727,7 +726,7 @@ async def test(interaction: discord.Interaction):
         image_file = discord.File(file_path, filename="1173738265363357759.png")
         embed = discord.Embed(title="Image Title", description="Description of the image")
         embed.set_image(url=f"attachment://{image_file.filename}")
-        await interaction.followup.send(embed=embed, file=image_file)
+        await interaction.response.edit_message(embed=embed, attachments=image_file)
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

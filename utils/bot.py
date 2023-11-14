@@ -726,6 +726,7 @@ async def test(interaction: discord.Interaction):
         image_file = discord.File(file_path, filename="1173738265363357759.png")
         embed = discord.Embed(title="Image Title", description="Description of the image")
         embed.set_image(url=f"attachment://{image_file.filename}")
+        await interaction.delete_original_response
         await interaction.response.send_message(embed=embed, file=image_file)
     else:
         randaw = noperm_answ()

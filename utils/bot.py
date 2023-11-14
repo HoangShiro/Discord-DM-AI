@@ -1192,11 +1192,12 @@ async def img_gen(interaction, prompt, quality, size):
         if message.id == img_id:
             await message.edit(embed=embed, view=view)
             break
-    await dl_img(img, img_id)
-    file_path = f'user_files/gen_imgs/{img_id}.png'
-    image_file = discord.File(file_path, filename=f"{img_id}.png")
-    embed.set_image(url=f"attachment://{image_file.filename}")
-    await message.edit(embed=embed, view=view, attachments=[image_file])
+    if img:
+        await dl_img(img, img_id)
+        file_path = f'user_files/gen_imgs/{img_id}.png'
+        image_file = discord.File(file_path, filename=f"{img_id}.png")
+        embed.set_image(url=f"attachment://{image_file.filename}")
+        await message.edit(embed=embed, view=view, attachments=[image_file])
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):
         mess = f"*Sent {user_nick} an image: {prompt}*"

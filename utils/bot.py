@@ -717,7 +717,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, 
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Image Gen
-@bot.command(name="test", description=f"test")
+@bot.tree.command(name="test", description=f"test")
 async def test(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         await interaction.response.defer(ephemeral=True, thinking=True)

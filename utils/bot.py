@@ -716,36 +716,6 @@ async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, 
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
-# Image Gen
-@bot.tree.command(name="test", description=f"test")
-async def test(interaction: discord.Interaction):
-    if interaction.user.id == user_id:
-        prompt = "baka"
-        guild = bot.get_guild(server_id)
-        emojis = guild.emojis
-        emoji = random.choice(emojis)
-        embed = discord.Embed(title=f"{ai_name} đang tạo art cho {user_nick}... {emoji}", description=f"🏷️ {prompt}", color=discord.Color.blue())
-        view = View(timeout=None)
-        view.add_item(irmv_bt)
-        file_path = 'user_files/gen_imgs/1173758479668879400.png'
-        image_file = discord.File(file_path, filename="1173758479668879400.png")
-        embed.set_image(url=f"attachment://{image_file.filename}")
-        await interaction.response.send_message(embed=embed, view=view, file=image_file)
-        async for message in interaction.channel.history(limit=1):
-            img_id = message.id
-        await asyncio.sleep(3)
-        file_path = 'user_files/gen_imgs/1173738265363357759.png'
-        image_file = discord.File(file_path, filename="1173738265363357759.png")
-        embed = discord.Embed(title="Image Title", description="Description of the image")
-        embed.set_image(url=f"attachment://{image_file.filename}")
-        async for message in interaction.channel.history(limit=10):
-            if message.id == img_id:
-                await message.edit(embed=embed, attachments=[image_file])
-                break
-    else:
-        randaw = noperm_answ()
-        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
-
 # Image Search
 @bot.tree.command(name="isrc", description=f"Tìm art")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
@@ -1176,13 +1146,6 @@ async def img_gen(interaction, prompt, quality, size):
     await interaction.response.send_message(embed=embed, view=view)
     async for message in interaction.channel.history(limit=1):
         img_id = message.id
-    mess = f"*Sent {user_nick} an image: {prompt}*"
-    his = get_bot_answer()
-    if his:
-        lang = lang_detect(his)
-        if "vi" in lang:
-            mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
-    bot_answer_save(mess)
     r_prompt = prompt
     view.add_item(rg_bt)
     img = None
@@ -1233,6 +1196,13 @@ async def img_gen(interaction, prompt, quality, size):
     await message.edit(embed=embed, view=view, attachments=[image_file])
     bot_mood +=1
     if isinstance(interaction.channel, discord.DMChannel):
+        mess = f"*Sent {user_nick} an image: {prompt}*"
+        his = get_bot_answer()
+        if his:
+            lang = lang_detect(his)
+            if "vi" in lang:
+                mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
+        bot_answer_save(mess)
         rate = (0.2/(bot_mood*2))*100
         if random.random() < rate:
             case = f"Please say something about the beautiful illustation that {user_nick} just requested."

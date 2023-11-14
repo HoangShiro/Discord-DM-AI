@@ -5,6 +5,10 @@ import pytz
 
 sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
+def correct_role(role):
+    # Chỉ chấp nhận "user" hoặc "assistant", chuyển đổi thành chữ thường để so sánh không phân biệt chữ hoa chữ thường
+    return "user" if role.lower() == "user" else "assistant" if role.lower() == "assistant" else None
+
 def get_schat(path):
     with open(path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
@@ -60,7 +64,11 @@ def getPrompt():
     if chat_samp:
         for i in range(0, len(chat_samp), 2):
             role, content = chat_samp[i].strip().split(': ')
-            chat_s.append({"role": role, "content": content})
+            corrected_role = correct_role(role)
+            if corrected_role:
+                chat_s.append({"role": corrected_role, "content": content})
+            else:
+                print(f"Ignoring invalid role in chat_samp.txt: {role}")
     if not beha_down:
         iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}\n{chat_s}"
         prompt.append({"role": "system", "content": iden})
@@ -164,7 +172,11 @@ def getPrompt_task(case):
         if chat_samp:
             for i in range(0, len(chat_samp), 2):
                 role, content = chat_samp[i].strip().split(': ')
-                chat_s.append({"role": role, "content": content})
+                corrected_role = correct_role(role)
+                if corrected_role:
+                    chat_s.append({"role": corrected_role, "content": content})
+                else:
+                    print(f"Ignoring invalid role in chat_samp.txt: {role}")
         if not beha_down:
             iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}\n{chat_s}"
             prompt.append({"role": "system", "content": iden})

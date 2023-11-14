@@ -353,7 +353,7 @@ async def on_message(message):
                         asyncio.create_task(img_gen(message, img_prompt, quality, size))
                         return
                     # Gen giống như art đã gen
-                    elif re.search(r'next|more|nữa|tiếp|giống|similar|tự|như', result, re.IGNORECASE):
+                    elif re.search(r'next|more|nữa|tiếp|giống|similar|tự|như|like|same', result, re.IGNORECASE):
                         quality, size = await igen_choice(result)
                         asyncio.create_task(img_gen(message, img_dprt, quality, size))
                         return

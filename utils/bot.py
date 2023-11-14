@@ -720,7 +720,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, 
 @bot.tree.command(name="test", description=f"test")
 async def test(interaction: discord.Interaction):
     if interaction.user.id == user_id:
-        await interaction.defer(ephemeral=True, thinking=True)
+        await interaction.response.defer(ephemeral=True, thinking=True)
         await asyncio.sleep(3)
         file_path = 'user_files/gen_imgs/1173738265363357759.png'
         image_file = discord.File(file_path, filename="1173738265363357759.png")

@@ -716,6 +716,18 @@ async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, 
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
+# Image Gen
+@bot.tree.command(name="test", description=f"test")
+async def test(interaction: discord.Interaction):
+    if interaction.user.id == user_id:
+        file_path = 'user_files/gen_imgs/1173738265363357759.png'
+        image_file = discord.File(file_path, filename="1173738265363357759.png")
+        embed = discord.Embed(title="Image Title", description="Description of the image")
+        await interaction.response.send_message(embed=embed, file=image_file)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
 # Image Search
 @bot.tree.command(name="isrc", description=f"Tìm art")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):

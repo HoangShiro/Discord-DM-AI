@@ -1161,7 +1161,10 @@ async def img_gen(interaction, prompt, quality, size):
     embed = discord.Embed(title=f"{ai_name} đang tạo art cho {user_nick}... {emoji}", description=f"🏷️ {prompt}", color=discord.Color.blue())
     view = View(timeout=None)
     view.add_item(irmv_bt)
-    await interaction.response.send_message(embed=embed, view=view)
+    if isinstance(interaction, discord.Interaction):
+        await interaction.response.send_message(embed=embed, view=view)
+    elif isinstance(interaction, discord.Message):
+        await interaction.channel.send(embed=embed, view=view)
     async for message in interaction.channel.history(limit=1):
         img_id = message.id
     r_prompt = prompt

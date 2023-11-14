@@ -1135,6 +1135,7 @@ async def rgs_bt_atv(interaction):
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
+# Image gen dall e 3
 async def img_gen(interaction, prompt, quality, size):
     global bot_mood, igen_lists
     guild = bot.get_guild(server_id)
@@ -1162,6 +1163,8 @@ async def img_gen(interaction, prompt, quality, size):
                 error_code = "Prompt không an toàn... つ﹏⊂"
             elif "rate_limit_exceeded" in error_code:
                 error_code = "Đạt giới hạn trong 1 phút... ≧﹏≦"
+            elif "billing_hard_limit_reached" in error_code:
+                error_code = "Hết cá ròi... 〒▽〒"
         else:
             print(f"Error while gen art: {e}")
     igen_lists[img_id] = {"prompt": prompt, "r_prompt": r_prompt, "quality": quality, "size": size}

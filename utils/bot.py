@@ -723,6 +723,7 @@ async def test(interaction: discord.Interaction):
         file_path = 'user_files/gen_imgs/1173738265363357759.png'
         image_file = discord.File(file_path, filename="1173738265363357759.png")
         embed = discord.Embed(title="Image Title", description="Description of the image")
+        embed.set_image(url=f"attachment://{image_file.filename}")
         await interaction.response.send_message(embed=embed, file=image_file)
     else:
         randaw = noperm_answ()

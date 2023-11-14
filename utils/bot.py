@@ -325,7 +325,9 @@ async def on_message(message):
 
                 # Xử lý để gen ảnh
                 if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE):
-                    prompt = process_nouns(result)
+                    lang = "en"
+                    translated = text_translate(result, lang)
+                    prompt = process_nouns(translated)
                     quality = "standard"
                     size = "1024x1024"
                     asyncio.create_task(img_gen(message, prompt, quality, size))

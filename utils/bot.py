@@ -16,6 +16,8 @@ import pytz
 import math
 import time
 import base64
+import nltk
+from nltk import word_tokenize, pos_tag
 
 import utils.status as status
 from user_files.moods import *
@@ -168,6 +170,9 @@ with open('user_files/vals.json', 'w', encoding="utf-8") as file:
 
 emoji_rate_percent = emoji_rate * 100
 
+nltk.download('averaged_perceptron_tagger')
+nltk.download('punkt')
+
 # Bot Greeting
 @bot.event
 async def on_ready():
@@ -214,7 +219,7 @@ async def on_ready():
             if message.content:
                 await message.edit(view=view)
                 break
-            
+
     # Get char appr
     asyncio.create_task(char_appr_get())
 
@@ -298,9 +303,7 @@ async def on_message(message):
                 return
             
             # Nếu đang reply thì bỏ qua
-            if task_busy_with_user:
-                return
-            elif task_busy_with_another:
+            if task_busy_with_user or task_busy_with_another:
                 return
             dm_channel_id = message.channel.id
             vals_save('user_files/vals.json', 'dm_channel_id', dm_channel_id)
@@ -319,6 +322,13 @@ async def on_message(message):
             if message.content:
                 result = message.content
                 asyncio.create_task(answer_send(message, result))
+
+                # Xử lý để gen ảnh
+                if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE):
+                    prompt = process_nouns(result)
+                    quality = "standard"
+                    size = "1024x1024"
+                    asyncio.create_task(img_gen(message, prompt, quality, size))
             # Trường hợp là tệp đính kèm:
             elif message.attachments:
                 file_names = []
@@ -1988,6 +1998,24 @@ def pt_up(path, ct, new_ct):
             file.seek(0)
             file.write(new_data)
             file.truncate()
+
+def extract_nouns(text):
+    words = word_tokenize(text)
+    text = process_nouns(words)
+    tagged_words = pos_tag(text)
+    nouns = [word for word, pos in tagged_words if pos.startswith('NN')]
+    nouns = " ".join(nouns)
+    return nouns
+
+def process_nouns(nouns):
+    words_to_remove = [f"{ai_name}", "you", "me", "create", "image"]
+    replacement_dict = {
+        "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
+    }
+    style = "anime style"
+    nouns = [replacement_dict.get(noun.lower(), noun) for noun in nouns if noun.lower() not in words_to_remove]
+    nouns.append(f",", style)
+    return nouns
 
 # Character Appearance update
 async def char_appr_get():

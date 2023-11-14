@@ -371,6 +371,15 @@ async def on_message(message):
                         prompt = extract_nouns(translated)
                         asyncio.create_task(img_regen(message, quality, size, prompt))
                         return
+                    elif re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE):
+                        quality, size = await igen_choice(result)
+                        lang = "en"
+                        translated = text_translate(result, lang)
+                        prompt = extract_nouns(translated)
+                        img_prompt = prompt
+                        vals_save('user_files/vals.json', 'img_prompt', img_prompt)
+                        asyncio.create_task(img_gen(message, prompt, quality, size))
+                        return
                     else:
                         igen_flw = False
                     

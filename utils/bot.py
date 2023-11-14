@@ -84,6 +84,7 @@ chat_wait = False
 call_limit = False
 igen_lists = {}
 img_prompt = "sky"
+img_dprt = "sea"
 ihq = False
 iportrait = False
 iscene = False
@@ -346,9 +347,14 @@ async def on_message(message):
                     return
                 if igen_flw:
                     # Gen thêm lần nữa
-                    if re.search(r'lại|again|lần|next|more', result, re.IGNORECASE):
+                    if re.search(r'lại|again|lần', result, re.IGNORECASE):
                         quality, size = await igen_choice(result)
                         asyncio.create_task(img_gen(message, img_prompt, quality, size))
+                        return
+                    # Gen giống như art đã gen
+                    elif re.search(r'next|more|nữa|tiếp|giống|similar|tự', result, re.IGNORECASE):
+                        quality, size = await igen_choice(result)
+                        asyncio.create_task(img_gen(message, img_dprt, quality, size))
                         return
                     # Sửa lại prompt và gen thêm
                     elif re.search(r'sửa|fix|chuyển|change|đổi|thay|thêm|add|to|qua', result, re.IGNORECASE):
@@ -1184,7 +1190,7 @@ async def rgs_bt_atv(interaction):
 
 # Image gen dall e 3
 async def img_gen(interaction, prompt, quality, size):
-    global bot_mood, igen_lists, igen_flw
+    global bot_mood, igen_lists, igen_flw, img_dprt
     guild = bot.get_guild(server_id)
     emojis = guild.emojis
     emoji = random.choice(emojis)
@@ -1244,6 +1250,7 @@ async def img_gen(interaction, prompt, quality, size):
             break
     if img:
         igen_flw = True
+        img_dprt = r_prompt
         await dl_img(img, img_id)
         file_path = f'user_files/gen_imgs/{img_id}.png'
         image_file = discord.File(file_path, filename=f"{img_id}.png")
@@ -1268,7 +1275,7 @@ async def img_gen(interaction, prompt, quality, size):
 
 # Correct prompt and gen art again
 async def img_regen(message, quality, size, rq):
-    case = f"3[{img_prompt}][{rq}]"
+    case = f"3[{img_dprt}][{rq}]"
     try:
         prompt = await openai_task(case)
     except Exception as e:

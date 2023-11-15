@@ -830,7 +830,6 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
                 await interaction.response.send_message(f"Không có art nào có tag '{keywords}' cả.", ephemeral=True)
                 print("Image search:", str(e))
                 return
-        
         else:
             if block is None:
                 block = img_block

@@ -1296,6 +1296,7 @@ async def img_gen(interaction, prompt, quality, size):
             if "vi" in lang:
                 mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
         bot_answer_save(mess)
+    return
 
 # Correct prompt and gen art again
 async def img_regen(message, quality, size, rq):

@@ -191,7 +191,6 @@ async def on_ready():
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(e)
-    print(f"{bot.user.name} đã kết nối tới Discord!")
     # Chạy status
     asyncio.create_task(bot_idle())
     bot_idle.start()
@@ -229,7 +228,8 @@ async def on_ready():
 
     # Get char appr
     asyncio.create_task(char_appr_get())
-
+    
+    print(f"{bot.user.name} đã kết nối tới Discord!")
     print()
 
 # Check typing

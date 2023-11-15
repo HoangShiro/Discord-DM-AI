@@ -144,6 +144,7 @@ default_values = {
     "au_pitch": 1,
     "img_prompt": "sky",
     "img_dprt": "sea",
+    "char_appr": "a girl",
     "igen_flw": False
 }
 
@@ -2102,6 +2103,7 @@ async def char_appr_get():
     global char_appr
     try:
         char_appr = await openai_task(2)
+        vals_save('user_files/vals.json', 'char_appr', char_appr)
     except Exception as e:
         e = str(e)
         print("Error while get character appearance: ", e)

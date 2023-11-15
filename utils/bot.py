@@ -363,6 +363,7 @@ async def on_message(message):
                 else:
                     # Gen thêm lần nữa
                     if re.search(r'lại|again|lần', result, re.IGNORECASE):
+                        quality, size = await igen_choice(result)
                         asyncio.create_task(img_gen(message, img_prompt, quality, size))
                         return
                     # Gen giống như art đã gen

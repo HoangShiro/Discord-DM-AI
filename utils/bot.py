@@ -2091,7 +2091,7 @@ def process_nouns(nouns):
                         "inaccuracy", "let", "do", "request", "please", "wait", "moment", 
                         "creating", "photo", "hmm", "make", "<3", "pic", "picture", "*", "rub", "draw"]
     replacement_dict = {
-        "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
+        "yourself": f"{char_appr}"
     }
     style = ", anime style"
     nouns = [replacement_dict.get(noun.lower(), noun) for noun in nouns if noun.lower() not in words_to_remove]

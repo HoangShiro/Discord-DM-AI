@@ -345,7 +345,7 @@ async def on_message(message):
                         size = isize
                     return quality, size
                 if not igen_flw:
-                    if re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE) and not re.search(r'lại|nữa', result, re.IGNORECASE):
+                    if re.search(r'gen|create|tạo|vẽ|draw|chụp', result, re.IGNORECASE) and re.search(r'art|img|pic|ảnh|hình|tấm', result, re.IGNORECASE) and not re.search(r'lại|nữa', result, re.IGNORECASE):
                         quality, size = await igen_choice(result)
                         iquality = quality
                         isize = size
@@ -356,7 +356,7 @@ async def on_message(message):
                         vals_save('user_files/vals.json', 'img_prompt', img_prompt)
                         asyncio.create_task(img_gen(message, prompt, quality, size))
                         return
-                    elif re.search(r'gen|create|tạo|vẽ|draw|chụp|photo|image|img', result, re.IGNORECASE) and re.search(r'lại|nữa', result, re.IGNORECASE):
+                    elif re.search(r'gen|create|tạo|vẽ|draw|chụp', result, re.IGNORECASE) and re.search(r'art|img|pic|ảnh|hình|tấm', result, re.IGNORECASE) and re.search(r'lại|nữa', result, re.IGNORECASE):
                         quality, size = await igen_choice(result)
                         asyncio.create_task(img_gen(message, img_prompt, quality, size))
                         return

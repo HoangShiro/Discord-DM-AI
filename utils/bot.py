@@ -1296,12 +1296,6 @@ async def img_gen(interaction, prompt, quality, size):
             if "vi" in lang:
                 mess = f"*Gửi cho {user_nick} hình ảnh: {prompt}"
         bot_answer_save(mess)
-        rate = (0.2/(bot_mood*2))*100
-        if random.random() < rate:
-            case = f"Please say something about the beautiful illustation that {user_nick} just requested."
-            if "vi" in lang:
-                case = f"Hãy nói gì đó về tấm hình đẹp mà {user_nick} vừa yêu cầu."
-            asyncio.create_task(bot_imgreact_answer(interaction, case))
 
 # Correct prompt and gen art again
 async def img_regen(message, quality, size, rq):

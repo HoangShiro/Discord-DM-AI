@@ -1245,7 +1245,7 @@ async def img_gen(interaction, prompt, quality, size):
             if "content_policy_violation" in error_code:
                 error_code = "Prompt không an toàn... つ﹏⊂"
             elif "rate_limit_exceeded" in error_code:
-                error_code = "Đạt giới hạn trong 1 phút... ≧﹏≦"
+                error_code = "Đợi 1 phút nữa nhé... ≧﹏≦"
             elif "billing_hard_limit_reached" in error_code:
                 error_code = "Hết cá ròi... 〒▽〒"
         else:

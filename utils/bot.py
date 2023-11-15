@@ -2095,7 +2095,7 @@ def extract_nouns(text):
 def process_nouns(nouns):
     words_to_remove = [f"{ai_name}", "you", "me", "create", "image", "'m", "sorry",
                         "inaccuracy", "let", "do", "request", "please", "wait", "moment", 
-                        "creating", "photo", "hmm", "make", "<3", "pic", "picture", "*", "rub"]
+                        "creating", "photo", "hmm", "make", "<3", "pic", "picture", "*", "rub", "draw"]
     replacement_dict = {
         "yourself": "A girl with long blonde hair, golden eyes, and a feminine appearance."
     }

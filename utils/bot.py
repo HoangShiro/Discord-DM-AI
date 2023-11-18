@@ -18,7 +18,6 @@ import time
 import base64
 import nltk
 from nltk import word_tokenize, pos_tag
-import configparser
 
 import utils.status as status
 from user_files.moods import *
@@ -1018,8 +1017,8 @@ async def c_name(interaction: discord.Interaction, last_name: str, first_name: s
                 return
             pt_up("user_files/prompt/character.txt", ai_name, first_name)
             pt_up("user_files/prompt/character.txt", ai_first_name, last_name)
-            pt_up("user_files/config.py", ai_name, first_name)
-            pt_up("user_files/config.py", ai_first_name, last_name)
+            pt_up("user_files/config.py", 'ai_name', first_name)
+            pt_up("user_files/config.py", 'ai_first_name', last_name)
             ai_name = first_name
             ai_first_name = last_name
             ai_full_name = f"{ai_name} {ai_first_name}"
@@ -1074,22 +1073,36 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
         if isinstance(interaction.channel, discord.DMChannel):
             noti = None
             err = None
-            if openai_key_1 and openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
-                noti = change_keys('openai_key_1', openai_key_1)
-            else:
-                err = "openai_key_1"
-            if openai_key_2 and openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
-                noti = change_keys('openai_key_2', openai_key_2)
-            else:
-                err = "openai_key_2"
-            if discord_bot_key and len(discord_bot_key) == 72:
-                noti = change_keys('discord_bot_key', discord_bot_key)
-            else:
-                err = "discord_bot_key"
-            if vv_key and len(vv_key) == 15:
-                noti = change_keys('vv_key', vv_key)
-            else:
-                err = "vv_key"
+            path = "user_files/config.py"
+            if openai_key_1:
+                if openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
+                    noti = pt_up(path, 'openai_key_1', openai_key_1)
+                else:
+                    err = "openai_key_1"
+            if openai_key_2:
+                if openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
+                    noti = pt_up(path, 'openai_key_2', openai_key_2)
+                else:
+                    if not err:
+                        err = "openai_key_2"
+                    else:
+                        err = err + ", openai_key_2"
+            if discord_bot_key:
+                if len(discord_bot_key) == 72:
+                    noti = pt_up(path, 'discord_bot_key', discord_bot_key)
+                else:
+                    if not err:
+                        err = "discord_bot_key"
+                    else:
+                        err = err + ", discord_bot_key"
+            if vv_key:
+                if len(vv_key) == 15:
+                    noti = pt_up(path, 'vv_key', vv_key)
+                else:
+                    if not err:
+                        err = "vv_key"
+                    else:
+                        err = err + ", vv_key"
             if noti:
                 await interaction.response.send_message(f"{noti}", ephemeral=True)
             elif err:
@@ -1432,22 +1445,6 @@ async def fix_src(engine, keywords):
     
     return tags_str
 
-import configparser
-
-def change_keys(key_name, new_key_value):
-    config = configparser.ConfigParser()
-    config.read('user_files/config.py')
-
-    n = "Có lỗi xảy ra."
-    if config.has_option('SectionName', key_name):
-        config.set('SectionName', key_name, new_key_value)
-
-        with open('user_files/config.py', 'w') as config_file:
-            config.write(config_file)
-        n = print(f"Đã thay đổi giá trị của `{key_name}`.")
-    else:
-        n = print(f"Không tìm thấy `{key_name}`.")
-    return n
 # Save json
 def vals_save(file_name, variable_name, variable_value):
     try:
@@ -2128,11 +2125,15 @@ def pt_up(path, ct, new_ct):
         data = file.read()
         pattern = rf"{ct}"
         match = re.search(pattern, data)
+        nt = None
         if match:
             new_data = re.sub(pattern, f"{new_ct}", data)
             file.seek(0)
             file.write(new_data)
             file.truncate()
+        else:
+            nt = f"`{ct}` không tồn tại."
+        return nt
 
 def extract_nouns(text):
     words = word_tokenize(text)

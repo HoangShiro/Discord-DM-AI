@@ -1081,7 +1081,11 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                     err = "openai_key_1"
             if openai_key_2:
                 if openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
-                    noti = change_keys(path, 'openai_key_2', openai_key_2)
+                    new_nt = change_keys(path, 'openai_key_2', openai_key_2)
+                    if not noti:
+                        noti = new_nt
+                    else:
+                        noti = noti + f", {new_nt}"
                 else:
                     if not err:
                         err = "openai_key_2"
@@ -1090,6 +1094,10 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
             if discord_bot_key:
                 if len(discord_bot_key) == 72:
                     noti = change_keys(path, 'discord_bot_key', discord_bot_key)
+                    if not noti:
+                        noti = new_nt
+                    else:
+                        noti = noti + f", {new_nt}"
                 else:
                     if not err:
                         err = "discord_bot_key"
@@ -1098,17 +1106,23 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
             if vv_key:
                 if len(vv_key) == 15:
                     noti = change_keys(path, 'vv_key', vv_key)
+                    if not noti:
+                        noti = new_nt
+                    else:
+                        noti = noti + f", {new_nt}"
                 else:
                     if not err:
                         err = "vv_key"
                     else:
                         err = err + ", vv_key"
-            if noti:
+            if noti and not err:
                 await interaction.response.send_message(f"{noti}", ephemeral=True)
-            elif err:
+            elif err and not noti:
                 await interaction.response.send_message(f"`{err}` không hợp lệ.", ephemeral=True)
+            elif noti and err:
+                await interaction.response.send_message(f"`{noti}` đã thay thành công, `{err}` không hợp lệ.", ephemeral=True)
             else:
-                await interaction.response.send_message(f"`Các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
+                await interaction.response.send_message(f"`Không có key nào được tìm thấy nên các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
         else:
             await interaction.response.send_message(f"`Chỉ có thể thay keys tại DM channel.`", ephemeral=True)
     else:
@@ -2146,9 +2160,7 @@ def change_keys(file_path, key_name, new_key_value):
             content = re.sub(pattern, f'{key_name} = "{new_key_value}"', content)
             with open(file_path, 'w') as updated_config_file:
                 updated_config_file.write(content)
-            return f"Đã thay đổi giá trị của `{key_name}`."
-        else:
-            return f"Không tìm thấy `{key_name}`."
+            return f"{key_name}"
 
 def extract_nouns(text):
     words = word_tokenize(text)

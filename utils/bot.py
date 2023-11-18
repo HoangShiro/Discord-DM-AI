@@ -1124,7 +1124,13 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
             else:
                 await interaction.response.send_message(f"`Không có key nào được tìm thấy nên các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
             if restart_bot:
-                await bot.close()
+                if bot_mood < 250:
+                    await bot.close()
+                else:
+                    async for message in interaction.channel.history(limit=1):
+                        message = message
+                    await message.channel.send(f"Nếu {user_nick} cứ khăng khăng muốn vậy thì~ để {ai_name} ra ngoài một lát nha~♥️")
+                    await bot.close()
         else:
             await interaction.response.send_message(f"`Chỉ có thể thay keys tại DM channel.`", ephemeral=True)
     else:

@@ -1076,12 +1076,12 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
             path = "user_files/config.py"
             if openai_key_1:
                 if openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
-                    noti = pt_up(path, openai_key_1, openai_key_1)
+                    noti = change_keys(path, 'openai_key_1', openai_key_1)
                 else:
                     err = "openai_key_1"
             if openai_key_2:
                 if openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
-                    noti = pt_up(path, openai_key_2, openai_key_2)
+                    noti = change_keys(path, 'openai_key_2', openai_key_2)
                 else:
                     if not err:
                         err = "openai_key_2"
@@ -1089,7 +1089,7 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                         err = err + ", openai_key_2"
             if discord_bot_key:
                 if len(discord_bot_key) == 72:
-                    noti = pt_up(path, discord_bot_key, discord_bot_key)
+                    noti = change_keys(path, 'discord_bot_key', discord_bot_key)
                 else:
                     if not err:
                         err = "discord_bot_key"
@@ -1097,7 +1097,7 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                         err = err + ", discord_bot_key"
             if vv_key:
                 if len(vv_key) == 15:
-                    noti = pt_up(path, vv_key, vv_key)
+                    noti = change_keys(path, 'vv_key', vv_key)
                 else:
                     if not err:
                         err = "vv_key"
@@ -2134,6 +2134,21 @@ def pt_up(path, ct, new_ct):
         else:
             nt = f"`{ct}` không tồn tại."
         return nt
+
+# Keys update
+def change_keys(file_path, key_name, new_key_value):
+
+    with open(file_path, 'r') as config_file:
+        content = config_file.read()
+
+        pattern = re.compile(rf'{key_name} = .*')
+        if re.search(pattern, content):
+            content = re.sub(pattern, f'{key_name} = "{new_key_value}"', content)
+            with open(file_path, 'w') as updated_config_file:
+                updated_config_file.write(content)
+            return f"Đã thay đổi giá trị của `{key_name}`."
+        else:
+            return f"Không tìm thấy `{key_name}`."
 
 def extract_nouns(text):
     words = word_tokenize(text)

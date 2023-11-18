@@ -1116,11 +1116,11 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                     else:
                         err = err + ", vv_key"
             if noti and not err:
-                await interaction.response.send_message(f"{noti}", ephemeral=True)
+                await interaction.response.send_message(f"`{noti}` đã cập nhật thành công", ephemeral=True)
             elif err and not noti:
                 await interaction.response.send_message(f"`{err}` không hợp lệ.", ephemeral=True)
             elif noti and err:
-                await interaction.response.send_message(f"`{noti}` đã thay thành công, `{err}` không hợp lệ.", ephemeral=True)
+                await interaction.response.send_message(f"`{noti}` đã cập nhật thành công, `{err}` không hợp lệ.", ephemeral=True)
             else:
                 await interaction.response.send_message(f"`Không có key nào được tìm thấy nên các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
         else:

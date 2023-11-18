@@ -1068,7 +1068,7 @@ async def avatar_c(interaction: discord.Interaction):
 
 # Keys change
 @bot.tree.command(name="ckeys", description=f"Đổi key cho {ai_name}.")
-async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, openai_key_2: str=None, discord_bot_key: str=None, vv_key: str=None):
+async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, openai_key_2: str=None, discord_bot_key: str=None, vv_key: str=None, restart_bot: bool = False):
     if interaction.user.id == user_id:
         if isinstance(interaction.channel, discord.DMChannel):
             noti = None
@@ -1123,6 +1123,8 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                 await interaction.response.send_message(f"`{noti}` đã cập nhật thành công, `{err}` không hợp lệ.", ephemeral=True)
             else:
                 await interaction.response.send_message(f"`Không có key nào được tìm thấy nên các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
+            if restart_bot:
+                await bot.close()
         else:
             await interaction.response.send_message(f"`Chỉ có thể thay keys tại DM channel.`", ephemeral=True)
     else:

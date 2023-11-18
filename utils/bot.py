@@ -1017,8 +1017,8 @@ async def c_name(interaction: discord.Interaction, last_name: str, first_name: s
                 return
             pt_up("user_files/prompt/character.txt", ai_name, first_name)
             pt_up("user_files/prompt/character.txt", ai_first_name, last_name)
-            pt_up("user_files/config.py", 'ai_name', first_name)
-            pt_up("user_files/config.py", 'ai_first_name', last_name)
+            pt_up("user_files/config.py", ai_name, first_name)
+            pt_up("user_files/config.py", ai_first_name, last_name)
             ai_name = first_name
             ai_first_name = last_name
             ai_full_name = f"{ai_name} {ai_first_name}"
@@ -1076,12 +1076,12 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
             path = "user_files/config.py"
             if openai_key_1:
                 if openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
-                    noti = pt_up(path, 'openai_key_1', openai_key_1)
+                    noti = pt_up(path, openai_key_1, openai_key_1)
                 else:
                     err = "openai_key_1"
             if openai_key_2:
                 if openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
-                    noti = pt_up(path, 'openai_key_2', openai_key_2)
+                    noti = pt_up(path, openai_key_2, openai_key_2)
                 else:
                     if not err:
                         err = "openai_key_2"
@@ -1089,7 +1089,7 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                         err = err + ", openai_key_2"
             if discord_bot_key:
                 if len(discord_bot_key) == 72:
-                    noti = pt_up(path, 'discord_bot_key', discord_bot_key)
+                    noti = pt_up(path, discord_bot_key, discord_bot_key)
                 else:
                     if not err:
                         err = "discord_bot_key"
@@ -1097,7 +1097,7 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                         err = err + ", discord_bot_key"
             if vv_key:
                 if len(vv_key) == 15:
-                    noti = pt_up(path, 'vv_key', vv_key)
+                    noti = pt_up(path, vv_key, vv_key)
                 else:
                     if not err:
                         err = "vv_key"

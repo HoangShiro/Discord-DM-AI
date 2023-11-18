@@ -18,6 +18,7 @@ import time
 import base64
 import nltk
 from nltk import word_tokenize, pos_tag
+import configparser
 
 import utils.status as status
 from user_files.moods import *
@@ -1066,6 +1067,41 @@ async def avatar_c(interaction: discord.Interaction):
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
+# Keys change
+@bot.tree.command(name="ckeys", description=f"Đổi key cho {ai_name}.")
+async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, openai_key_2: str=None, discord_bot_key: str=None, vv_key: str=None):
+    if interaction.user.id == user_id:
+        if isinstance(interaction.channel, discord.DMChannel):
+            noti = None
+            err = None
+            if openai_key_1 and openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
+                noti = change_keys('openai_key_1', openai_key_1)
+            else:
+                err = "openai_key_1"
+            if openai_key_2 and openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
+                noti = change_keys('openai_key_2', openai_key_2)
+            else:
+                err = "openai_key_2"
+            if discord_bot_key and len(discord_bot_key) == 72:
+                noti = change_keys('discord_bot_key', discord_bot_key)
+            else:
+                err = "discord_bot_key"
+            if vv_key and len(vv_key) == 15:
+                noti = change_keys('vv_key', vv_key)
+            else:
+                err = "vv_key"
+            if noti:
+                await interaction.response.send_message(f"{noti}", ephemeral=True)
+            elif err:
+                await interaction.response.send_message(f"`{err}` không hợp lệ.", ephemeral=True)
+            else:
+                await interaction.response.send_message(f"`Các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
+        else:
+            await interaction.response.send_message(f"`Chỉ có thể thay keys tại DM channel.`", ephemeral=True)
+    else:
+        randaw = noperm_answ()
+        await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
+
 # Button call
 async def irmv_bt_atv(interaction):
     if interaction.user.id == user_id:
@@ -1396,6 +1432,22 @@ async def fix_src(engine, keywords):
     
     return tags_str
 
+import configparser
+
+def change_keys(key_name, new_key_value):
+    config = configparser.ConfigParser()
+    config.read('user_files/config.py')
+
+    n = "Có lỗi xảy ra."
+    if config.has_option('SectionName', key_name):
+        config.set('SectionName', key_name, new_key_value)
+
+        with open('user_files/config.py', 'w') as config_file:
+            config.write(config_file)
+        n = print(f"Đã thay đổi giá trị của `{key_name}`.")
+    else:
+        n = print(f"Không tìm thấy `{key_name}`.")
+    return n
 # Save json
 def vals_save(file_name, variable_name, variable_value):
     try:

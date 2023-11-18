@@ -1093,7 +1093,7 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                         err = err + ", openai_key_2"
             if discord_bot_key:
                 if len(discord_bot_key) == 72:
-                    noti = change_keys(path, 'discord_bot_key', discord_bot_key)
+                    new_nt = change_keys(path, 'discord_bot_key', discord_bot_key)
                     if not noti:
                         noti = new_nt
                     else:
@@ -1105,7 +1105,7 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
                         err = err + ", discord_bot_key"
             if vv_key:
                 if len(vv_key) == 15:
-                    noti = change_keys(path, 'vv_key', vv_key)
+                    new_nt = change_keys(path, 'vv_key', vv_key)
                     if not noti:
                         noti = new_nt
                     else:

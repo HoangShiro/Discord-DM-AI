@@ -95,6 +95,7 @@ img_block = "futanari furry bestiality yaoi hairy"
 count = False
 ava_ch = False
 char_appr = "a girl"
+alt_trans = False
 
 bot_mood = 50.0
 split_send = False

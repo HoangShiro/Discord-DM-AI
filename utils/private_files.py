@@ -18,7 +18,8 @@ prompts = {
 }
 
 key_list = {
-    "oak_1": "none"
+    "oak_1": "none",
+    "oak_2": "none"
 }
 
 # Config.py

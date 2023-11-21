@@ -1074,14 +1074,15 @@ async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, open
             noti = None
             err = None
             path = "user_files/config.py"
+            path2 = "user_files/openai_key.py"
             if openai_key_1:
                 if openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
-                    noti = change_keys(path, 'openai_key_1', openai_key_1)
+                    noti = change_keys(path2, 'oak_1', openai_key_1)
                 else:
                     err = "openai_key_1"
             if openai_key_2:
                 if openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
-                    new_nt = change_keys(path, 'openai_key_2', openai_key_2)
+                    new_nt = change_keys(path2, 'oak_2', openai_key_2)
                     if not noti:
                         noti = new_nt
                     else:

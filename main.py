@@ -24,6 +24,7 @@ def start():
 if __name__ == '__main__':
     update_bot()
 
+    update_cfg("user_files/openai_key.py", key_list)
     update_cfg("user_files/config.py", vals_list)
     update_cfg("user_files/moods.py", mood_names)
     json_update('user_files/vals.json', default_values)

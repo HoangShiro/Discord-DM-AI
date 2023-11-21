@@ -1,7 +1,6 @@
 import json
 import re
 from utils.promptMaker_self import getPrompt, getPrompt_task, getPrompt_channel
-from user_files.config import openai_key_1, openai_key_2
 from openai import AsyncOpenAI, OpenAI
 import aiohttp
 from translate import Translator
@@ -10,6 +9,19 @@ from utils.translate import lang_detect
 total_characters = 0
 total_characters_channel = 0
 audio_filename = 'user_files/user_audio_msg.wav'
+
+# Roll key
+class KeyM:
+    def __init__(self):
+        self.values = [value for name, value in globals().items() if name.startswith("oak_")]
+        self.cid = 0
+
+    def get_key(self):
+        ckey = self.values[self.cid]
+        self.cid = (self.cid + 1) % len(self.values)
+        return ckey
+    
+oa_key = KeyM()
 
 try:
     with open('user_files/conversation.json', "r", encoding="utf-8") as f:
@@ -105,7 +117,8 @@ def remove_nearest_user_answer():
 # Lấy câu trả lời từ OpenAI dành cho chat
 async def openai_answer():
     global total_characters, conversation
-    client = AsyncOpenAI(api_key=openai_key_1, timeout=60)
+    key = oa_key.get_key()
+    client = AsyncOpenAI(api_key=key, timeout=60)
     total_characters = sum(len(d['content']) for d in conversation)
 
     while total_characters > 4000:
@@ -139,7 +152,8 @@ async def openai_answer():
 # Lấy câu trả lời từ OpenAI dành cho chat trong channel
 def openai_answer_channel():
     global total_characters_channel, channel_history
-    client = OpenAI(api_key=openai_key_1, timeout=60)
+    key = oa_key.get_key()
+    client = OpenAI(api_key=key, timeout=60)
     total_characters_channel = sum(len(d['content']) for d in channel_history)
 
     while total_characters_channel > 4000:
@@ -174,7 +188,8 @@ def openai_answer_channel():
 
 # Lấy câu trả lời từ OpenAI dành cho tasks
 async def openai_task(case):
-    client = AsyncOpenAI(api_key=openai_key_2, timeout=60)
+    key = oa_key.get_key()
+    client = AsyncOpenAI(api_key=key, timeout=60)
     prompt = getPrompt_task(case)
 
     response = await client.chat.completions.create(
@@ -198,7 +213,8 @@ async def openai_task(case):
 
 # Chuyển đổi voice của user thành văn bản (STT)
 async def openai_audio(audio_url):
-    client = AsyncOpenAI(api_key=openai_key_1)
+    key = oa_key.get_key()
+    client = AsyncOpenAI(api_key=key)
     async with aiohttp.ClientSession() as session:
         async with session.get(audio_url.url) as resp:
             tar_lang = lang_detect(get_bot_answer())
@@ -226,7 +242,8 @@ async def openai_audio(audio_url):
 
 # Image gen
 async def openai_images(prompt, quality, size):
-    client = AsyncOpenAI(api_key=openai_key_2, timeout=60)
+    key = oa_key.get_key()
+    client = AsyncOpenAI(api_key=key, timeout=60)
     response = await client.images.generate(
         prompt=prompt,
         model="dall-e-3",

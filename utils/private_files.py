@@ -17,10 +17,12 @@ prompts = {
     "chat_samp.txt": ""
 }
 
+key_list = {
+    "oak_1": "none"
+}
+
 # Config.py
 vals_list = {
-    "openai_key_1": '',
-    "openai_key_2": '',
     "discord_bot_key": '',
     "vv_key": '',
     "user_id": 0,
@@ -86,6 +88,7 @@ def update_prompt(path, prompt):
             file.write(content)
 
 if __name__ == '__main__':
+    update_cfg("user_files/openai_key.py", key_list)
     update_cfg("user_files/config.py", vals_list)
     update_cfg("user_files/moods.py", mood_names)
     json_update('user_files/vals.json', default_values)

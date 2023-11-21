@@ -5,6 +5,7 @@ from openai import AsyncOpenAI, OpenAI
 import aiohttp
 from translate import Translator
 from utils.translate import lang_detect
+from user_files.openai_key import *
 
 total_characters = 0
 total_characters_channel = 0

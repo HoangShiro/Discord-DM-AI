@@ -1792,12 +1792,25 @@ async def msg_send_channel(message, text):
 # Tạo voice cho bot
 async def ai_voice_create(ai_text):
     if voice_mode == "ja":
-        lang = "ja"
-        translated = text_translate(ai_text, lang)
+        global alt_trans
+        translated = None
+        if not alt_trans:
+            translated = text_translate(ai_text, "ja")
+            if "MYMEMORY WARNING:" in translated:
+                translated = text_translate2(ai_text, "ja")
+                alt_trans = True
+        else:
+            translated = text_translate2(ai_text, "ja")
         tts_get(translated, speaker, pitch, intonation_scale, speed, console_log)
     elif voice_mode == "en":
-        lang = "en"
-        translated = text_translate(ai_text, lang)
+        translated = None
+        if not alt_trans:
+            translated = text_translate(ai_text, "en")
+            if "MYMEMORY WARNING:" in translated:
+                translated = text_translate2(ai_text, "en")
+                alt_trans = True
+        else:
+            translated = text_translate2(ai_text, "en")
         try:
             tts_get_en(ai_text, en_speaker, en_pitch)
         except Exception as e:

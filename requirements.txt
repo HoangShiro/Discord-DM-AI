@@ -9,3 +9,4 @@ customtkinter
 packaging
 booru
 nltk
+mtranslate

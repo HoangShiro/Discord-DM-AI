@@ -1,5 +1,6 @@
 from translate import Translator
 from langdetect import detect
+from mtranslate import translate
 
 def text_translate(text, target_lang):
     # Xác định ngôn ngữ của văn bản đầu vào
@@ -17,6 +18,10 @@ def text_translate(text, target_lang):
 def lang_detect(text):
     source_lang = detect(text)
     return source_lang
+
+def text_translate2(text, to_language='ja'):
+    translated_text = translate(text, to_language)
+    return translated_text
 
 if __name__ == "__main__":
     text_translate()

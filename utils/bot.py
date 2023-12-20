@@ -233,7 +233,7 @@ async def on_ready():
 
 # Check typing
 
-@client.event
+@bot.event
 async def on_typing(channel, user, when):
     global chat_wait
     if user.id in bot_id:

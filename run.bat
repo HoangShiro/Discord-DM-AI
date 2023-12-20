@@ -8,7 +8,7 @@ pip install -r requirements.txt
 :start_ai
 cls
 python main.py
-PAUSE
+
 echo ----------------------
 echo.
 echo Bot is Restarting!

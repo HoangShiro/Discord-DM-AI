@@ -1626,11 +1626,13 @@ async def bot_regen_answer(interaction):
     view.add_item(rc_bt)
     view.add_item(continue_bt)
     remove_near_answer()
-    async with interaction.channel.typing():
-        ai_text = await bot_answer()
-        sentences = await split_text(ai_text)
-        paragraph = "\n".join(sentence.strip() for sentence in sentences)
-        await interaction.message.edit(content=paragraph, view=view)
+    #async with interaction.channel.typing():
+    typing = f"*...*"
+    await interaction.message.edit(content=typing)
+    ai_text = await bot_answer()
+    sentences = await split_text(ai_text)
+    paragraph = "\n".join(sentence.strip() for sentence in sentences)
+    await interaction.message.edit(content=paragraph, view=view)
 
 # Tạo câu trả lời tiếp tục cho bot
 async def bot_continue_answer(interaction):
@@ -1640,30 +1642,30 @@ async def bot_continue_answer(interaction):
     view.add_item(rc_bt)
     view.add_item(continue_bt)
     case = "Please continue your actions/words creatively."
-    async with interaction.channel.typing():
-        ai_text = await bot_answer_2(case)
-        if tts_toggle:
-            await ai_voice_create(ai_text)
-            await voice_message(channel_id, console_log)
-        sentences = await split_text(ai_text)
-        paragraph = "\n".join(sentence.strip() for sentence in sentences)
-        await interaction.message.edit(view=clear_view)
-        if "`Error error`" in paragraph:
-            pass
-        else:
-            await interaction.channel.send(paragraph, view=view)
-        # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
-        skip_first_bot_message = False
-        async for message in interaction.channel.history(limit=6):
-            time.sleep(0.5)
-            if message.author == bot.user:
-                if skip_first_bot_message:
-                    if message.content and not message.content.startswith("🏷️"):
-                        await message.edit(view=None)
-                    break
-                else:
-                    # Bỏ qua tin nhắn đầu tiên của bot.user
-                    skip_first_bot_message = True
+    #async with interaction.channel.typing():
+    ai_text = await bot_answer_2(case)
+    if tts_toggle:
+        await ai_voice_create(ai_text)
+        await voice_message(channel_id, console_log)
+    sentences = await split_text(ai_text)
+    paragraph = "\n".join(sentence.strip() for sentence in sentences)
+    await interaction.message.edit(view=clear_view)
+    if "`Error error`" in paragraph:
+        pass
+    else:
+        await interaction.channel.send(paragraph, view=view)
+    # Khởi tạo biến đếm để kiểm tra tin nhắn đầu tiên của bot.user
+    skip_first_bot_message = False
+    async for message in interaction.channel.history(limit=6):
+        time.sleep(0.5)
+        if message.author == bot.user:
+            if skip_first_bot_message:
+                if message.content and not message.content.startswith("🏷️"):
+                    await message.edit(view=None)
+                break
+            else:
+                # Bỏ qua tin nhắn đầu tiên của bot.user
+                skip_first_bot_message = True
 
 # Báo cho user biết khi lỗi
 async def bot_error_notice(error):

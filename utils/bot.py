@@ -30,9 +30,8 @@ from utils.noperm import noperm
 logging.getLogger('discord.gateway').setLevel(logging.ERROR)
 
 intents = discord.Intents.all()
-client = discord.Client(intents=intents)
+bot = commands.Bot(intents=intents, command_prefix="!")
 
-bot = commands.Bot(command_prefix="!", intents=intents)
 ai_full_name = f"{ai_name} {ai_first_name}"
 channel_id = 0
 dm_channel_id = 0
@@ -422,7 +421,7 @@ async def on_message(message):
     #await bot.process_commands(message)
 
 # Bot restart
-@bot.tree.command(name="renew", description=f"Khởi động lại {ai_name}.")
+@bot.slash_command(name="renew", description=f"Khởi động lại {ai_name}.")
 async def renew(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         if bot_mood < 250:
@@ -444,7 +443,7 @@ async def renew(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Cuộc trò chuyện mới
-@bot.tree.command(name="newchat", description="Cuộc trò chuyện mới.")
+@bot.slash_command(name="newchat", description="Cuộc trò chuyện mới.")
 async def newchat(interaction: discord.Interaction):
     global bot_mood
     if interaction.user.id == user_id:
@@ -470,7 +469,7 @@ async def newchat(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Cuộc trò chuyện mới trong server
-@bot.tree.command(name="clearchat", description="Cuộc trò chuyện public mới.")
+@bot.slash_command(name="clearchat", description="Cuộc trò chuyện public mới.")
 async def new_pchat(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         clear_conversation_history_public()
@@ -480,7 +479,7 @@ async def new_pchat(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Tạo lại câu trả lời
-@bot.tree.command(name="delchat", description=f"Xoá chat của {ai_name}.")
+@bot.slash_command(name="delchat", description=f"Xoá chat của {ai_name}.")
 async def answer_regen(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         if bot_mood < 250:
@@ -523,7 +522,7 @@ async def answer_regen(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Check user status
-@bot.tree.command(name="status", description=f"Trạng thái hoạt động của {user_nick}.")
+@bot.slash_command(name="status", description=f"Trạng thái hoạt động của {user_nick}.")
 async def us_status(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         user_stt = "offline"
@@ -535,7 +534,7 @@ async def us_status(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Chat log
-@bot.tree.command(name="chatlog", description=f"Hiển thị log chat ra console. Total chat: {total_msg}")
+@bot.slash_command(name="chatlog", description=f"Hiển thị log chat ra console. Total chat: {total_msg}")
 async def chatlog(interaction: discord.Interaction):
     global console_log
     if interaction.user.id == user_id:
@@ -552,7 +551,7 @@ async def chatlog(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Behavior prompt mode up/down
-@bot.tree.command(name="bemode", description=f"Đổi mode behavior. Reverse: {beha_down}")
+@bot.slash_command(name="bemode", description=f"Đổi mode behavior. Reverse: {beha_down}")
 async def bemode(interaction: discord.Interaction):
     global beha_down
     if interaction.user.id == user_id:
@@ -569,7 +568,7 @@ async def bemode(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Thay đổi tỷ lệ tương tác emoji
-@bot.tree.command(name="erate", description=f"Tỷ lệ tương tác emoji của {ai_name}: {emoji_rate_percent}%")
+@bot.slash_command(name="erate", description=f"Tỷ lệ tương tác emoji của {ai_name}: {emoji_rate_percent}%")
 async def emo_rate(interaction: discord.Interaction, rate: int):
     global emoji_rate
     if interaction.user.id == user_id:
@@ -594,7 +593,7 @@ async def emo_rate(interaction: discord.Interaction, rate: int):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Lưu lời nhắc
-@bot.tree.command(name="remind", description=f"Nhắc {user_nick} khi tới giờ.")
+@bot.slash_command(name="remind", description=f"Nhắc {user_nick} khi tới giờ.")
 async def reminder(interaction: discord.Interaction, note: str, time: str, date: str = None):
     if interaction.user.id == user_id:
         try:
@@ -619,7 +618,7 @@ async def reminder(interaction: discord.Interaction, note: str, time: str, date:
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Danh sách lời nhắc
-@bot.tree.command(name="remindlist", description=f"Danh sách lời nhắc.")
+@bot.slash_command(name="remindlist", description=f"Danh sách lời nhắc.")
 async def reminder_list(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         if not alarms:
@@ -632,7 +631,7 @@ async def reminder_list(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Xoá lời nhắc
-@bot.tree.command(name="remindremove", description=f"Xóa lời nhắc cho {user_nick}.")
+@bot.slash_command(name="remindremove", description=f"Xóa lời nhắc cho {user_nick}.")
 async def reminder_remover(interaction: discord.Interaction, index: int):
     if interaction.user.id == user_id:
         if index < 0 or index >= len(alarms):
@@ -649,7 +648,7 @@ async def reminder_remover(interaction: discord.Interaction, index: int):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Đổi mode voice chat
-@bot.tree.command(name="vchat", description=f"Ngôn ngữ voice chat của {ai_name}: [{voice_mode}].")
+@bot.slash_command(name="vchat", description=f"Ngôn ngữ voice chat của {ai_name}: [{voice_mode}].")
 async def voice_chat(interaction: discord.Interaction, language: str = None):
     global tts_toggle, voice_mode, en_speaker
     if interaction.user.id == user_id:
@@ -680,7 +679,7 @@ async def voice_chat(interaction: discord.Interaction, language: str = None):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Thiết lập voice chat
-@bot.tree.command(name="vconfig", description=f"Voice chat config: Spr:{en_speaker}, P:{pitch}, I:{intonation_scale}, Spd{speed}.")
+@bot.slash_command(name="vconfig", description=f"Voice chat config: Spr:{en_speaker}, P:{pitch}, I:{intonation_scale}, Spd{speed}.")
 async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: float = None, vintonation: float = None, vspeed: float = None):
     global auto_speaker, en_speaker, speaker, en_pitch, au_pitch, pitch, intonation_scale, speed
     if interaction.user.id == user_id:
@@ -736,7 +735,7 @@ async def voice_config(interaction: discord.Interaction, vspeaker: int, vpitch: 
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # NSFW toggle
-@bot.tree.command(name="nsfw", description=f"{ai_name} nsfw mode.")
+@bot.slash_command(name="nsfw", description=f"{ai_name} nsfw mode.")
 async def nsfw_chat(interaction: discord.Interaction):
     global nsfw
     if interaction.user.id == user_id:
@@ -753,7 +752,7 @@ async def nsfw_chat(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Public chat toggle
-@bot.tree.command(name="pchat", description=f"Cho phép {ai_name} chat public. limit: {public_chat_num}")
+@bot.slash_command(name="pchat", description=f"Cho phép {ai_name} chat public. limit: {public_chat_num}")
 async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
     global nsfw, public_chat_num, public_chat
     if interaction.user.id == user_id:
@@ -774,7 +773,7 @@ async def public_bot_chat(interaction: discord.Interaction, limit: int = None):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Image Gen
-@bot.tree.command(name="igen", description=f"Tạo art")
+@bot.slash_command(name="igen", description=f"Tạo art")
 async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, hq: bool = ihq, portrait: bool = iportrait, scene: bool = iscene):
     if interaction.user.id == user_id:
         global img_prompt, ihq, iportrait, iscene
@@ -797,7 +796,7 @@ async def image_gen(interaction: discord.Interaction, prompt: str = img_prompt, 
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Image Search
-@bot.tree.command(name="isrc", description=f"Tìm art")
+@bot.slash_command(name="isrc", description=f"Tìm art")
 async def image_search(interaction: discord.Interaction, keywords: str, limit: int=1, page: int=1, block: str=None):
     if interaction.user.id == user_id:
         import booru
@@ -1003,7 +1002,7 @@ async def image_search(interaction: discord.Interaction, keywords: str, limit: i
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Bot name change
-@bot.tree.command(name="cname", description=f"Đổi tên cho {ai_name}.")
+@bot.slash_command(name="cname", description=f"Đổi tên cho {ai_name}.")
 async def c_name(interaction: discord.Interaction, last_name: str, first_name: str):
     if interaction.user.id == user_id:
         global ai_first_name, ai_name, ai_full_name, count
@@ -1041,7 +1040,7 @@ async def c_name(interaction: discord.Interaction, last_name: str, first_name: s
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Bot restart
-@bot.tree.command(name="cavatar", description=f"Đổi avatar của {ai_name}.")
+@bot.slash_command(name="cavatar", description=f"Đổi avatar của {ai_name}.")
 async def avatar_c(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         if bot_mood < 250:
@@ -1067,7 +1066,7 @@ async def avatar_c(interaction: discord.Interaction):
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)
 
 # Keys change
-@bot.tree.command(name="ckeys", description=f"Đổi key cho {ai_name}.")
+@bot.slash_command(name="ckeys", description=f"Đổi key cho {ai_name}.")
 async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, openai_key_2: str=None, discord_bot_key: str=None, vv_key: str=None, restart_bot: bool = False):
     if interaction.user.id == user_id:
         if isinstance(interaction.channel, discord.DMChannel):

@@ -1,5 +1,3 @@
-discord
-discord.py
 py-cord
 openai==1.2.3
 pytz

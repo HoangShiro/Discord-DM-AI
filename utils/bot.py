@@ -184,12 +184,7 @@ nltk.download('punkt')
 async def on_ready():
     global alarms, ai_full_name
     await ai_name_update()
-    # Đồng bộ hoá commands
-    try:
-        synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} command(s)")
-    except Exception as e:
-        print(e)
+    
     # Chạy status
     asyncio.create_task(bot_idle())
     bot_idle.start()

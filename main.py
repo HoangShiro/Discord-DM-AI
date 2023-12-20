@@ -30,7 +30,7 @@ if __name__ == '__main__':
     json_update('user_files/vals.json', default_values)
     update_prompt("user_files/prompt/", prompts)
 
-    try:
-        start()
-    except Exception as e:
-        print("Start bot error: {0}".format(e))
+    #try:
+    start()
+    #except Exception as e:
+    #    print("Start bot error: {0}".format(e))

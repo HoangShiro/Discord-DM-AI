@@ -1626,10 +1626,13 @@ async def bot_regen_answer(interaction):
     view.add_item(rc_bt)
     view.add_item(continue_bt)
     remove_near_answer()
+    oldmess = interaction.message.content
     #async with interaction.channel.typing():
     typing = f"*...*"
     await interaction.message.edit(content=typing)
     ai_text = await bot_answer()
+    if "`Error" in ai_text:
+        ai_text = oldmess
     sentences = await split_text(ai_text)
     paragraph = "\n".join(sentence.strip() for sentence in sentences)
     await interaction.message.edit(content=paragraph, view=view)

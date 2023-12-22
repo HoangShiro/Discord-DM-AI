@@ -1039,12 +1039,9 @@ async def c_name(interaction: discord.Interaction, last_name: str, first_name: s
 async def avatar_c(interaction: discord.Interaction):
     if interaction.user.id == user_id:
         if bot_mood < 250:
-            if isinstance(interaction.channel, discord.DMChannel):
-                global ava_ch
-                ava_ch = True
-                await interaction.response.send_message(f"`Gửi cho {ai_name} avatar muốn đổi đi`", ephemeral=True)
-            else:
-                await interaction.response.send_message(f"`{ai_name} chỉ có thể đổi avatar tại DM channel.`", ephemeral=True)
+            global ava_ch
+            ava_ch = True
+            await interaction.response.send_message(f"`Gửi cho {ai_name} avatar muốn đổi đi`", ephemeral=True)
         else:
             yan_ico = [
                 f"Dạ em sẽ set avatar mới ngayy~ 💖🔪",

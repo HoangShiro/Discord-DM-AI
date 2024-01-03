@@ -64,7 +64,6 @@ def getPrompt():
     behavior = getIdentity("user_files/prompt/behavior.txt")
     chat_samp = get_schat("user_files/prompt/chat_samp.txt")
     chat_s = []
-    print(chat_samp)
     if chat_samp:
         for i in range(0, len(chat_samp), 2):
             role, content = chat_samp[i].strip().split(': ')
@@ -106,6 +105,7 @@ def getPrompt():
 
     # total_characters = sum(len(d['content']) for d in prompt)
     # print(f"Total characters: {total_characters}")
+    print(prompt)
     return prompt
 
 def getPrompt_channel():

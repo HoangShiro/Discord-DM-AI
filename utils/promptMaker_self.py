@@ -68,7 +68,7 @@ def getPrompt():
             if corrected_role:
                 chat_s.append({"role": corrected_role, "content": content})
             else:
-                print(f"Ignoring invalid role in chat_samp.txt: {role}")
+                print(f"Ignoring invalid role in chat_samp.txt: {role} - {content}")
     if not beha_down:
         iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}\n{chat_s}"
         prompt.append({"role": "system", "content": iden})
@@ -189,7 +189,7 @@ def getPrompt_task(case):
                 if corrected_role:
                     chat_s.append({"role": corrected_role, "content": content})
                 else:
-                    print(f"Ignoring invalid role in chat_samp.txt: {role}")
+                    print(f"Ignoring invalid role in chat_samp.txt: {role} - {content}")
         if not beha_down:
             iden = f"{nsfw_text}\n{sys_prompt}\n{char_info}\n{user_info}\n{goal}\n{current_time}\n{current_mood}\n{behavior}\n{chat_s}"
             prompt.append({"role": "system", "content": iden})

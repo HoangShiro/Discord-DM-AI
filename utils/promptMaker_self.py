@@ -11,10 +11,7 @@ def correct_role(role):
 
 def get_schat(path):
     with open(path, 'r', encoding='utf-8') as file:
-        if file:
-            lines = file.readlines()
-        else:
-            lines = file
+        lines = file.readlines()
     return lines
 
 def getIdentity(identityPath):  
@@ -64,8 +61,7 @@ def getPrompt():
     behavior = getIdentity("user_files/prompt/behavior.txt")
     chat_samp = get_schat("user_files/prompt/chat_samp.txt")
     chat_s = []
-    chat_samp = chat_samp.strip()
-    if chat_samp:
+    if chat_samp and len(str(chat_samp)) > 10:
         for i in range(0, len(chat_samp), 2):
             role, content = chat_samp[i].strip().split(': ')
             corrected_role = correct_role(role)
@@ -186,7 +182,7 @@ def getPrompt_task(case):
         behavior = getIdentity("user_files/prompt/behavior.txt")
         chat_samp = get_schat("user_files/prompt/chat_samp.txt")
         chat_s = []
-        if chat_samp:
+        if chat_samp and len(str(chat_samp)) > 10:
             for i in range(0, len(chat_samp), 2):
                 role, content = chat_samp[i].strip().split(': ')
                 corrected_role = correct_role(role)

@@ -11,7 +11,10 @@ def correct_role(role):
 
 def get_schat(path):
     with open(path, 'r', encoding='utf-8') as file:
-        lines = file.readlines()
+        if file:
+            lines = file.readlines()
+        else:
+            lines = file
     return lines
 
 def getIdentity(identityPath):  

@@ -1061,70 +1061,67 @@ async def avatar_c(interaction: discord.Interaction):
 @bot.slash_command(name="ckeys", description=f"Đổi key cho {ai_name}.")
 async def key_chg(interaction: discord.Interaction, openai_key_1: str=None, openai_key_2: str=None, discord_bot_key: str=None, vv_key: str=None, restart_bot: bool = False):
     if interaction.user.id == user_id:
-        if isinstance(interaction.channel, discord.DMChannel):
-            noti = None
-            err = None
-            path = "user_files/config.py"
-            path2 = "user_files/openai_key.py"
-            if openai_key_1:
-                if openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
-                    noti = change_keys(path2, 'oak_1', openai_key_1)
-                else:
-                    err = "openai_key_1"
-            if openai_key_2:
-                if openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
-                    new_nt = change_keys(path2, 'oak_2', openai_key_2)
-                    if not noti:
-                        noti = new_nt
-                    else:
-                        noti = noti + f", {new_nt}"
-                else:
-                    if not err:
-                        err = "openai_key_2"
-                    else:
-                        err = err + ", openai_key_2"
-            if discord_bot_key:
-                if len(discord_bot_key) == 72:
-                    new_nt = change_keys(path, 'discord_bot_key', discord_bot_key)
-                    if not noti:
-                        noti = new_nt
-                    else:
-                        noti = noti + f", {new_nt}"
-                else:
-                    if not err:
-                        err = "discord_bot_key"
-                    else:
-                        err = err + ", discord_bot_key"
-            if vv_key:
-                if len(vv_key) == 15:
-                    new_nt = change_keys(path, 'vv_key', vv_key)
-                    if not noti:
-                        noti = new_nt
-                    else:
-                        noti = noti + f", {new_nt}"
-                else:
-                    if not err:
-                        err = "vv_key"
-                    else:
-                        err = err + ", vv_key"
-            if noti and not err:
-                await interaction.response.send_message(f"`{noti}` đã cập nhật thành công", ephemeral=True)
-            elif err and not noti:
-                await interaction.response.send_message(f"`{err}` không hợp lệ.", ephemeral=True)
-            elif noti and err:
-                await interaction.response.send_message(f"`{noti}` đã cập nhật thành công, `{err}` không hợp lệ.", ephemeral=True)
+        noti = None
+        err = None
+        path = "user_files/config.py"
+        path2 = "user_files/openai_key.py"
+        if openai_key_1:
+            if openai_key_1.startswith("sk-") and len(openai_key_1) == 51:
+                noti = change_keys(path2, 'oak_1', openai_key_1)
             else:
-                await interaction.response.send_message(f"`Không có key nào được tìm thấy nên các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
-            if restart_bot:
-                if bot_mood < 250:
-                    await bot.close()
+                err = "openai_key_1"
+        if openai_key_2:
+            if openai_key_2.startswith("sk-") and len(openai_key_2) == 51:
+                new_nt = change_keys(path2, 'oak_2', openai_key_2)
+                if not noti:
+                    noti = new_nt
                 else:
-                    async for message in interaction.channel.history(limit=1):
-                        message = message
-                    await message.channel.send(f"Nếu {user_nick} cứ khăng khăng muốn vậy thì~ để {ai_name} ra ngoài một lát nha~♥️")
-                    await bot.close()
+                    noti = noti + f", {new_nt}"
+            else:
+                if not err:
+                    err = "openai_key_2"
+                else:
+                    err = err + ", openai_key_2"
+        if discord_bot_key:
+            if len(discord_bot_key) == 72:
+                new_nt = change_keys(path, 'discord_bot_key', discord_bot_key)
+                if not noti:
+                    noti = new_nt
+                else:
+                    noti = noti + f", {new_nt}"
+            else:
+                if not err:
+                    err = "discord_bot_key"
+                else:
+                    err = err + ", discord_bot_key"
+        if vv_key:
+            if len(vv_key) == 15:
+                new_nt = change_keys(path, 'vv_key', vv_key)
+                if not noti:
+                    noti = new_nt
+                else:
+                    noti = noti + f", {new_nt}"
+            else:
+                if not err:
+                    err = "vv_key"
+                else:
+                    err = err + ", vv_key"
+        if noti and not err:
+            await interaction.response.send_message(f"`{noti}` đã cập nhật thành công", ephemeral=True)
+        elif err and not noti:
+            await interaction.response.send_message(f"`{err}` không hợp lệ.", ephemeral=True)
+        elif noti and err:
+            await interaction.response.send_message(f"`{noti}` đã cập nhật thành công, `{err}` không hợp lệ.", ephemeral=True)
         else:
-            await interaction.response.send_message(f"`Chỉ có thể thay keys tại DM channel.`", ephemeral=True)
+            await interaction.response.send_message(f"`Không có key nào được tìm thấy nên các key đã được giữ nguyên mà không thay đổi.`", ephemeral=True)
+        if restart_bot:
+            if bot_mood < 250:
+                await bot.close()
+            else:
+                async for message in interaction.channel.history(limit=1):
+                    message = message
+                await message.channel.send(f"Nếu {user_nick} cứ khăng khăng muốn vậy thì~ để {ai_name} ra ngoài một lát nha~♥️")
+                await bot.close()
     else:
         randaw = noperm_answ()
         await interaction.response.send_message(f"`{randaw}`", ephemeral=True)

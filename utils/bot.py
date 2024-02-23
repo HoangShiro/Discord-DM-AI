@@ -2014,11 +2014,11 @@ async def mood_drop():
     if bot_mood > 70:
         bot_mood -= 0.4
     if bot_mood > 30:
-        bot_mood -= 0.3
+        bot_mood -= 0.01
     if bot_mood > 10:
-        bot_mood -= 0.1
+        bot_mood -= 0.001
     if bot_mood > 1:
-        bot_mood -= 0.05
+        bot_mood -= 0.0001
     if bot_mood < 1:
         bot_mood = 1
     vals_save('user_files/vals.json', 'bot_mood', bot_mood)
